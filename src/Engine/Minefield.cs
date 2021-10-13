@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
@@ -18,14 +19,41 @@ namespace Dgt.Minesweeper.Engine
         public int Rows { get; }
         public int CountOfMines => _minedCells.Count;
 
-        public bool IsMined(Cell cell) => _minedCells.Contains(cell);
+        public bool IsMined(Cell cell)
+        {
+            if (!HasCell(cell)) throw CreateCellNotInMinefieldException();
 
-        public bool IsMined(int column, int row) => IsMined(new Cell(column, row));
+            return _minedCells.Contains(cell);
+        }
+
+        // TODO Validate row in the same way
+        public bool IsMined(int column, int row)
+        {
+            if (column < 0 || column >= Columns) throw CreateColumnOutOfRangeException(column);
+            if (row < 0 || row >= Rows) throw CreateRowOutOfRangeException(row);
+            
+            return IsMined(new Cell(column, row));
+        }
 
         public int GetHint(Cell cell) => GetAdjacentCells(cell).Count(IsMined);
 
         public int GetHint(int column, int row) => GetHint(new Cell(column, row));
+
+        private Exception CreateCellNotInMinefieldException()
+        {
+            return new ArgumentException("The cell does not exist in the minefield.", "cell");
+        }
+
+        private Exception CreateColumnOutOfRangeException(int column)
+        {
+            return new ArgumentOutOfRangeException(nameof(column), column, "Value must be greater than or equal to zero, and less than the number of columns.");
+        }
         
+        private Exception CreateRowOutOfRangeException(int row)
+        {
+            return new ArgumentOutOfRangeException(nameof(row), row, "Value must be greater than or equal to zero, and less than the number of rows.");
+        }
+
         private IEnumerable<Cell> GetAdjacentCells(Cell cell)
         {
             for (var column = cell.Column - 1; column <= cell.Column + 1; column++)
@@ -44,6 +72,9 @@ namespace Dgt.Minesweeper.Engine
 
         private bool HasCell(Cell cell) => HasCell(cell.Column, cell.Row);
 
-        private bool HasCell(int column, int row) => column <= Columns && row <= Rows;
+        private bool HasCell(int column, int row) => column >= 0
+                                                     && column < Columns
+                                                     && row >= 0
+                                                     && row < Rows;
     }
 }

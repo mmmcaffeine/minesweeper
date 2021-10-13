@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Xunit;
 
 namespace Dgt.Minesweeper.Engine
@@ -20,6 +21,49 @@ namespace Dgt.Minesweeper.Engine
             
             // Assert
             hint.Should().Be(expectedHint);
+        }
+
+        // TODO We could make our exception better by:
+        // * Putting the actual cell on the exception (maybe in Data if we don't want to write our own exception type)
+        // * Indicating whether it is column, row, or both that are out of range
+        [Fact]
+        public void IsMined_Should_ThrowWhenCellIsNotInMinefield()
+        {
+            // Arrange
+            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
+            var cellToTest = new Cell(4, 0);
+            
+            // Act, Assert
+            minefield.Invoking(x => x.IsMined(cellToTest)).Should().Throw<ArgumentException>()
+                .WithMessage("The cell does not exist in the minefield.*")
+                .WithParameterName("cell");
+        }
+
+        [Fact]
+        public void IsMined_Should_ThrowWhenColumnIsOutOfRange()
+        {
+            // Arrange
+            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
+            
+            // Act, Assert
+            minefield.Invoking(x => x.IsMined(4, 0)).Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be greater than or equal to zero, and less than the number of columns.*")
+                .WithParameterName("column")
+                .And.ActualValue.Should().Be(4);
+        }
+        
+        [Fact]
+        public void IsMined_Should_ThrowWhenRowIsOutOfRange()
+        {
+            // Arrange
+            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
+            
+            // Act, Assert
+            minefield.Invoking(x => x.IsMined(0, 3)).Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be greater than or equal to zero, and less than the number of rows.*")
+                .WithParameterName("row")
+                .And.ActualValue.Should().Be(3);
+
         }
     }
 }
