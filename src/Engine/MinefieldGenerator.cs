@@ -2,9 +2,9 @@
 {
     public class MinefieldGenerator
     {
-        public Minefield GenerateMinefield(int rows, int columns, params Cell[] minedCells)
+        public Minefield GenerateMinefield(int columns, int rows, params Cell[] minedCells)
         {
-            return new Minefield(rows, columns, minedCells);
+            return new Minefield(columns, rows, minedCells);
         }
     }
 }

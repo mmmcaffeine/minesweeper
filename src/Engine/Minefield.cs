@@ -7,22 +7,22 @@ namespace Dgt.Minesweeper.Engine
     {
         private readonly HashSet<Cell> _minedCells;
 
-        public Minefield(int rows, int columns, IEnumerable<Cell> minedCells)
+        public Minefield(int columns, int rows, IEnumerable<Cell> minedCells)
         {
-            Rows = rows;
             Columns = columns;
+            Rows = rows;
             _minedCells = new HashSet<Cell>(minedCells);
         }
 
-        public int Rows { get; }
         public int Columns { get; }
+        public int Rows { get; }
         
-        public bool IsMined(int row, int column)
+        public bool IsMined(int column, int row)
         {
-            return _minedCells.Contains(new Cell(row, column));
+            return _minedCells.Contains(new Cell(column, row));
         }
         
-        public int GetHint(int row, int column)
+        public int GetHint(int column, int row)
         {
             List<Cell> adjacentCells = new()
             {
@@ -36,9 +36,9 @@ namespace Dgt.Minesweeper.Engine
                 new Cell(row - 1, column - 1)
             };
 
-            return adjacentCells.Count(cell => HasCell(cell.Row, cell.Column) && IsMined(cell.Row, cell.Column));
+            return adjacentCells.Count(cell => HasCell(cell.Column, cell.Row) && IsMined(cell.Column, cell.Row));
         }
         
-        private bool HasCell(int row, int column) => row <= Rows && column <= Columns;
+        private bool HasCell(int column, int row) => column <= Columns && row <= Rows;
     }
 }

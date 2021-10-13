@@ -6,16 +6,14 @@ namespace Dgt.Minesweeper.Engine
     public class MinefieldTests
     {
         // TODO What should the hint for a mined cell be?
-        // The example input shows "3, 4" meaning 3 rows, amd 4 columns. Our origin is the bottom left, and our coordinate
-        // system is 1-based i.e. how the vast majority of the population would think of a minesweeper grid
         [Theory]
-        [InlineData(3, 2, 2)]
-        [InlineData(1, 1, 0)]
-        [InlineData(1, 4, 1)]
-        public void GetHint_Should_ReturnNumberOfAdjacentMines(int row, int column, int expectedHint)
+        [InlineData(1, 0, 2)]
+        [InlineData(0, 2, 0)]
+        [InlineData(3, 2, 1)]
+        public void GetHint_Should_ReturnNumberOfAdjacentMines(int column, int row, int expectedHint)
         {
             // Arrange
-            var minefield = new Minefield(3, 4, new[] { new Cell(3, 1), new Cell(2, 3) });
+            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
 
             // Act
             var hint = minefield.GetHint(row, column);

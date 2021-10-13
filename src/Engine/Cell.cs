@@ -1,4 +1,4 @@
 ﻿namespace Dgt.Minesweeper.Engine
 {
-    public record Cell(int Row, int Column);
+    public record Cell(int Column, int Row);
 }

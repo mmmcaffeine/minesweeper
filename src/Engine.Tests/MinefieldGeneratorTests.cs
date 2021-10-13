@@ -12,11 +12,11 @@ namespace Dgt.Minesweeper.Engine
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(3, 4);
+            var minefield = sut.GenerateMinefield(4, 3);
             
             // Assert
-            minefield.Rows.Should().Be(3);
             minefield.Columns.Should().Be(4);
+            minefield.Rows.Should().Be(3);
         }
         
         [Fact]
@@ -26,11 +26,11 @@ namespace Dgt.Minesweeper.Engine
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(3, 4, new Cell(1, 1), new Cell(3, 4));
+            var minefield = sut.GenerateMinefield(4, 3, new Cell(0, 0), new Cell(3, 2));
 
             // Assert
-            minefield.IsMined(1, 1).Should().BeTrue();
-            minefield.IsMined(3, 4).Should().BeTrue();
+            minefield.IsMined(0, 0).Should().BeTrue();
+            minefield.IsMined(3, 2).Should().BeTrue();
         }
         
         [Fact]
@@ -40,11 +40,11 @@ namespace Dgt.Minesweeper.Engine
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(3, 4, new Cell(1, 1), new Cell(3, 4));
+            var minefield = sut.GenerateMinefield(4, 3, new Cell(0, 0), new Cell(3, 2));
 
             // Assert
-            minefield.IsMined(2, 2).Should().BeFalse();
-            minefield.IsMined(1, 4).Should().BeFalse();
+            minefield.IsMined(1, 1).Should().BeFalse();
+            minefield.IsMined(3, 0).Should().BeFalse();
         }
     }
 }
