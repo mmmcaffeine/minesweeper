@@ -5,13 +5,13 @@ namespace Dgt.Minesweeper.Engine
 {
     public class Minefield
     {
-        private readonly List<Square> _minedSquares;
+        private readonly HashSet<Square> _minedSquares;
 
         public Minefield(int rows, int columns, IEnumerable<Square> minedSquares)
         {
             Rows = rows;
             Columns = columns;
-            _minedSquares = minedSquares.ToList();
+            _minedSquares = new HashSet<Square>(minedSquares);
         }
 
         public int Rows { get; }
@@ -19,7 +19,7 @@ namespace Dgt.Minesweeper.Engine
         
         public bool IsMined(int row, int column)
         {
-            return _minedSquares.Any(square => square.Row == row && square.Column == column);
+            return _minedSquares.Contains(new Square(row, column));
         }
         
         public int GetHint(int row, int column)
