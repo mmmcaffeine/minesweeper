@@ -26,14 +26,14 @@ namespace Dgt.Minesweeper.Engine
         {
             List<Cell> adjacentCells = new()
             {
-                new Cell(row + 1, column - 1),
-                new Cell(row + 1, column),
-                new Cell(row + 1, column + 1),
-                new Cell(row, column - 1),
-                new Cell(row, column + 1),
-                new Cell(row - 1, column + 1),
-                new Cell(row - 1, column),
-                new Cell(row - 1, column - 1)
+                new Cell(column - 1, row - 1),
+                new Cell(column - 1, row),
+                new Cell(column - 1, row + 1),
+                new Cell(column, row - 1),
+                new Cell(column, row + 1),
+                new Cell(column + 1, row - 1),
+                new Cell(column + 1, row),
+                new Cell(column + 1, row + 1)
             };
 
             return adjacentCells.Count(cell => HasCell(cell.Column, cell.Row) && IsMined(cell.Column, cell.Row));

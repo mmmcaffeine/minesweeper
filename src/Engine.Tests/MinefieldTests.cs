@@ -16,7 +16,7 @@ namespace Dgt.Minesweeper.Engine
             var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
 
             // Act
-            var hint = minefield.GetHint(row, column);
+            var hint = minefield.GetHint(column, row);
             
             // Assert
             hint.Should().Be(expectedHint);
