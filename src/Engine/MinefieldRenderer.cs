@@ -24,15 +24,11 @@ namespace Dgt.Minesweeper.Engine
             for (var column = 0; column < minefield.Columns; column++)
             {
                 var cell = new Cell(column, row);
-
-                if (minefield.IsMined(cell))
-                {
-                    builder.Append('*');
-                }
-                else
-                {
-                    builder.Append(minefield.GetHint(cell));
-                }
+                var value = minefield.IsMined(cell)
+                    ? "*"
+                    : minefield.GetHint(cell).ToString();
+                
+                builder.Append(value);
             }
 
             return builder.ToString();
