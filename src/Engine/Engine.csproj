@@ -23,4 +23,8 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="Cell.cs" />
+    </ItemGroup>
+
 </Project>

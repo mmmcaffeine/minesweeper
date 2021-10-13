@@ -20,13 +20,13 @@ namespace Dgt.Minesweeper.Engine
         }
         
         [Fact]
-        public void GenerateMinefield_Should_PlaceMinesInSquaresThatAreSpecified()
+        public void GenerateMinefield_Should_PlaceMinesInCellsThatAreSpecified()
         {
             // Arrange
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(3, 4, new Square(1, 1), new Square(3, 4));
+            var minefield = sut.GenerateMinefield(3, 4, new Cell(1, 1), new Cell(3, 4));
 
             // Assert
             minefield.IsMined(1, 1).Should().BeTrue();
@@ -34,13 +34,13 @@ namespace Dgt.Minesweeper.Engine
         }
         
         [Fact]
-        public void GenerateMinefield_Should_NotPlaceMinesInSquaresThatAreNotSpecified()
+        public void GenerateMinefield_Should_NotPlaceMinesInCellsThatAreNotSpecified()
         {
             // Arrange
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(3, 4, new Square(1, 1), new Square(3, 4));
+            var minefield = sut.GenerateMinefield(3, 4, new Cell(1, 1), new Cell(3, 4));
 
             // Assert
             minefield.IsMined(2, 2).Should().BeFalse();

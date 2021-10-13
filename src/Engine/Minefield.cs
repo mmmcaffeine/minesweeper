@@ -5,13 +5,13 @@ namespace Dgt.Minesweeper.Engine
 {
     public class Minefield
     {
-        private readonly HashSet<Square> _minedSquares;
+        private readonly HashSet<Cell> _minedCells;
 
-        public Minefield(int rows, int columns, IEnumerable<Square> minedSquares)
+        public Minefield(int rows, int columns, IEnumerable<Cell> minedCells)
         {
             Rows = rows;
             Columns = columns;
-            _minedSquares = new HashSet<Square>(minedSquares);
+            _minedCells = new HashSet<Cell>(minedCells);
         }
 
         public int Rows { get; }
@@ -19,27 +19,26 @@ namespace Dgt.Minesweeper.Engine
         
         public bool IsMined(int row, int column)
         {
-            return _minedSquares.Contains(new Square(row, column));
+            return _minedCells.Contains(new Cell(row, column));
         }
         
         public int GetHint(int row, int column)
         {
-            List<Square> adjacentSquares = new()
+            List<Cell> adjacentCells = new()
             {
-                new Square(row + 1, column - 1),
-                new Square(row + 1, column),
-                new Square(row + 1, column + 1),
-                new Square(row, column - 1),
-                new Square(row, column + 1),
-                new Square(row - 1, column + 1),
-                new Square(row - 1, column),
-                new Square(row - 1, column - 1)
+                new Cell(row + 1, column - 1),
+                new Cell(row + 1, column),
+                new Cell(row + 1, column + 1),
+                new Cell(row, column - 1),
+                new Cell(row, column + 1),
+                new Cell(row - 1, column + 1),
+                new Cell(row - 1, column),
+                new Cell(row - 1, column - 1)
             };
 
-            return adjacentSquares.Count(square =>
-                SquareExistsInMinefield(square.Row, square.Column) && IsMined(square.Row, square.Column));
+            return adjacentCells.Count(cell => HasCell(cell.Row, cell.Column) && IsMined(cell.Row, cell.Column));
         }
         
-        private bool SquareExistsInMinefield(int row, int column) => row <= Rows && column <= Columns;
+        private bool HasCell(int row, int column) => row <= Rows && column <= Columns;
     }
 }
