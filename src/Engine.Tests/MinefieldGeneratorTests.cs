@@ -5,6 +5,34 @@ namespace Dgt.Minesweeper.Engine
 {
     public class MinefieldGeneratorTests
     {
+        // TODO We're supposed to be testing the generator, but we're reliant on the implementation of Minefield.
+        //      We might be better off changing this type to return the constructor parameters we would need to pass
+        //      i.e. the ints for columns and rows, and then the IEnumerable of Cells
+        [Fact]
+        public void GenerateMinefield_Should_GenerateMinefieldFromInputStrings()
+        {
+            // Arrange
+            var lines = new[]
+            {
+                "3 4",
+                "*...",
+                "..*.",
+                "...."
+            };
+            var sut = new MinefieldGenerator();
+            
+            // Act
+            var minefield = sut.GenerateMinefield(lines);
+
+            // Assert
+            minefield.Columns.Should().Be(4);
+            minefield.Rows.Should().Be(3);
+            minefield.CountOfMines.Should().Be(2);
+
+            minefield.IsMined(0, 0).Should().BeTrue();
+            minefield.IsMined(2, 1).Should().BeTrue();
+        }
+        
         [Fact]
         public void GenerateMinefield_Should_GenerateMinefieldWithSuppliedDimensions()
         {

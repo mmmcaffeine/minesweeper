@@ -16,6 +16,7 @@ namespace Dgt.Minesweeper.Engine
 
         public int Columns { get; }
         public int Rows { get; }
+        public int CountOfMines => _minedCells.Count;
 
         public bool IsMined(Cell cell) => _minedCells.Contains(cell);
 
