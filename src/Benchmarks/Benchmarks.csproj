@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <AssemblyName>Benchmarks</AssemblyName>
+        <RootNamespace>Dgt.Minesweeper.Benchmarks</RootNamespace>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <RepositoryUrl>https://github.com/mmmcaffeine/minesweeper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugSymbols>false</DebugSymbols>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Engine\Engine.csproj" />
+    </ItemGroup>
+
+</Project>
