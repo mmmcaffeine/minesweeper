@@ -15,11 +15,17 @@ Treat each cell as one of two types of finite state machine. Which of these two 
 * Uncovered - The player has uncovered this cell, and implies it contains no mine
 * Exploded - The player has uncovered this cell, and implies it contains a mine
 
+# Other Implementation Ideas
+
+You _might_ want to consider combining the [`State`](https://en.wikipedia.org/wiki/State_pattern) pattern with the [`Flyweight`](https://en.wikipedia.org/wiki/Flyweight_pattern) pattern, particularly as it seems unlikely the state will need to know anything about the cell it is the state for. We might have a _lot_ of cells. The default expert-level game on [Minesweeper Online](https://minesweeperonline.com/) is 16x30 (480 cells) with 10 mines. It can go up to 99x99 (9,801 cells). It seems like it would be _much_ more efficient to only store one instance of each state, rather than one instance per cell in that state.
+
 # Moves
 
 Based on the states above we probably only need two methods for moves on any game class:
 
-* Reveal - Uncover a Covered or Mined cell which then transitions into the Uncovered or Exploded state respectively
+* Reveal / Clear
+  * Uncover a Covered or Mined cell which then transitions into the Uncovered or Exploded state respectively
+  * [Minesweeper Online](https://minesweeperonline.com/) does not allow flagged squares to be cleared
 * ToggleFlag
   * If a cell is Covered or Mined transition to the Flagged True or Flagged False state respectively
   * If a cell is Flagged True or Flagged False transition to the Covered or Mined state respectively
@@ -32,7 +38,7 @@ When revealing a cell one of three things should happen according to "standard" 
 * The cell has a hint that is non-zero and you are shown the hint
 * The cell has a hint of zero and all adjacent cells that are not revealed, or flagged, or mined are revealed automatically (i.e. the reveal method should operate recursively, but without losing you the game)
 
-# Other Ideas
+# Other Game Ideas
 
 * Give the player a number of "lives" i.e. they can detonate x mines before losing
 * Give the player a number of "assists" or "aids"
