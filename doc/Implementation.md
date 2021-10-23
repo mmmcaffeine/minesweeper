@@ -45,3 +45,5 @@ When revealing a cell one of three things should happen according to "standard" 
   * This might be to randomly uncover a cell that has no mine
   * This might be to randomly flag a cell correctly
   * Show if any flags have been put on cells that don't contain a mine
+* Can I make games out of other polygons the tessellate well such as hexagons or octagons?
+  * _How would I specify coordinates, determine adjacency etc in this case?_
