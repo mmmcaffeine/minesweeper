@@ -8,14 +8,31 @@ namespace Dgt.Minesweeper.Benchmarks
     [MemoryDiagnoser]
     public class MinefieldBenchmarks
     {
-        private static readonly HashSet<Cell> MinedCells = new(new[] { new Cell(0, 0), new Cell(2, 1) });
+        private static readonly HashSet<Cell> MinedCells = new();
+
+        private static void PopulateMinefield()
+        {
+            MinedCells.Clear();
+            
+            for (int column = 0; column < 50; column++)
+            {
+                for (int row = 0; row < 50; row++)
+                {
+                    MinedCells.Add(new Cell(column, row));
+                }
+            }
+        }
 
         [Benchmark(Baseline = true)]
 #pragma warning disable CA1822
-        public static int GetHint_By_CountingAdjacentCellsThatAreMined() =>
+        public int GetHint_By_CountingAdjacentCellsThatAreMined()
 #pragma warning restore CA1822
-            GetAdjacentCells(new Cell(1, 0)).Count(cell => MinedCells.Contains(cell));
-        
+        {
+            PopulateMinefield();
+            
+            return GetAdjacentCells(new Cell(1, 0)).Count(cell => MinedCells.Contains(cell));
+        }
+
         // Lifted from the implementation of Minefield
         private static IEnumerable<Cell> GetAdjacentCells(Cell cell)
         {
@@ -42,7 +59,12 @@ namespace Dgt.Minesweeper.Benchmarks
 
         [Benchmark]
 #pragma warning disable CA1822
-        public int GetHint_ByCountingMinedCellsThatAreAdjacent() => MinedCells.Count(cell => cell.IsAdjacentTo(new Cell(1, 0)));
+        public int GetHint_ByCountingMinedCellsThatAreAdjacent()
 #pragma warning restore CA1822
+        {
+            PopulateMinefield();
+            
+            return MinedCells.Count(cell => cell.IsAdjacentTo(new Cell(1, 0)));
+        }
     }
 }
