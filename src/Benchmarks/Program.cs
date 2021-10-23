@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
 using Dgt.Minesweeper.Benchmarks;
 
-_ = BenchmarkRunner.Run<MinefieldBenchmarks>();
+_ = BenchmarkSwitcher.FromAssembly(typeof(AssemblyMarker).Assembly).Run(args);
