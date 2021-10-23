@@ -35,7 +35,7 @@ namespace Dgt.Minesweeper.Engine
             return IsMined(new Cell(column, row));
         }
 
-        public int GetHint(Cell cell) => GetAdjacentCells(cell).Count(IsMined);
+        public int GetHint(Cell cell) => _minedCells.Count(c => c.IsAdjacentTo(cell));
 
         public int GetHint(int column, int row) => GetHint(new Cell(column, row));
 
@@ -52,22 +52,6 @@ namespace Dgt.Minesweeper.Engine
         private Exception CreateRowOutOfRangeException(int row)
         {
             return new ArgumentOutOfRangeException(nameof(row), row, "Value must be greater than or equal to zero, and less than the number of rows.");
-        }
-
-        private IEnumerable<Cell> GetAdjacentCells(Cell cell)
-        {
-            for (var column = cell.Column - 1; column <= cell.Column + 1; column++)
-            {
-                for (var row = cell.Row - 1; row <= cell.Row + 1; row++)
-                {
-                    var currentCell = new Cell(column, row);
-                    
-                    if (HasCell(currentCell) && currentCell != cell)
-                    {
-                        yield return new Cell(column, row);
-                    }
-                }
-            }
         }
 
         private bool HasCell(Cell cell) => HasCell(cell.Column, cell.Row);
