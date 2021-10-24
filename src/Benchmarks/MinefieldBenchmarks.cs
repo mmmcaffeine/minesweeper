@@ -35,11 +35,12 @@ namespace Dgt.Minesweeper.Benchmarks
         {
             PopulateMinefield(numberOfMines);
             
-            return GetAdjacentCells(new Cell(1, 0)).Count(cell => _minedCells.Contains(cell));
+            return GetAdjacentCells(new Cell(1, 0), numberOfMines).Count(cell => _minedCells.Contains(cell));
         }
 
-        // Lifted from the implementation of Minefield
-        private static IEnumerable<Cell> GetAdjacentCells(Cell cell)
+        // Lifted from the implementation of Minefield, and tweaked to account for us not knowing the size of the
+        // "minefield" until the specific benchmark runs
+        private static IEnumerable<Cell> GetAdjacentCells(Cell cell, int numberOfMines)
         {
             for (var columnIndex = cell.ColumnIndex - 1; columnIndex <= cell.ColumnIndex + 1; columnIndex++)
             {
@@ -47,7 +48,7 @@ namespace Dgt.Minesweeper.Benchmarks
                 {
                     var currentCell = new Cell(columnIndex, rowIndex);
                     
-                    if (HasCell(currentCell.ColumnIndex, currentCell.RowIndex) && currentCell != cell)
+                    if (HasCell(currentCell, numberOfMines) && currentCell != cell)
                     {
                         yield return new Cell(columnIndex, rowIndex);
                     }
@@ -55,12 +56,16 @@ namespace Dgt.Minesweeper.Benchmarks
             }
         }
         
-        // Lifted from the implementation of Minefield, but with hard-wired values for Column and Row because
-        // we don't have them
-        private static bool HasCell(int columnIndex, int rowIndex) => columnIndex >= 0
-                                                     && columnIndex < 4
-                                                     && rowIndex >= 0
-                                                     && rowIndex < 3;
+        // Lifted from the implementation of Minefield
+        private static bool HasCell(Cell cell, int numberOfMines)
+        {
+            var (columnIndex, rowIndex) = cell;
+            
+            return columnIndex >= 0
+                   && columnIndex < numberOfMines
+                   && rowIndex >= 0
+                   && rowIndex < numberOfMines;
+        }
 
         [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark]
