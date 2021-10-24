@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
 {
-    public class Minefield
+    public class Minefield : IMinefield
     {
         private readonly HashSet<Cell> _minedCells;
 
