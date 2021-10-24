@@ -5,5 +5,6 @@
         int NumberOfColumns { get; }
         int NumberOfRows { get; }
         bool IsMined(Cell cell);
+        int GetHint(Cell cell);
     }
 }

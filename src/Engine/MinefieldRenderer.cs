@@ -5,7 +5,7 @@ namespace Dgt.Minesweeper.Engine
 {
     public class MinefieldRenderer
     {
-        public IEnumerable<string> Render(Minefield minefield)
+        public IEnumerable<string> Render(IMinefield minefield)
         {
             var lines = new List<string>(minefield.NumberOfRows);
             
@@ -17,21 +17,24 @@ namespace Dgt.Minesweeper.Engine
             return lines;
         }
 
-        private static string RenderRow(Minefield minefield, int rowIndex)
+        private static string RenderRow(IMinefield minefield, int rowIndex)
         {
             var builder = new StringBuilder(minefield.NumberOfColumns);
 
             for (var columnIndex = 0; columnIndex < minefield.NumberOfColumns; columnIndex++)
             {
-                var cell = new Cell(columnIndex, rowIndex);
-                var value = minefield.IsMined(cell)
-                    ? "*"
-                    : minefield.GetHint(cell).ToString();
-                
-                builder.Append(value);
+                builder.Append(RenderCell(minefield, columnIndex, rowIndex));
             }
 
             return builder.ToString();
+        }
+
+        private static string RenderCell(IMinefield minefield, int columnIndex, int rowIndex)
+        {
+            var cell = new Cell(columnIndex, rowIndex);
+            return minefield.IsMined(cell)
+                ? "*"
+                : minefield.GetHint(cell).ToString();
         }
     }
 }
