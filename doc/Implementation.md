@@ -17,7 +17,21 @@ Treat each cell as one of two types of finite state machine. Which of these two 
 
 # Other Implementation Ideas
 
+## Useful Design Patterns
+
 You _might_ want to consider combining the [`State`](https://en.wikipedia.org/wiki/State_pattern) pattern with the [`Flyweight`](https://en.wikipedia.org/wiki/Flyweight_pattern) pattern, particularly as it seems unlikely the state will need to know anything about the cell it is the state for. We might have a _lot_ of cells. The default expert-level game on [Minesweeper Online](https://minesweeperonline.com/) is 16x30 (480 cells) with 10 mines. It can go up to 99x99 (9,801 cells). It seems like it would be _much_ more efficient to only store one instance of each state, rather than one instance per cell in that state.
+
+## Potential Problems
+
+### Invalid Transitions
+
+Initial versions represented the different states for a cell as a record rather than an abstract base class with different implementations. We were storing the required information in `Dictionary<Cell, CellState>`. As the transitions between state were defined in `Game` rather than a hypothetical `FlaggedTrueCellState` class there would be the question of how to get good exception messages if there is no valid transition e.g.:
+
+> You cannot flag an exploded cell.
+
+You would _probably_ also want a custom exception type e.g. `InvalidCellStateTransitionException` with the intended start and end states as properties of the exception type.
+
+It might be reasonable to store the invalid transitions in a transition map along with the message you would want for the exception.
 
 # Moves
 
