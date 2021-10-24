@@ -13,7 +13,9 @@
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Name { get; }
 
-        public static CellState Uncleared { get; } = new("Uncleared"); // Implies _not_ mined
-        public static CellState Mined { get; } = new("Mined"); // Implies _not_ cleared
+        public static CellState Uncleared { get; } = new("Uncleared"); // Implies no presence of a mine
+        public static CellState Mined { get; } = new("Mined"); // Implies presence of a mine
+        public static CellState Cleared { get; } = new("Cleared"); // Implies no presence of a mine
+        public static CellState Exploded { get; } = new("Exploded"); // Implies presence of a mine
     }
 }

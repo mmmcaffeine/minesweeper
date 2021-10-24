@@ -47,5 +47,166 @@ namespace Dgt.Minesweeper.Engine
                 sut.GetCellState(new Cell(1, 1)).Should().Be(CellState.Uncleared);
             }
         }
+
+        [Fact]
+        public void Ctor_Should_InitialiseGameToStateThatIsNotWonAndNotLost()
+        {
+            // Arrange
+            var minedCell = new Cell(2, 2);
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            
+            // Act
+            var sut = new Game(fakeMinefield);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                sut.IsWon.Should().BeFalse();
+                sut.IsLost.Should().BeFalse();
+            }
+        }
+        
+        [Fact]
+        public void Reveal_Should_PutMinedCellIntoExplodedState()
+        {
+            // Arrange
+            var minedCell = new Cell(2, 2);
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+
+            var sut = new Game(fakeMinefield);
+            
+            // Act
+            var returnedCellState = sut.Reveal(minedCell);
+            var retrievedCellState = sut.GetCellState(minedCell);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCellState.Should().Be(CellState.Exploded);
+                retrievedCellState.Should().Be(CellState.Exploded);
+            }
+        }
+        
+        [Fact]
+        public void Reveal_Should_PutNotMinedCellIntoClearedState()
+        {
+            // Arrange
+            var minedCell = new Cell(2, 2);
+            var notMinedCell = new Cell(1, 1);
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+
+            var sut = new Game(fakeMinefield);
+            
+            // Act
+            var returnedCellState = sut.Reveal(notMinedCell);
+            var retrievedCellState = sut.GetCellState(notMinedCell);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCellState.Should().Be(CellState.Cleared);
+                retrievedCellState.Should().Be(CellState.Cleared);
+            }
+        }
+
+        [Fact]
+        public void Reveal_Should_LoseGameIfRevealedCellIsMined()
+        {
+            // Arrange
+            var minedCell = new Cell(2, 2);
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+
+            var sut = new Game(fakeMinefield);
+            
+            // Act
+            _ = sut.Reveal(minedCell);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                sut.IsWon.Should().BeFalse();
+                sut.IsLost.Should().BeTrue();
+            }
+        }
+
+        [Fact]
+        public void Reveal_Should_NotLoseGameIfRevealedCellIsNotMined()
+        {
+            // Arrange
+            var minedCell = new Cell(2, 2);
+            var notMinedCell = new Cell(1, 1);
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+
+            var sut = new Game(fakeMinefield);
+            
+            // Act
+            _ = sut.Reveal(notMinedCell);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                sut.IsWon.Should().BeFalse();
+                sut.IsLost.Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public void Reveal_Should_WinGameIfAllNotMinedCellsAreNowRevealed()
+        {
+            // Arrange
+            var minedCell = new Cell(0, 0);
+            var notMinedCells = new[]
+            {
+                new Cell(0, 1),
+                new Cell(1, 0),
+                new Cell(1, 1)
+            };
+            
+            var fakeMinefield = A.Fake<IMinefield>();
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(2);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(2);
+            A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
+            A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+
+            var sut = new Game(fakeMinefield);
+            
+            // Act
+            foreach (var cell in notMinedCells)
+            {
+                _ = sut.Reveal(cell);
+            }
+
+            // Assert
+            using (new AssertionScope())
+            {
+                sut.IsWon.Should().BeTrue();
+                sut.IsLost.Should().BeFalse();
+            }
+        }
     }
 }
