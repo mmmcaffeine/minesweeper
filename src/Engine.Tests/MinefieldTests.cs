@@ -48,7 +48,7 @@ namespace Dgt.Minesweeper.Engine
             // Act, Assert
             minefield.Invoking(x => x.IsMined(4, 0)).Should().Throw<ArgumentOutOfRangeException>()
                 .WithMessage("Value must be greater than or equal to zero, and less than the number of columns.*")
-                .WithParameterName("column")
+                .WithParameterName("columnIndex")
                 .And.ActualValue.Should().Be(4);
         }
         
@@ -61,7 +61,7 @@ namespace Dgt.Minesweeper.Engine
             // Act, Assert
             minefield.Invoking(x => x.IsMined(0, 3)).Should().Throw<ArgumentOutOfRangeException>()
                 .WithMessage("Value must be greater than or equal to zero, and less than the number of rows.*")
-                .WithParameterName("row")
+                .WithParameterName("rowIndex")
                 .And.ActualValue.Should().Be(3);
 
         }
