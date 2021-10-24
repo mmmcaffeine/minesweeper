@@ -25,8 +25,8 @@ namespace Dgt.Minesweeper.Engine
             var minefield = sut.GenerateMinefield(lines);
 
             // Assert
-            minefield.Columns.Should().Be(4);
-            minefield.Rows.Should().Be(3);
+            minefield.NumberOfColumns.Should().Be(4);
+            minefield.NumberOfRows.Should().Be(3);
             minefield.CountOfMines.Should().Be(2);
 
             minefield.IsMined(0, 0).Should().BeTrue();
@@ -43,8 +43,8 @@ namespace Dgt.Minesweeper.Engine
             var minefield = sut.GenerateMinefield(4, 3);
             
             // Assert
-            minefield.Columns.Should().Be(4);
-            minefield.Rows.Should().Be(3);
+            minefield.NumberOfColumns.Should().Be(4);
+            minefield.NumberOfRows.Should().Be(3);
         }
         
         [Fact]

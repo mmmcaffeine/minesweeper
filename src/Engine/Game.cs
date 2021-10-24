@@ -29,11 +29,11 @@ namespace Dgt.Minesweeper.Engine
         {
             get
             {
-                for (var column = 0; column < _minefield.Columns; column++)
+                for (var columnIndex = 0; columnIndex < _minefield.NumberOfColumns; columnIndex++)
                 {
-                    for (var row = 0; row < _minefield.Rows; row++)
+                    for (var rowIndex = 0; rowIndex < _minefield.NumberOfRows; rowIndex++)
                     {
-                        yield return new Cell(column, row);
+                        yield return new Cell(columnIndex, rowIndex);
                     }
                 }
             }

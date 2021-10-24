@@ -2,8 +2,8 @@
 {
     public interface IMinefield
     {
-        int Columns { get; }
-        int Rows { get; }
+        int NumberOfColumns { get; }
+        int NumberOfRows { get; }
         bool IsMined(Cell cell);
     }
 }

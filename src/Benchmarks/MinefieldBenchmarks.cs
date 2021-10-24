@@ -41,15 +41,15 @@ namespace Dgt.Minesweeper.Benchmarks
         // Lifted from the implementation of Minefield
         private static IEnumerable<Cell> GetAdjacentCells(Cell cell)
         {
-            for (var column = cell.Column - 1; column <= cell.Column + 1; column++)
+            for (var columnIndex = cell.ColumnIndex - 1; columnIndex <= cell.ColumnIndex + 1; columnIndex++)
             {
-                for (var row = cell.Row - 1; row <= cell.Row + 1; row++)
+                for (var rowIndex = cell.RowIndex - 1; rowIndex <= cell.RowIndex + 1; rowIndex++)
                 {
-                    var currentCell = new Cell(column, row);
+                    var currentCell = new Cell(columnIndex, rowIndex);
                     
-                    if (HasCell(currentCell.Column, currentCell.Row) && currentCell != cell)
+                    if (HasCell(currentCell.ColumnIndex, currentCell.RowIndex) && currentCell != cell)
                     {
-                        yield return new Cell(column, row);
+                        yield return new Cell(columnIndex, rowIndex);
                     }
                 }
             }
@@ -57,10 +57,10 @@ namespace Dgt.Minesweeper.Benchmarks
         
         // Lifted from the implementation of Minefield, but with hard-wired values for Column and Row because
         // we don't have them
-        private static bool HasCell(int column, int row) => column >= 0
-                                                     && column < 4
-                                                     && row >= 0
-                                                     && row < 3;
+        private static bool HasCell(int columnIndex, int rowIndex) => columnIndex >= 0
+                                                     && columnIndex < 4
+                                                     && rowIndex >= 0
+                                                     && rowIndex < 3;
 
         [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark]

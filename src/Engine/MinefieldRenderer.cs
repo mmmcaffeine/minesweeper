@@ -7,23 +7,23 @@ namespace Dgt.Minesweeper.Engine
     {
         public IEnumerable<string> Render(Minefield minefield)
         {
-            var lines = new List<string>(minefield.Rows);
+            var lines = new List<string>(minefield.NumberOfRows);
             
-            for (var row = 0; row < minefield.Rows; row++)
+            for (var rowIndex = 0; rowIndex < minefield.NumberOfRows; rowIndex++)
             {
-                lines.Add(RenderRow(minefield, row));
+                lines.Add(RenderRow(minefield, rowIndex));
             }
 
             return lines;
         }
 
-        private static string RenderRow(Minefield minefield, int row)
+        private static string RenderRow(Minefield minefield, int rowIndex)
         {
-            var builder = new StringBuilder(minefield.Columns);
+            var builder = new StringBuilder(minefield.NumberOfColumns);
 
-            for (var column = 0; column < minefield.Columns; column++)
+            for (var columnIndex = 0; columnIndex < minefield.NumberOfColumns; columnIndex++)
             {
-                var cell = new Cell(column, row);
+                var cell = new Cell(columnIndex, rowIndex);
                 var value = minefield.IsMined(cell)
                     ? "*"
                     : minefield.GetHint(cell).ToString();

@@ -14,8 +14,8 @@ namespace Dgt.Minesweeper.Engine
             var minedCell = new Cell(2, 2);
             
             var fakeMinefield = A.Fake<IMinefield>();
-            A.CallTo(() => fakeMinefield.Columns).Returns(4);
-            A.CallTo(() => fakeMinefield.Rows).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
 
@@ -31,8 +31,8 @@ namespace Dgt.Minesweeper.Engine
         {
             // Arrange
             var fakeMinefield = A.Fake<IMinefield>();
-            A.CallTo(() => fakeMinefield.Columns).Returns(2);
-            A.CallTo(() => fakeMinefield.Rows).Returns(2);
+            A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(2);
+            A.CallTo(() => fakeMinefield.NumberOfRows).Returns(2);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             
             // Act

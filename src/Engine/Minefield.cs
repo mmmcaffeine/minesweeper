@@ -8,15 +8,17 @@ namespace Dgt.Minesweeper.Engine
     {
         private readonly HashSet<Cell> _minedCells;
 
-        public Minefield(int columns, int rows, IEnumerable<Cell> minedCells)
+        // TODO Validate positive non-zero integers (and maybe more than 1 makes sense?
+        // TODO Validate non-null enumerable for mined cells
+        public Minefield(int numberOfColumns, int numberOfRows, IEnumerable<Cell> minedCells)
         {
-            Columns = columns;
-            Rows = rows;
+            NumberOfColumns = numberOfColumns;
+            NumberOfRows = numberOfRows;
             _minedCells = new HashSet<Cell>(minedCells);
         }
 
-        public int Columns { get; }
-        public int Rows { get; }
+        public int NumberOfColumns { get; }
+        public int NumberOfRows { get; }
         public int CountOfMines => _minedCells.Count;
 
         public bool IsMined(Cell cell)
@@ -27,38 +29,38 @@ namespace Dgt.Minesweeper.Engine
         }
 
         // TODO Validate row in the same way
-        public bool IsMined(int column, int row)
+        public bool IsMined(int columnIndex, int rowIndex)
         {
-            if (column < 0 || column >= Columns) throw CreateColumnOutOfRangeException(column);
-            if (row < 0 || row >= Rows) throw CreateRowOutOfRangeException(row);
+            if (columnIndex < 0 || columnIndex >= NumberOfColumns) throw CreateColumnOutOfRangeException(columnIndex);
+            if (rowIndex < 0 || rowIndex >= NumberOfRows) throw CreateRowOutOfRangeException(rowIndex);
             
-            return IsMined(new Cell(column, row));
+            return IsMined(new Cell(columnIndex, rowIndex));
         }
 
         public int GetHint(Cell cell) => _minedCells.Count(c => c.IsAdjacentTo(cell));
 
-        public int GetHint(int column, int row) => GetHint(new Cell(column, row));
+        public int GetHint(int columnIndex, int rowIndex) => GetHint(new Cell(columnIndex, rowIndex));
 
         private static Exception CreateCellNotInMinefieldException(string paramName)
         {
             return new ArgumentException("The cell does not exist in the minefield.", paramName);
         }
 
-        private static Exception CreateColumnOutOfRangeException(int column)
+        private static Exception CreateColumnOutOfRangeException(int columnIndex)
         {
-            return new ArgumentOutOfRangeException(nameof(column), column, "Value must be greater than or equal to zero, and less than the number of columns.");
+            return new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, "Value must be greater than or equal to zero, and less than the number of columns.");
         }
         
-        private static Exception CreateRowOutOfRangeException(int row)
+        private static Exception CreateRowOutOfRangeException(int rowIndex)
         {
-            return new ArgumentOutOfRangeException(nameof(row), row, "Value must be greater than or equal to zero, and less than the number of rows.");
+            return new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be greater than or equal to zero, and less than the number of rows.");
         }
 
-        private bool HasCell(Cell cell) => HasCell(cell.Column, cell.Row);
+        private bool HasCell(Cell cell) => HasCell(cell.ColumnIndex, cell.RowIndex);
 
-        private bool HasCell(int column, int row) => column >= 0
-                                                     && column < Columns
-                                                     && row >= 0
-                                                     && row < Rows;
+        private bool HasCell(int columnIndex, int rowIndex) => columnIndex >= 0
+                                                     && columnIndex < NumberOfColumns
+                                                     && rowIndex >= 0
+                                                     && rowIndex < NumberOfRows;
     }
 }
