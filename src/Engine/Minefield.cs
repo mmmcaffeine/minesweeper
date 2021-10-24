@@ -21,7 +21,7 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsMined(Cell cell)
         {
-            if (!HasCell(cell)) throw CreateCellNotInMinefieldException();
+            if (!HasCell(cell)) throw CreateCellNotInMinefieldException(nameof(cell));
 
             return _minedCells.Contains(cell);
         }
@@ -39,17 +39,17 @@ namespace Dgt.Minesweeper.Engine
 
         public int GetHint(int column, int row) => GetHint(new Cell(column, row));
 
-        private Exception CreateCellNotInMinefieldException()
+        private static Exception CreateCellNotInMinefieldException(string paramName)
         {
-            return new ArgumentException("The cell does not exist in the minefield.", "cell");
+            return new ArgumentException("The cell does not exist in the minefield.", paramName);
         }
 
-        private Exception CreateColumnOutOfRangeException(int column)
+        private static Exception CreateColumnOutOfRangeException(int column)
         {
             return new ArgumentOutOfRangeException(nameof(column), column, "Value must be greater than or equal to zero, and less than the number of columns.");
         }
         
-        private Exception CreateRowOutOfRangeException(int row)
+        private static Exception CreateRowOutOfRangeException(int row)
         {
             return new ArgumentOutOfRangeException(nameof(row), row, "Value must be greater than or equal to zero, and less than the number of rows.");
         }
