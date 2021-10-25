@@ -40,7 +40,7 @@ namespace Dgt.Minesweeper.Engine
         // of e.g. Reveal on them. This switch is harder for people to grok than a switch on an enum
         public CellState Reveal(Cell cell)
         {
-            var oldCellState = _cellStates[cell];
+            var oldCellState = GetCellState(cell);
             var newCellState = oldCellState switch
             {
                 var s when s == CellState.Uncleared => CellState.Cleared,
