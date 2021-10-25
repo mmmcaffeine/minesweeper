@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
@@ -12,12 +13,16 @@ namespace Dgt.Minesweeper.Engine
         {
             // Arrange
             var minedCell = new Cell(2, 2);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             // Act
             var sut = new Game(fakeMinefield);
@@ -30,11 +35,16 @@ namespace Dgt.Minesweeper.Engine
         public void Ctor_Should_InitialiseCellsThatAreNotMinedToUnclearedCellState()
         {
             // Arrange
+            var enumerator = Enumerable.Range(0, 2)
+                .SelectMany(_ => Enumerable.Range(0, 2), (column, row) => new Cell(column, row))
+                .GetEnumerator();
+            
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(2);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(2);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
-            
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
+
             // Act
             var sut = new Game(fakeMinefield);
             
@@ -53,12 +63,16 @@ namespace Dgt.Minesweeper.Engine
         {
             // Arrange
             var minedCell = new Cell(2, 2);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
             
             // Act
             var sut = new Game(fakeMinefield);
@@ -76,12 +90,16 @@ namespace Dgt.Minesweeper.Engine
         {
             // Arrange
             var minedCell = new Cell(2, 2);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             var sut = new Game(fakeMinefield);
             
@@ -103,12 +121,16 @@ namespace Dgt.Minesweeper.Engine
             // Arrange
             var minedCell = new Cell(2, 2);
             var notMinedCell = new Cell(1, 1);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             var sut = new Game(fakeMinefield);
             
@@ -129,12 +151,16 @@ namespace Dgt.Minesweeper.Engine
         {
             // Arrange
             var minedCell = new Cell(2, 2);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             var sut = new Game(fakeMinefield);
             
@@ -155,12 +181,16 @@ namespace Dgt.Minesweeper.Engine
             // Arrange
             var minedCell = new Cell(2, 2);
             var notMinedCell = new Cell(1, 1);
+            var enumerator = Enumerable.Range(0, 4)
+                .SelectMany(_ => Enumerable.Range(0, 4), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(4);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(4);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             var sut = new Game(fakeMinefield);
             
@@ -186,12 +216,16 @@ namespace Dgt.Minesweeper.Engine
                 new Cell(1, 0),
                 new Cell(1, 1)
             };
+            var enumerator = Enumerable.Range(0, 2)
+                .SelectMany(_ => Enumerable.Range(0, 2), (column, row) => new Cell(column, row))
+                .GetEnumerator();
             
             var fakeMinefield = A.Fake<IMinefield>();
             A.CallTo(() => fakeMinefield.NumberOfColumns).Returns(2);
             A.CallTo(() => fakeMinefield.NumberOfRows).Returns(2);
             A.CallTo(() => fakeMinefield.IsMined(A<Cell>._)).Returns(false);
             A.CallTo(() => fakeMinefield.IsMined(minedCell)).Returns(true);
+            A.CallTo(() => fakeMinefield.GetEnumerator()).Returns(enumerator);
 
             var sut = new Game(fakeMinefield);
             

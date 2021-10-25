@@ -38,21 +38,17 @@ namespace Dgt.Minesweeper.Benchmarks
             
             _minefield = new Minefield(NumberOfRowsAndColumns, NumberOfRowsAndColumns, minedCells);
             _cellStates = new Dictionary<Cell, CellState>();
-            
-            for (var columnIndex = 0; columnIndex < NumberOfRowsAndColumns; columnIndex++)
-            {
-                for (var rowIndex = 0; rowIndex < NumberOfRowsAndColumns; rowIndex++)
-                {
-                    var cell = new Cell(columnIndex, rowIndex);
-                    var cellState = (minedCells.Contains(cell), IsWon) switch
-                    {
-                        (true, _) => CellState.Mined,
-                        (_, true) => CellState.Cleared,
-                        (_, false) => CellState.Uncleared
-                    };
 
-                    _cellStates[cell] = cellState;
-                }
+            foreach (var cell in _minefield)
+            {
+                var cellState = (minedCells.Contains(cell), IsWon) switch
+                {
+                    (true, _) => CellState.Mined,
+                    (_, true) => CellState.Cleared,
+                    (_, false) => CellState.Uncleared
+                };
+
+                _cellStates[cell] = cellState;
             }
         }
 
