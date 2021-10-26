@@ -4,6 +4,18 @@ using Xunit;
 
 namespace Dgt.Minesweeper.Engine
 {
+
+    // public readonly struct Foo
+    // {
+    //     public Foo(string row, string column)
+    //     {
+    //         Row = row;
+    //         Column = column;
+    //     }
+    //     
+    //     public string Row { get; }
+    //     public string Column { get; }
+    // }
     public class LocationTests
     {
         public static TheoryData<string, string, int> ValidLocationTestData => new()
@@ -16,6 +28,71 @@ namespace Dgt.Minesweeper.Engine
         };
 
         public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
+
+        [Fact]
+        public void Ctor_Should_ThrowWhenColumnIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = new Location(null!, 1);
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>()
+                .WithMessage("Value cannot be null.*")
+                .WithMessage("*Value must be one or more letters, with no other characters e.g. 'AA'.*")
+                .WithParameterName("column");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        [InlineData("\t")]
+        [InlineData("\r")]
+        [InlineData("\n")]
+        public void Ctor_Should_ThrowWhenColumnIsEmptyOrWhitespace(string column)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Location(column, 1);
+            
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Value cannot be whitespace or an empty string.*")
+                .WithMessage("*Value must be one or more letters, with no other characters e.g. 'AA'.*")
+                .WithParameterName("column")
+                .Where(ex => ex.Data.Contains("column") && ex.Data["column"]!.Equals(column));
+        }
+
+        [Theory]
+        [InlineData("99")]
+        [InlineData("A1")]
+        [InlineData("!H!")]
+        public void Ctor_Should_ThrowWhenColumnIsNotOnlyCharacters(string column)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Location(column, 1);
+            
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Input string was not in a correct format.*")
+                .WithMessage("*Value must be one or more letters, with no other characters e.g. 'AA'.*")
+                .WithParameterName("column")
+                .Where(ex => ex.Data.Contains("column") && ex.Data["column"]!.Equals(column));
+        }
+
+        [Theory]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void Ctor_Should_ThrowWhenRowIsNotPositive(int row)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Location("AA", row);
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("row")
+                .And.ActualValue.Should().Be(row);
+        }
 
         [Theory]
         [MemberData(nameof(ValidLocationTestData))]

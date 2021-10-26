@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -9,12 +10,48 @@ namespace Dgt.Minesweeper.Engine
     // for Column. Can we consume a lot less memory by keeping a list of spans and then pointing different instances
     // of Location to the same span?
     
-    // TODO The constructor needs to validate the format of Column
-    // TODO The constructor needs to validate Row is positive, non-zero
-    public record Location(string Column, int Row)
+    public record Location
     {
+        private const string ColumnRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
+        private const string RowRequirement = "Value must be a positive, non-zero integer.";
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        public Location(string column, int row)
+        {
+            if (column! is null) throw new ArgumentNullException(nameof(column), $"Value cannot be null. {ColumnRequirement}");
+            
+            if (string.IsNullOrWhiteSpace(column))
+            {
+                throw new ArgumentException($"Value cannot be whitespace or an empty string. {ColumnRequirement}", nameof(column))
+                {
+                    Data = { { nameof(column), column } }
+                };
+            }
+
+            if (column.Any(c => !char.IsLetter(c)))
+            {
+                throw new ArgumentException($"Input string was not in a correct format. {ColumnRequirement}",
+                    nameof(column))
+                {
+                    Data = { { nameof(column), column } }
+                };
+            }
+
+            if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
+            
+            Column = column;
+            Row = row;
+        }
+        
+        public string Column { get; }
+        public int Row { get; }
+
+        public void Deconstruct(out string column, out int row)
+        {
+            column = Column;
+            row = Row;
+        }
 
         public static implicit operator string(Location location) => $"{location.Column}{location.Row}";
 
