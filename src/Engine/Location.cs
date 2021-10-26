@@ -12,6 +12,13 @@ namespace Dgt.Minesweeper.Engine
     
     public record Location
     {
+        private static class ColumnErrors
+        {
+            public const string CannotBeNull = "Value cannot be null.";
+            public const string CannotBeEmpty = "Value cannot be whitespace or an empty string.";
+            public const string NotCorrectFormat = "Input string was not in a correct format.";
+        }
+        
         private const string ColumnRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
         private const string RowRequirement = "Value must be a positive, non-zero integer.";
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
@@ -19,29 +26,18 @@ namespace Dgt.Minesweeper.Engine
 
         public Location(string column, int row)
         {
-            if (column! is null) throw new ArgumentNullException(nameof(column), $"Value cannot be null. {ColumnRequirement}");
-            
-            if (string.IsNullOrWhiteSpace(column))
-            {
-                throw new ArgumentException($"Value cannot be whitespace or an empty string. {ColumnRequirement}", nameof(column))
-                {
-                    Data = { { nameof(column), column } }
-                };
-            }
-
-            if (column.Any(c => !char.IsLetter(c)))
-            {
-                throw new ArgumentException($"Input string was not in a correct format. {ColumnRequirement}",
-                    nameof(column))
-                {
-                    Data = { { nameof(column), column } }
-                };
-            }
-
+            if (column! is null) throw new ArgumentNullException(nameof(column), $"{ColumnErrors.CannotBeNull} {ColumnRequirement}");
+            if (string.IsNullOrWhiteSpace(column)) throw CreateColumnException(ColumnErrors.CannotBeEmpty);
+            if (column.Any(c => !char.IsLetter(c))) throw CreateColumnException(ColumnErrors.NotCorrectFormat);
             if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
             
             Column = column;
             Row = row;
+
+            Exception CreateColumnException(string error) => new ArgumentException($"{error} {ColumnRequirement}", nameof(column))
+            {
+                Data = { { nameof(column), column } }
+            };
         }
         
         public string Column { get; }
