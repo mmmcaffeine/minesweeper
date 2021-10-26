@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Xunit;
 
 namespace Dgt.Minesweeper.Engine
@@ -36,6 +37,24 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             column.Should().Be(expectedColumn);
             row.Should().Be(expectedRow);
+        }
+
+        [Theory]
+        [InlineData("A")]
+        [InlineData("1")]
+        [InlineData("1A")]
+        [InlineData("Nope!")]
+        public void Parse_Should_ThrowFormatExceptionWhenInputStringIsNotProperlyFormatted(string input)
+        {
+            // Arrange, Act
+            Action act = () => Location.Parse(input);
+
+            // Assert
+            act.Should().Throw<FormatException>()
+                .WithMessage("*Input string was not in a correct format.*")
+                .WithMessage("*Locations must be of the form 'A1'.*")
+                .WithMessage($"*Actual value was '{input}'.*")
+                .Where(ex => ex.Data.Contains("input") && ex.Data["input"]!.Equals(input));
         }
     }
 }

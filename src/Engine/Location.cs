@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Dgt.Minesweeper.Engine
@@ -22,13 +23,26 @@ namespace Dgt.Minesweeper.Engine
 
             if (!match.Success)
             {
-                throw new FormatException();
+                throw CreateParsingException(input);
             }
 
             var column = match.Groups["column"].Value.ToUpperInvariant();
             var row = int.Parse(match.Groups["row"].Value);
 
             return new Location(column, row);
+        }
+
+        private static Exception CreateParsingException(string input)
+        {
+            var builder = new StringBuilder("Input string was not in a correct format.");
+
+            builder.Append(" Locations must be of the form 'A1'.");
+            builder.Append($" Actual value was '{input}'.");
+
+            return new FormatException(builder.ToString())
+            {
+                Data = { [nameof(input)] = input }
+            };
         }
     }
 }
