@@ -241,6 +241,12 @@ namespace Dgt.Minesweeper.Engine
             ((Location)null! != ("A", 1)).Should().BeTrue();
             (("A", 1) != (Location)null!).Should().BeTrue();
         }
+
+        [Fact]
+        public void IsAdjacentTo_Should_BeFalseWhenLocationIsNull()
+        {
+            new Location("A", 1).IsAdjacentTo(null!).Should().BeFalse();
+        }
         
         [Fact]
         public void IsAdjacentTo_Should_BeFalseWhenLocationsAreTheSame()
