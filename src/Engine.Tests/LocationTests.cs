@@ -191,6 +191,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(InvalidLocationTestData))]
+        [MemberData(nameof(MissingValuesTestData))]
         public void ConvertFromString_Should_ThrowInvalidCastExceptionWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
