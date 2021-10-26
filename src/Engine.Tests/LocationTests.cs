@@ -56,5 +56,37 @@ namespace Dgt.Minesweeper.Engine
                 .WithMessage($"*Actual value was '{input}'.*")
                 .Where(ex => ex.Data.Contains("input") && ex.Data["input"]!.Equals(input));
         }
+
+        [Theory]
+        [InlineData("A", 1, "A1")]
+        [InlineData("ZZ", 1, "ZZ1")]
+        [InlineData("A", 99, "A99")]
+        public void ConvertToString_Should_FormatAsColumnAndRow(string column, int row, string expected)
+        {
+            // Arrange
+            var location = new Location(column, row);
+
+            // Act
+            string actual = location;
+            
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("A")]
+        [InlineData("1")]
+        [InlineData("1A")]
+        [InlineData("Nope!")]
+        public void ConvertFromString_ShouldThrowInvalidCastExceptionWhenInputIsNotProperlyFormatted(string input)
+        {
+            // Arrange, Act
+            Action act = () => _ = (Location)input;
+            
+            // Assert
+            act.Should().Throw<InvalidCastException>()
+                .WithMessage("Specified cast is not valid.*")
+                .WithInnerException<FormatException>();
+        }
     }
 }

@@ -15,6 +15,20 @@ namespace Dgt.Minesweeper.Engine
     {
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        public static implicit operator string(Location location) => $"{location.Column}{location.Row}";
+
+        public static explicit operator Location(string location)
+        {
+            try
+            {
+                return Parse(location);
+            }
+            catch (FormatException exception)
+            {
+                throw new InvalidCastException("Specified cast is not valid.", exception);
+            }
+        }
         
         // TODO Validate input is not null or empty
         public static Location Parse(string input)
