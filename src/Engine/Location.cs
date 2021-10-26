@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,6 +34,14 @@ namespace Dgt.Minesweeper.Engine
             {
                 Data = { { nameof(column), column } }
             };
+        }
+        
+        // We can bypass constructor validation logic because we have already done the validation when
+        // we matched against the Regex
+        private Location(Match match)
+        {
+            Column = match.Groups["column"].Value.ToUpperInvariant();
+            Row = int.Parse(match.Groups["row"].Value);
         }
         
         public string Column { get; }
@@ -70,19 +79,27 @@ namespace Dgt.Minesweeper.Engine
         }
         
         // TODO Validate input is not null or empty
-        public static Location Parse(string input)
+        public static Location Parse(string s)
         {
-            var match = LocationRegex.Match(input);
+            var match = LocationRegex.Match(s);
 
             if (!match.Success)
             {
-                throw CreateParsingException(input);
+                throw CreateParsingException(s);
             }
 
-            var column = match.Groups["column"].Value.ToUpperInvariant();
-            var row = int.Parse(match.Groups["row"].Value);
+            return new Location(match);
+        }
 
-            return new Location(column, row);
+        public static bool TryParse(string s, [NotNullWhen(true)] out Location? result)
+        {
+            var match = LocationRegex.Match(s);
+
+            result = match.Success
+                ? new Location(match)
+                : null;
+            
+            return result != null;
         }
 
         private static Exception CreateParsingException(string input)

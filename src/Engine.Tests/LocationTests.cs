@@ -127,6 +127,33 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
+        [MemberData(nameof(ValidLocationTestData))]
+        public void TryParse_Should_ReturnTrueAndLocationWhenInputIsProperlyFormatted
+            (string input, string expectedColumn, int expectedRow)
+        {
+            // Arrange, Act
+            var parsed = Location.TryParse(input, out var location);
+            
+            // Assert
+            parsed.Should().BeTrue();
+            location.Should().NotBeNull();
+            location!.Column.Should().Be(expectedColumn);
+            location.Row.Should().Be(expectedRow);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidLocationTestData))]
+        public void TryParse_Should_ReturnFalseAndNoLocationWhenInputIsNotProperlyFormatted(string input)
+        {
+            // Arrange, Act
+            var parsed = Location.TryParse(input, out var location);
+            
+            // Assert
+            parsed.Should().BeFalse();
+            location.Should().BeNull();
+        }
+
+        [Theory]
         [InlineData("A", 1, "A1")]
         [InlineData("ZZ", 1, "ZZ1")]
         [InlineData("A", 99, "A99")]
