@@ -74,6 +74,23 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
+        [InlineData("A1", "A", 1)]
+        [InlineData("a1", "A", 1)]
+        [InlineData("H8", "H", 8)]
+        [InlineData("AA99", "AA", 99)]
+        [InlineData("ZZZ1000", "ZZZ", 1000)]
+        public void ConvertFromString_Should_ParseColumnAndStringWhenInputIsProperlyFormatted
+            (string input, string expectedColumn, int expectedRow)
+        {
+            // Arrange, Act
+            var location = (Location)input;
+            
+            // Assert
+            location.Column.Should().Be(expectedColumn);
+            location.Row.Should().Be(expectedRow);
+        }
+
+        [Theory]
         [InlineData("A")]
         [InlineData("1")]
         [InlineData("1A")]
