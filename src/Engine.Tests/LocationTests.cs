@@ -211,5 +211,47 @@ namespace Dgt.Minesweeper.Engine
             ((Location)null! != ("A", 1)).Should().BeTrue();
             (("A", 1) != (Location)null!).Should().BeTrue();
         }
+        
+        [Fact]
+        public void IsAdjacentTo_Should_BeFalseWhenLocationsAreTheSame()
+        {
+            new Location("A", 1).IsAdjacentTo(new Location("A", 1)).Should().BeFalse();
+        }
+        
+        [Theory]
+        // The column is either the same, immediately to the left, or immediately to the right, but the row is not
+        [InlineData("A4")]
+        [InlineData("B4")]
+        [InlineData("C4")]
+        // The row is either the same, immediately to the left, or immediately to the right, but the column is not
+        [InlineData("D1")]
+        [InlineData("D2")]
+        [InlineData("D3")]
+        public void IsAdjacentTo_Should_BeFalseWhenCellIsNotAdjacentColumnOrRow(string location)
+        {
+            var left = Location.Parse("B2");
+            var right = Location.Parse(location);
+
+            left.IsAdjacentTo(right).Should().BeFalse();
+        }
+        
+        [Theory]
+        [InlineData("A1", "B2")]
+        [InlineData("A2", "B2")]
+        [InlineData("A3", "B2")]
+        [InlineData("B1", "B2")]
+        [InlineData("B3", "B2")]
+        [InlineData("C1", "B2")]
+        [InlineData("C2", "B2")]
+        [InlineData("C3", "B2")]
+        [InlineData("AA9", "Z10")]
+        [InlineData("BD15", "BE14")]
+        public void IsAdjacentTo_Should_BeTrueWhenLocationIsInSameOrAdjacentColumnAndRow(string left, string right)
+        {
+            var leftLocation = Location.Parse(left);
+            var rightLocation = Location.Parse(right);
+
+            leftLocation.IsAdjacentTo(rightLocation).Should().BeTrue();
+        }
     }
 }

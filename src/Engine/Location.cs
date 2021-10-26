@@ -97,5 +97,36 @@ namespace Dgt.Minesweeper.Engine
                 Data = { [nameof(input)] = input }
             };
         }
+        
+        public bool IsAdjacentTo(Location location)
+        {
+            if (location == this) return false;
+
+            if (Subtract(Column, location.Column) is < -1 or > 1)
+            {
+                return false;
+            }
+            
+            if (Row - location.Row is < -1 or > 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static int Subtract(string left, string right) => ConvertToInt(left) - ConvertToInt(right);
+        
+        private static int ConvertToInt(string value)
+        {
+            var converted = 0;
+            
+            for (var index = value.Length - 1; index >= 0; index--)
+            {
+                converted += (value[index] - 65) + (26 * index);
+            }
+
+            return converted;
+        }
     }
 }
