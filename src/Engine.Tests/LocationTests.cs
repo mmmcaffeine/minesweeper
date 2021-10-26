@@ -17,6 +17,8 @@ namespace Dgt.Minesweeper.Engine
 
         public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
 
+        public static TheoryData<string> MissingValuesTestData => new() { null!, string.Empty, "\t", "\r\n", "   " };
+
         [Fact]
         public void Ctor_Should_UpperCaseColumn() => new Location("a", 9).Column.Should().Be("A");
 
@@ -146,6 +148,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(InvalidLocationTestData))]
+        [MemberData(nameof(MissingValuesTestData))]
         public void TryParse_Should_ReturnFalseAndNoLocationWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act

@@ -93,12 +93,19 @@ namespace Dgt.Minesweeper.Engine
 
         public static bool TryParse(string s, [NotNullWhen(true)] out Location? result)
         {
-            var match = LocationRegex.Match(s);
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                result = null;
+            }
+            else
+            {
+                var match = LocationRegex.Match(s);
 
-            result = match.Success
-                ? new Location(match)
-                : null;
-            
+                result = match.Success
+                    ? new Location(match)
+                    : null;
+            }
+
             return result != null;
         }
 
