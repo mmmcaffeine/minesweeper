@@ -4,18 +4,6 @@ using Xunit;
 
 namespace Dgt.Minesweeper.Engine
 {
-
-    // public readonly struct Foo
-    // {
-    //     public Foo(string row, string column)
-    //     {
-    //         Row = row;
-    //         Column = column;
-    //     }
-    //     
-    //     public string Row { get; }
-    //     public string Column { get; }
-    // }
     public class LocationTests
     {
         public static TheoryData<string, string, int> ValidLocationTestData => new()
