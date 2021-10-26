@@ -5,11 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace Dgt.Minesweeper.Engine
 {
-    // IDEA Reduce memory footprint by using ReadOnlySpan<char>
-    // We're likely to be allocating lots of Location instances. We're also likely to only see a small set of values
-    // for Column. Can we consume a lot less memory by keeping a list of spans and then pointing different instances
-    // of Location to the same span?
-    
     public record Location
     {
         private static class ColumnErrors
