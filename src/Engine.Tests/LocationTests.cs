@@ -167,5 +167,49 @@ namespace Dgt.Minesweeper.Engine
                 .WithMessage("Specified cast is not valid.*")
                 .WithInnerException<FormatException>();
         }
+
+        // We test the inequality operator here because we're forced to implement both operators together
+        [Fact]
+        public void EqualityWithTuple_Should_BeTrueWhenColumnAndRowAreEqual()
+        {
+            (new Location("A", 1) == ("A", 1)).Should().BeTrue();
+            (("A", 1) == new Location("A", 1)).Should().BeTrue();
+            
+            (new Location("A", 1) != ("A", 1)).Should().BeFalse();
+            (("A", 1) != new Location("A", 1)).Should().BeFalse();
+        }
+
+        // We test the inequality operator here because we're forced to implement both operators together
+        [Fact]
+        public void EqualityWithTuple_Should_BeFalseWhenColumnDiffers()
+        {
+            (new Location("A", 1) == ("B", 1)).Should().BeFalse();
+            (("B", 1) == new Location("A", 1)).Should().BeFalse();
+            
+            (new Location("A", 1) != ("B", 1)).Should().BeTrue();
+            (("B", 1) != new Location("A", 1)).Should().BeTrue();
+        }
+        
+        // We test the inequality operator here because we're forced to implement both operators together
+        [Fact]
+        public void EqualityWithTuple_Should_BeFalseWhenRowDiffers()
+        {
+            (new Location("A", 1) == ("A", 2)).Should().BeFalse();
+            (("A", 2) == new Location("A", 1)).Should().BeFalse();
+            
+            (new Location("A", 1) != ("A", 2)).Should().BeTrue();
+            (("A", 2) != new Location("A", 1)).Should().BeTrue();
+        }
+
+        // We test the inequality operator here because we're forced to implement both operators together
+        [Fact]
+        public void EqualityWithTuple_Should_BeFalseWhenLocationIsNull()
+        {
+            ((Location)null! == ("A", 1)).Should().BeFalse();
+            (("A", 1) == (Location)null!).Should().BeFalse();
+
+            ((Location)null! != ("A", 1)).Should().BeTrue();
+            (("A", 1) != (Location)null!).Should().BeTrue();
+        }
     }
 }

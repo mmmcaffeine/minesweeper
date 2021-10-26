@@ -44,6 +44,17 @@ namespace Dgt.Minesweeper.Engine
             row = Row;
         }
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
+        public static bool operator ==(Location location, (string Column, int Row) tuple) =>
+            location is not null && location.Column == tuple.Column && location.Row == tuple.Row;
+
+        public static bool operator !=(Location location, (string Column, int Row) tuple) => !(location == tuple);
+
+        public static bool operator ==((string Column, int Row) tuple, Location location) => location == tuple;
+
+        public static bool operator !=((string Column, int Row) tuple, Location location) => !(tuple == location);
+
         public static implicit operator string(Location location) => $"{location.Column}{location.Row}";
 
         public static explicit operator Location(string location)
