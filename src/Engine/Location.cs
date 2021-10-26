@@ -27,7 +27,7 @@ namespace Dgt.Minesweeper.Engine
             if (column.Any(c => !char.IsLetter(c))) throw CreateColumnException(ColumnErrors.NotCorrectFormat);
             if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
             
-            Column = column;
+            Column = column.ToUpperInvariant();
             Row = row;
 
             Exception CreateColumnException(string error) => new ArgumentException($"{error} {ColumnRequirement}", nameof(column))

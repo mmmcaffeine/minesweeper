@@ -18,6 +18,9 @@ namespace Dgt.Minesweeper.Engine
         public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
 
         [Fact]
+        public void Ctor_Should_UpperCaseColumn() => new Location("a", 9).Column.Should().Be("A");
+
+        [Fact]
         public void Ctor_Should_ThrowWhenColumnIsNull()
         {
             // Arrange, Act
