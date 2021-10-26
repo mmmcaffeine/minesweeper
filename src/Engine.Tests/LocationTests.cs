@@ -48,7 +48,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(InvalidLocationTestData))]
-        public void Parse_Should_ThrowFormatExceptionWhenInputStringIsNotProperlyFormatted(string input)
+        public void Parse_Should_ThrowFormatExceptionWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
             Action act = () => Location.Parse(input);
@@ -92,7 +92,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(InvalidLocationTestData))]
-        public void ConvertFromString_ShouldThrowInvalidCastExceptionWhenInputIsNotProperlyFormatted(string input)
+        public void ConvertFromString_Should_ThrowInvalidCastExceptionWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
             Action act = () => _ = (Location)input;
