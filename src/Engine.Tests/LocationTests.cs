@@ -118,6 +118,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(InvalidLocationTestData))]
+        [MemberData(nameof(MissingValuesTestData))]
         public void Parse_Should_ThrowFormatExceptionWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
@@ -128,7 +129,7 @@ namespace Dgt.Minesweeper.Engine
                 .WithMessage("*Input string was not in a correct format.*")
                 .WithMessage("*Locations must be of the form 'A1'.*")
                 .WithMessage($"*Actual value was '{input}'.*")
-                .Where(ex => ex.Data.Contains("input") && ex.Data["input"]!.Equals(input));
+                .Where(ex => ex.Data.Contains("input") && Equals(ex.Data["input"], input));
         }
 
         [Theory]

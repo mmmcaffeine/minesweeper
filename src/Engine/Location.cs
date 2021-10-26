@@ -78,9 +78,10 @@ namespace Dgt.Minesweeper.Engine
             }
         }
         
-        // TODO Validate input is not null or empty
         public static Location Parse(string s)
         {
+            if (string.IsNullOrWhiteSpace(s)) throw CreateParsingException(s);
+            
             var match = LocationRegex.Match(s);
 
             if (!match.Success)
