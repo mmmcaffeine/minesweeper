@@ -6,12 +6,19 @@ namespace Dgt.Minesweeper.Engine
 {
     public class LocationTests
     {
+        public static TheoryData<string, string, int> ValidLocationTestData => new()
+        {
+            { "A1", "A", 1 },
+            { "a1", "A", 1 },
+            { "H8", "H", 8 },
+            { "AA99", "AA", 99 },
+            { "ZZZ1000", "ZZZ", 1000 }
+        };
+
+        public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
+
         [Theory]
-        [InlineData("A1", "A", 1)]
-        [InlineData("a1", "A", 1)]
-        [InlineData("H8", "H", 8)]
-        [InlineData("AA99", "AA", 99)]
-        [InlineData("ZZZ1000", "ZZZ", 1000)]
+        [MemberData(nameof(ValidLocationTestData))]
         public void Parse_Should_ParseColumnAndRowWhenInputIsProperlyFormatted
             (string input, string expectedColumn, int expectedRow)
         {
@@ -40,10 +47,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("A")]
-        [InlineData("1")]
-        [InlineData("1A")]
-        [InlineData("Nope!")]
+        [MemberData(nameof(InvalidLocationTestData))]
         public void Parse_Should_ThrowFormatExceptionWhenInputStringIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
@@ -74,11 +78,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("A1", "A", 1)]
-        [InlineData("a1", "A", 1)]
-        [InlineData("H8", "H", 8)]
-        [InlineData("AA99", "AA", 99)]
-        [InlineData("ZZZ1000", "ZZZ", 1000)]
+        [MemberData(nameof(ValidLocationTestData))]
         public void ConvertFromString_Should_ParseColumnAndStringWhenInputIsProperlyFormatted
             (string input, string expectedColumn, int expectedRow)
         {
@@ -91,10 +91,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("A")]
-        [InlineData("1")]
-        [InlineData("1A")]
-        [InlineData("Nope!")]
+        [MemberData(nameof(InvalidLocationTestData))]
         public void ConvertFromString_ShouldThrowInvalidCastExceptionWhenInputIsNotProperlyFormatted(string input)
         {
             // Arrange, Act
