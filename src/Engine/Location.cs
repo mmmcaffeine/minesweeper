@@ -23,6 +23,8 @@ namespace Dgt.Minesweeper.Engine
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+        // This validation logic is identical to that in ColumnNameConverter. Is that telling me we have the Primitive
+        // Obsession anti-pattern, and ColumnName needs to be a type in its own right?
         public Location(string column, int row)
         {
             if (column! is null) throw new ArgumentNullException(nameof(column), $"{ColumnErrors.CannotBeNull} {ColumnRequirement}");

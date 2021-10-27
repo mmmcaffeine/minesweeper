@@ -6,6 +6,14 @@ namespace Dgt.Minesweeper.Engine
 {
     public static class ColumnNameConverter
     {
+        private static class Errors
+        {
+            public const string CannotBeNull = "Value cannot be null.";
+            public const string CannotBeEmpty = "Value cannot be whitespace or an empty string.";
+            public const string NotCorrectFormat = "Input string was not in a correct format.";
+        }
+        
+        private const string ColumnNameRequirement = "Value must be a string consisting only of letters e.g. 'ABC'.";
         private const string ColumnIndexRequirement = "Value must be a positive, non-zero integer.";
         
         private const int AsciiCodeForA = 65;
@@ -44,11 +52,14 @@ namespace Dgt.Minesweeper.Engine
             return new string(characters);
         }
 
-        // TODO No nulls or empty strings
-        // TODO No strings that contain non-chars
-        // TODO Case insensitive
+        // This validation logic is identical to that in Location. Is that telling me we have the Primitive
+        // Obsession anti-pattern, and ColumnName needs to be a type in its own right?
         public static int ToColumnIndex(this string columnName)
         {
+            if(columnName! is null) throw new ArgumentNullException(nameof(columnName), $"{Errors.CannotBeNull} {ColumnNameRequirement}");
+            if (string.IsNullOrWhiteSpace(columnName)) throw CreateColumnNameException(Errors.CannotBeEmpty);
+            if (columnName.Any(c => !char.IsLetter(c))) throw CreateColumnNameException(Errors.NotCorrectFormat);
+            
             var remainders = GetRemainders(columnName).ToArray();
             var columnIndex = 0;
             var multiplier = 1;
@@ -60,6 +71,12 @@ namespace Dgt.Minesweeper.Engine
             }
 
             return columnIndex;
+
+            Exception CreateColumnNameException(string error) =>
+                new ArgumentException($"{error} {ColumnNameRequirement}", nameof(columnName))
+                {
+                    Data = { { nameof(columnName), columnName } }
+                };
         }
         
         private static IEnumerable<int> GetRemainders(string value)

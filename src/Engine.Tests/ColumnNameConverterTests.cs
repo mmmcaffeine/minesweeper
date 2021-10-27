@@ -50,6 +50,58 @@ namespace Dgt.Minesweeper.Engine
         public void ToColumnName_ShouldConvertIntegerToColumnName(int columnIndex, string expectedColumnName) =>
             columnIndex.ToColumnName().Should().Be(expectedColumnName);
 
+        [Fact]
+        public void ToColumnIndex_Should_ThrowWhenColumnNameIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = ((string)null!).ToColumnIndex();
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>()
+                .WithMessage("Value cannot be null.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .WithParameterName("columnName");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        [InlineData("\t")]
+        [InlineData("\r")]
+        [InlineData("\n")]
+        public void ToColumnIndex_Should_ThrowWhenColumnNameIsEmptyOrWhiteSpace(string columnName)
+        {
+            // Arrange, Act
+            Action act = () => _ = columnName.ToColumnIndex();
+            
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Value cannot be whitespace or an empty string.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .WithParameterName("columnName")
+                .Where(ex => ex.Data.Contains("columnName") && ex.Data["columnName"]!.Equals(columnName));
+        }
+
+        [Theory]
+        [InlineData("AA7")]
+        [InlineData("6BB")]
+        [InlineData("CC9")]
+        [InlineData("D-D")]
+        [InlineData("-E")]
+        [InlineData("F+")]
+        public void ToColumnIndex_Should_ThrowWhenColumnNameContainsNonLetters(string columnName)
+        {
+            // Arrange, Act
+            Action act = () => _ = columnName.ToColumnIndex();
+            
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Input string was not in a correct format.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .WithParameterName("columnName")
+                .Where(ex => ex.Data.Contains("columnName") && ex.Data["columnName"]!.Equals(columnName));
+        }
+
         // We typically have the expected parameter as the last one in the list. However, swapping them around
         // means we can use the same set of test data for both methods
         [Theory]
