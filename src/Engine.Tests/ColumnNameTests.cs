@@ -33,7 +33,7 @@ namespace Dgt.Minesweeper.Engine
         [InlineData(int.MinValue)]
         [InlineData(-1)]
         [InlineData(0)]
-        public void ConvertToColumnName_Should_ThrowWhenIndexIsZeroOrNegative(int columnIndex)
+        public void ExplicitConversionFromInteger_Should_ThrowWhenIndexIsZeroOrNegative(int columnIndex)
         {
             // Arrange, Act
             Action act = () => _ = (ColumnName)columnIndex;
@@ -47,8 +47,65 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(ConversionTestData))]
-        public void ConvertToColumnName_Should_ConvertIntegerToColumnName(int columnIndex, string expectedValue) =>
+        public void ExplicitConversionFromInteger_Should_ConvertIntegerToColumnName(int columnIndex, string expectedValue) =>
             ((ColumnName)columnIndex).Value.Should().Be(expectedValue);
+        
+        [Fact]
+        public void ExplicitConversionFromString_Should_ThrowWhenValueIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = (ColumnName)((string)null!);
+            
+            // Assert
+            act.Should().Throw<InvalidCastException>()
+                .WithMessage("Specified cast is not valid.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .Where(ex => ex.Data.Contains("value") && ex.Data["value"] == null);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        [InlineData("\t")]
+        [InlineData("\r")]
+        [InlineData("\n")]
+        public void ExplicitConversionFromString_Should_ThrowWhenValueIsEmptyOrWhiteSpace(string value)
+        {
+            // Arrange, Act
+            Action act = () => _ = (ColumnName)value;
+            
+            // Assert
+            act.Should().Throw<InvalidCastException>()
+                .WithMessage("Specified cast is not valid.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .Where(ex => ex.Data.Contains("value") && ex.Data["value"]!.Equals(value));
+        }
+
+        [Theory]
+        [InlineData("AA7")]
+        [InlineData("6BB")]
+        [InlineData("CC9")]
+        [InlineData("D-D")]
+        [InlineData("-E")]
+        [InlineData("F+")]
+        public void ExplicitConversionFromString_Should_ThrowWhenValueContainsNonLetters(string value)
+        {
+            // Arrange, Act
+            Action act = () => _ = (ColumnName)value;
+            
+            // Assert
+            act.Should().Throw<InvalidCastException>()
+                .WithMessage("Specified cast is not valid.*")
+                .WithMessage("*Value must be a string consisting only of letters e.g. 'ABC'.*")
+                .Where(ex => ex.Data.Contains("value") && ex.Data["value"]!.Equals(value));
+        }
+
+        [Theory]
+        [InlineData("A")]
+        [InlineData("BC")]
+        [InlineData("DEF")]
+        public void ExplicitConversionFromString_Should_ConvertStringToColumnName(string value)
+            => ((ColumnName)value).Value.Should().Be(value);
 
         [Fact]
         public void Ctor_Should_ThrowWhenValueIsNull()
@@ -102,11 +159,24 @@ namespace Dgt.Minesweeper.Engine
                 .Where(ex => ex.Data.Contains("value") && ex.Data["value"]!.Equals(value));
         }
 
+        [Fact]
+        public void ImplicitConversionToInteger_Should_NotThrowOnNull()
+        {
+            // Arrange
+            ColumnName columnName = null!;
+            
+            // Act
+            int actual = columnName;
+            
+            // Assert
+            actual.Should().Be(0);
+        }
+
         // We typically have the expected parameter as the last one in the list. However, swapping them around
         // means we can use the same set of test data for both converting a ColumnName to an int and vice versa
         [Theory]
         [MemberData(nameof(ConversionTestData))]
-        public void ConvertToInteger_Should_ConvertColumnNameToInteger(int expectedColumnIndex, string value)
+        public void ImplicitConversionToInteger_Should_ConvertColumnNameToInteger(int expectedColumnIndex, string value)
         {
             // Arrange
             var columnName = new ColumnName(value);
@@ -116,6 +186,35 @@ namespace Dgt.Minesweeper.Engine
 
             // Assert
             columnIndex.Should().Be(expectedColumnIndex);
+        }
+
+        [Fact]
+        public void ImplicitConversionToString_Should_NotThrowOnNull()
+        {
+            // Arrange
+            ColumnName columnName = null!;
+            
+            // Act
+            string actual = columnName;
+            
+            // Assert
+            actual.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InlineData("A")]
+        [InlineData("BC")]
+        [InlineData("DEF")]
+        public void ImplicitConversionToString_Should_ConvertColumnNameToString(string value)
+        {
+            // Arrange
+            var columnName = new ColumnName(value);
+            
+            // Act
+            string actual = columnName;
+            
+            // Assert
+            actual.Should().Be(value);
         }
     }
 }

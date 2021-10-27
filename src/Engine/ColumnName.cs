@@ -11,6 +11,7 @@ namespace Dgt.Minesweeper.Engine
             public const string CannotBeNull = "Value cannot be null.";
             public const string CannotBeEmpty = "Value cannot be whitespace or an empty string.";
             public const string NotCorrectFormat = "Input string was not in a correct format.";
+            public const string InvalidCast = "Specified cast is not valid.";
         }
         
         private const string ColumnNameRequirement = "Value must be a string consisting only of letters e.g. 'ABC'.";
@@ -36,6 +37,21 @@ namespace Dgt.Minesweeper.Engine
         }
         
         public string Value { get; }
+
+        public static explicit operator ColumnName(string value)
+        {
+            if (value! is null) throw CreateInvalidValueException();
+            if (string.IsNullOrWhiteSpace(value)) throw CreateInvalidValueException();
+            if (value.Any(c => !char.IsLetter(c))) throw CreateInvalidValueException();
+            
+            return new ColumnName(value);
+            
+            Exception CreateInvalidValueException() =>
+                new InvalidCastException($"{Errors.InvalidCast} {ColumnNameRequirement}")
+                {
+                    Data = { { nameof(value), value } }
+                };
+        }
         
         // We have to do a little bit of trickery because we're sort of base 26 but not really! We use 'A' to
         // represent 1 so we don't have the concept of a zero. In other words we're base 26 in so far as we
@@ -72,8 +88,17 @@ namespace Dgt.Minesweeper.Engine
             return new ColumnName(columnNameValue);
         }
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // People can use the null forgiving operator to pass nulls for columnName and cause NullReferenceExceptions
+        public static implicit operator string(ColumnName columnName) =>
+            columnName != null ? columnName.Value : string.Empty;
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // People can use the null forgiving operator to pass nulls for columnName and cause NullReferenceExceptions
         public static implicit operator int(ColumnName columnName)
         {
+            if (columnName is null) return 0;
+            
             var remainders = GetRemainders(columnName.Value).ToArray();
             var columnIndex = 0;
             var multiplier = 1;
