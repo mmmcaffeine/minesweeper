@@ -6,6 +6,8 @@ namespace Dgt.Minesweeper.Engine
 {
     public static class ColumnNameConverter
     {
+        private const string ColumnIndexRequirement = "Value must be a positive, non-zero integer.";
+        
         private const int AsciiCodeForA = 65;
         private const int Radix = 26;
         private const int Offset = 1;
@@ -16,8 +18,10 @@ namespace Dgt.Minesweeper.Engine
         // have a radix of 26, but our values run from 1 to 26, not 0 to 25!
         public static string ToColumnName(this int columnIndex)
         {
+            var quotient = columnIndex > 0
+                ? columnIndex
+                : throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, ColumnIndexRequirement);
             var remainders = new Stack<int>();
-            var quotient = columnIndex;
 
             while (quotient != 0)
             {

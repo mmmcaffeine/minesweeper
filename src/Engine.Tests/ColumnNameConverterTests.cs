@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Xunit;
 
 namespace Dgt.Minesweeper.Engine
@@ -27,6 +28,22 @@ namespace Dgt.Minesweeper.Engine
             { 755, "ACA" },
             { 1500, "BER" }
         };
+
+        [Theory]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void ToColumnName_Should_ThrowWhenIndexIsZeroOrNegative(int columnIndex)
+        {
+            // Arrange, Act
+            Action act = () => _ = columnIndex.ToColumnName();
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("columnIndex")
+                .And.ActualValue.Should().Be(columnIndex);
+        }
 
         [Theory]
         [MemberData(nameof(ConversionTestData))]
