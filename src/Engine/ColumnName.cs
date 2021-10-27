@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
 {
-    public static class ColumnNameConverter
+    public record ColumnName
     {
         private static class Errors
         {
@@ -19,15 +19,35 @@ namespace Dgt.Minesweeper.Engine
         private const int AsciiCodeForA = 65;
         private const int Radix = 26;
         private const int Offset = 1;
+
+        public ColumnName(string value)
+        {
+            if (value! is null) throw new ArgumentNullException(nameof(value), $"{Errors.CannotBeNull} {ColumnNameRequirement}");
+            if (string.IsNullOrWhiteSpace(value)) throw CreateInvalidValueException(Errors.CannotBeEmpty);
+            if (value.Any(c => !char.IsLetter(c))) throw CreateInvalidValueException(Errors.NotCorrectFormat);
+            
+            Value = value;
+
+            Exception CreateInvalidValueException(string error) =>
+                new ArgumentException($"{error} {ColumnNameRequirement}", nameof(value))
+                {
+                    Data = { { nameof(value), value } }
+                };
+        }
+        
+        public string Value { get; }
         
         // We have to do a little bit of trickery because we're sort of base 26 but not really! We use 'A' to
         // represent 1 so we don't have the concept of a zero. In other words we're base 26 in so far as we
         // have a radix of 26, but our values run from 1 to 26, not 0 to 25!
-        public static string ToColumnName(this int columnIndex)
+        public static explicit operator ColumnName(int value)
         {
-            var quotient = columnIndex > 0
-                ? columnIndex
-                : throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, ColumnIndexRequirement);
+            var quotient = value > 0
+                ? value
+                : throw new InvalidCastException($"Specified cast is not valid. {ColumnIndexRequirement}")
+                {
+                    Data = { {nameof(value), value }}
+                };
             var remainders = new Stack<int>();
 
             while (quotient != 0)
@@ -47,19 +67,14 @@ namespace Dgt.Minesweeper.Engine
 
             var asciiCodes = remainders.Select(i => i - Offset + AsciiCodeForA);
             var characters = asciiCodes.Select(code => (char)code).ToArray();
+            var columnNameValue = new string(characters);
 
-            return new string(characters);
+            return new ColumnName(columnNameValue);
         }
 
-        // This validation logic is identical to that in Location. Is that telling me we have the Primitive
-        // Obsession anti-pattern, and ColumnName needs to be a type in its own right?
-        public static int ToColumnIndex(this string columnName)
+        public static implicit operator int(ColumnName columnName)
         {
-            if(columnName! is null) throw new ArgumentNullException(nameof(columnName), $"{Errors.CannotBeNull} {ColumnNameRequirement}");
-            if (string.IsNullOrWhiteSpace(columnName)) throw CreateColumnNameException(Errors.CannotBeEmpty);
-            if (columnName.Any(c => !char.IsLetter(c))) throw CreateColumnNameException(Errors.NotCorrectFormat);
-            
-            var remainders = GetRemainders(columnName).ToArray();
+            var remainders = GetRemainders(columnName.Value).ToArray();
             var columnIndex = 0;
             var multiplier = 1;
 
@@ -70,12 +85,6 @@ namespace Dgt.Minesweeper.Engine
             }
 
             return columnIndex;
-
-            Exception CreateColumnNameException(string error) =>
-                new ArgumentException($"{error} {ColumnNameRequirement}", nameof(columnName))
-                {
-                    Data = { { nameof(columnName), columnName } }
-                };
         }
         
         private static IEnumerable<int> GetRemainders(string value)
