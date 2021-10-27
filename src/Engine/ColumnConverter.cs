@@ -8,9 +8,9 @@ namespace Dgt.Minesweeper.Engine
         private const int BaseOneOffset = 1;
         
         // TODO 1 or greater
-        public static string ToColumnString(this int value)
+        public static string ToColumnName(this int columnIndex)
         {
-            var c = (char)(value + AsciiCodeForA - BaseOneOffset);
+            var c = (char)(columnIndex + AsciiCodeForA - BaseOneOffset);
 
             return new string(new[] { c });
         }
@@ -18,9 +18,9 @@ namespace Dgt.Minesweeper.Engine
         // TODO No nulls or empty strings
         // TODO No strings that contain non-chars
         // TODO Case insensitive
-        public static int FromColumnString(this string value)
+        public static int ToColumnIndex(this string columnName)
         {
-            return value[0] - AsciiCodeForA + BaseOneOffset;
+            return columnName[0] - AsciiCodeForA + BaseOneOffset;
         }
     }
 }

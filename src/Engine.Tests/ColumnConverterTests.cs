@@ -14,14 +14,14 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(ConversionTestData))]
-        public void ToColumnString_ShouldConvertIntegerToColumnString(int index, string expected) =>
-            index.ToColumnString().Should().Be(expected);
+        public void ToColumnName_ShouldConvertIntegerToColumnString(int columnIndex, string expectedColumnName) =>
+            columnIndex.ToColumnName().Should().Be(expectedColumnName);
 
         // We typically have the expected parameter as the last one in the list. However, swapping them around
         // means we can use the same set of test data for both methods
         [Theory]
         [MemberData(nameof(ConversionTestData))]
-        public void FromColumnString_Should_ConvertColumnStringToInteger(int expectedIndex, string column) =>
-            column.FromColumnString().Should().Be(expectedIndex);
+        public void ToColumnIndex_Should_ConvertColumnStringToInteger(int expectedColumnIndex, string columnName) =>
+            columnName.ToColumnIndex().Should().Be(expectedColumnIndex);
     }
 }
