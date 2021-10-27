@@ -131,13 +131,20 @@ namespace Dgt.Minesweeper.Engine
         public bool IsAdjacentTo(Location location)
         {
             if (location is null || location == this) return false;
-
-            if (Subtract(Column, location.Column) is < -1 or > 1)
+            
+            if (Row - location.Row is < -1 or > 1)
             {
                 return false;
             }
-            
-            if (Row - location.Row is < -1 or > 1)
+
+            // Although the check to Subtract would catch this we can potentially short-circuit with a much simpler
+            // and faster check before we get into weeds enumerating strings, converting chars to bytes and so forth
+            if (Column == location.Column)
+            {
+                return true;
+            }
+
+            if (Subtract(Column, location.Column) is < -1 or > 1)
             {
                 return false;
             }
