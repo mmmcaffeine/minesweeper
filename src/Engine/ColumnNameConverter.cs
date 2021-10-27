@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
 {
-    public static class ColumnConverter
+    public static class ColumnNameConverter
     {
         private const int AsciiCodeForA = 65;
         private const int Radix = 26;
