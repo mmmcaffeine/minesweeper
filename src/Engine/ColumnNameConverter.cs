@@ -20,7 +20,6 @@ namespace Dgt.Minesweeper.Engine
         private const int Radix = 26;
         private const int Offset = 1;
         
-        // TODO 1 or greater
         // We have to do a little bit of trickery because we're sort of base 26 but not really! We use 'A' to
         // represent 1 so we don't have the concept of a zero. In other words we're base 26 in so far as we
         // have a radix of 26, but our values run from 1 to 26, not 0 to 25!

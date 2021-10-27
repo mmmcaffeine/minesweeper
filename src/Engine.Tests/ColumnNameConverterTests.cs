@@ -47,7 +47,7 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(ConversionTestData))]
-        public void ToColumnName_ShouldConvertIntegerToColumnName(int columnIndex, string expectedColumnName) =>
+        public void ToColumnName_Should_ConvertIntegerToColumnName(int columnIndex, string expectedColumnName) =>
             columnIndex.ToColumnName().Should().Be(expectedColumnName);
 
         [Fact]
