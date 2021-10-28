@@ -62,17 +62,25 @@ namespace Dgt.Minesweeper.Engine
                 };
         }
         
+        public static explicit operator ColumnName(int value)
+        {
+            if (value <= 0)
+            {
+                throw new InvalidCastException($"Specified cast is not valid. {ColumnIndexRequirement}")
+                {
+                    Data = { { nameof(value), value } }
+                };
+            }
+
+            return new ColumnName { Value = GetValue(value) };
+        }
+
         // We have to do a little bit of trickery because we're sort of base 26 but not really! We use 'A' to
         // represent 1 so we don't have the concept of a zero. In other words we're base 26 in so far as we
         // have a radix of 26, but our values run from 1 to 26, not 0 to 25!
-        public static explicit operator ColumnName(int value)
+        private static string GetValue(int value)
         {
-            var quotient = value > 0
-                ? value
-                : throw new InvalidCastException($"Specified cast is not valid. {ColumnIndexRequirement}")
-                {
-                    Data = { {nameof(value), value }}
-                };
+            var quotient = value;
             var remainders = new Stack<int>();
 
             while (quotient != 0)
@@ -169,5 +177,28 @@ namespace Dgt.Minesweeper.Engine
         public static bool operator ==(int value, ColumnName columnName) => columnName == value;
 
         public static bool operator !=(int value, ColumnName columnName) => !(value == columnName);
+
+        public static bool TryParse(string s, out ColumnName? result)
+        {
+            if (string.IsNullOrWhiteSpace(s) || !s.All(char.IsLetter))
+            {
+                result = null;
+            }
+            else
+            {
+                result = new ColumnName { Value = s };
+            }
+
+            return result != null;
+        }
+
+        public static bool TryParse(int i, out ColumnName? result)
+        {
+            result = i > 0
+                ? new ColumnName { Value = GetValue(i) }
+                : null;
+
+            return result != null;
+        }
     }
 }

@@ -280,5 +280,57 @@ namespace Dgt.Minesweeper.Engine
                 (value != columnName).Should().BeFalse();
             }
         }
+
+        [Theory]
+        [MemberData(nameof(EmptyStringTestData))]
+        [InlineData(null)]
+        public void TryParseString_Should_ReturnFalseAndNoColumnNameWhenStringCannotBeParsed(string input)
+        {
+            // Arrange, Act
+            var parsed = ColumnName.TryParse(input, out var columnName);
+
+            // Assert
+            parsed.Should().BeFalse();
+            columnName.Should().BeNull();
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidValueTestData))]
+        public void TryParseString_ShouldReturnTrueAndColumnNameWhenStringIsProperlyFormatted(string input)
+        {
+            // Arrange, Act
+            var parsed = ColumnName.TryParse(input, out var columnName);
+            
+            // Assert
+            parsed.Should().BeTrue();
+            columnName!.Value.Should().Be(input);
+        }
+        
+        [Theory]
+        [MemberData(nameof(NotPositiveNonZeroIntegerTestData))]
+        public void TryParseInt_Should_ReturnFalseAndNoColumnNameWhenIntIsNotPositiveNonZero(int value)
+        {
+            // Arrange, Act
+            var parsed = ColumnName.TryParse(value, out var columnName);
+
+            // Assert
+            parsed.Should().BeFalse();
+            columnName.Should().BeNull();
+        }
+        
+        [Theory]
+        [InlineData(1, "A")]
+        [InlineData(28, "AB")]
+        [InlineData(1500, "BER")]
+        public void TryParseInt_Should_ReturnTrueAndNoColumnNameWhenIntIsPositiveNonZero
+            (int value, string expectedValue)
+        {
+            // Arrange, Act
+            var parsed = ColumnName.TryParse(value, out var columnName);
+
+            // Assert
+            parsed.Should().BeTrue();
+            columnName!.Value.Should().Be(expectedValue);
+        }
     }
 }
