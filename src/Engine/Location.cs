@@ -138,23 +138,27 @@ namespace Dgt.Minesweeper.Engine
             };
         }
         
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-        // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
         public bool IsAdjacentTo(Location location)
         {
-            if (location is null || location == this) return false;
-            
-            if (Row - location.Row is < -1 or > 1)
-            {
-                return false;
-            }
-
-            if (((int)ColumnName - (int)location.ColumnName) is < -1 or > 1)
-            {
-                return false;
-            }
-
-            return true;
+            return AreDifferentLocations(this, location)
+                   && RowsAreAdjacent(this, location)
+                   && ColumnsAreAdjacent(this, location);
         }
+
+        private static bool AreDifferentLocations(Location left, Location right)
+        {
+            return (left, right) switch
+            {
+                (null, _) => false,
+                (_, null) => false,
+                var (x, y) when x == y => false,
+                _ => true
+            };
+        }
+
+        private static bool RowsAreAdjacent(Location left, Location right) => left.Row - right.Row is >= -1 and <= 1;
+
+        private static bool ColumnsAreAdjacent(Location left, Location right) =>
+            (int)left.ColumnName - (int)right.ColumnName is >= -1 and <= 1;
     }
 }
