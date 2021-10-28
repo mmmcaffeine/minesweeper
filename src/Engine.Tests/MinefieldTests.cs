@@ -6,11 +6,11 @@ namespace Dgt.Minesweeper.Engine
 {
     public class MinefieldTests
     {
-        // TODO What should the hint for a mined cell be?
         [Theory]
         [InlineData("B3", 2)]
         [InlineData("A1", 0)]
         [InlineData("D2", 1)]
+        [InlineData("A3", 0)]
         public void GetHint_Should_ReturnNumberOfAdjacentMines(string location, int expectedHint)
         {
             // Arrange
