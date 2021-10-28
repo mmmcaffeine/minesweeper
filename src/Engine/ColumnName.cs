@@ -38,12 +38,14 @@ namespace Dgt.Minesweeper.Engine
 
         // Used to bypass validation of Value if we have already done it, either explicitly (explicit conversion from a
         // string), or implicitly (explicit conversion from an int)
-        private ColumnName()
-        {
-            Value = string.Empty;
-        }
+        private ColumnName() { }
 
-        public string Value { get; private init; }
+        private readonly string _value = null!;
+        public string Value
+        {
+            get => _value;
+            private init => _value = value.ToUpperInvariant();
+        }
 
         public static explicit operator ColumnName(string value)
         {

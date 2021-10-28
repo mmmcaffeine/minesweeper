@@ -101,6 +101,13 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
+        [InlineData("a")]
+        [InlineData("bc")]
+        [InlineData("def")]
+        public void ExplicitConversionFromString_Should_InitialiseValueToUpperCase(string value) =>
+            ((ColumnName)value).Value.Should().BeUpperCased();
+
+        [Theory]
         [InlineData("A")]
         [InlineData("BC")]
         [InlineData("DEF")]
@@ -158,6 +165,13 @@ namespace Dgt.Minesweeper.Engine
                 .WithParameterName("value")
                 .Where(ex => ex.Data.Contains("value") && ex.Data["value"]!.Equals(value));
         }
+
+        [Theory]
+        [InlineData("a")]
+        [InlineData("bc")]
+        [InlineData("def")]
+        public void Ctor_Should_InitialiseValueToUpperCase(string value) =>
+            new ColumnName(value).Value.Should().BeUpperCased();
 
         [Fact]
         public void ImplicitConversionToInteger_Should_NotThrowOnNull()
