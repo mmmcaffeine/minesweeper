@@ -7,14 +7,15 @@ namespace Dgt.Minesweeper.Engine
     public class MinefieldRendererTests
     {
         // TODO Currently our "unit" test is reliant on the implementation of both Minefield and MinefieldRenderer
+        //      Minefield itself is reliant on Location and ColumnName
         //      Ideally, we would only be reliant on one of our types. Currently if our test fails we don't immediately
         //      know which type is at fault. We can resolve this by extracting an interface from Minefield, have
         //      MinefieldRenderer consume that rather than the concrete type and then use a fake
         [Fact]
-        public void Render_Should_RenderMineOrHintForEveryCell()
+        public void Render_Should_RenderMineOrHintForEveryLocation()
         {
             // Arrange
-            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
+            var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
             var sut = new MinefieldRenderer();
 
             // Act

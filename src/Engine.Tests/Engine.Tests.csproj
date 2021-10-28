@@ -44,7 +44,6 @@
 
     <ItemGroup>
       <Compile Remove="GameTests.cs" />
-      <Compile Remove="MinefieldRendererTests.cs" />
     </ItemGroup>
 
 </Project>

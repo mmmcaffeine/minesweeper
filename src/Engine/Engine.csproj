@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <Compile Remove="Game.cs" />
-      <Compile Remove="MinefieldRenderer.cs" />
     </ItemGroup>
 
 </Project>
