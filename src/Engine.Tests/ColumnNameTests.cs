@@ -29,6 +29,11 @@ namespace Dgt.Minesweeper.Engine
             { 1500, "BER" }
         };
 
+        public static TheoryData<string> EmptyStringTestData => new() { "", "  ", "\t", "\r", "\n" };
+        public static TheoryData<string> NonLetterTestData => new() { "AA7", "6BB", "CC9", "D-D", "-E", "F+" };
+        public static TheoryData<string> LowerCaseValueTestData => new() { "a", "bc", "def" };
+        public static TheoryData<string> ValidValueTestData => new() { "A", "BC", "DEF" };
+
         [Theory]
         [InlineData(int.MinValue)]
         [InlineData(-1)]
@@ -64,11 +69,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData("  ")]
-        [InlineData("\t")]
-        [InlineData("\r")]
-        [InlineData("\n")]
+        [MemberData(nameof(EmptyStringTestData))]
         public void ExplicitConversionFromString_Should_ThrowWhenValueIsEmptyOrWhiteSpace(string value)
         {
             // Arrange, Act
@@ -82,12 +83,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("AA7")]
-        [InlineData("6BB")]
-        [InlineData("CC9")]
-        [InlineData("D-D")]
-        [InlineData("-E")]
-        [InlineData("F+")]
+        [MemberData(nameof(NonLetterTestData))]
         public void ExplicitConversionFromString_Should_ThrowWhenValueContainsNonLetters(string value)
         {
             // Arrange, Act
@@ -101,16 +97,12 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("a")]
-        [InlineData("bc")]
-        [InlineData("def")]
+        [MemberData(nameof(LowerCaseValueTestData))]
         public void ExplicitConversionFromString_Should_InitialiseValueToUpperCase(string value) =>
             ((ColumnName)value).Value.Should().BeUpperCased();
 
         [Theory]
-        [InlineData("A")]
-        [InlineData("BC")]
-        [InlineData("DEF")]
+        [MemberData(nameof(ValidValueTestData))]
         public void ExplicitConversionFromString_Should_ConvertStringToColumnName(string value)
             => ((ColumnName)value).Value.Should().Be(value);
 
@@ -128,11 +120,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData("  ")]
-        [InlineData("\t")]
-        [InlineData("\r")]
-        [InlineData("\n")]
+        [MemberData(nameof(EmptyStringTestData))]
         public void Ctor_Should_ThrowWhenValueIsEmptyOrWhiteSpace(string value)
         {
             // Arrange, Act
@@ -147,12 +135,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("AA7")]
-        [InlineData("6BB")]
-        [InlineData("CC9")]
-        [InlineData("D-D")]
-        [InlineData("-E")]
-        [InlineData("F+")]
+        [MemberData(nameof(NonLetterTestData))]
         public void Ctor_Should_ThrowWhenValueContainsNonLetters(string value)
         {
             // Arrange, Act
@@ -167,9 +150,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("a")]
-        [InlineData("bc")]
-        [InlineData("def")]
+        [MemberData(nameof(LowerCaseValueTestData))]
         public void Ctor_Should_InitialiseValueToUpperCase(string value) =>
             new ColumnName(value).Value.Should().BeUpperCased();
 
@@ -216,9 +197,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData("A")]
-        [InlineData("BC")]
-        [InlineData("DEF")]
+        [MemberData(nameof(ValidValueTestData))]
         public void ImplicitConversionToString_Should_ConvertColumnNameToString(string value)
         {
             // Arrange
