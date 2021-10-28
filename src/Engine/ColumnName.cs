@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
@@ -178,7 +179,7 @@ namespace Dgt.Minesweeper.Engine
 
         public static bool operator !=(int value, ColumnName columnName) => !(value == columnName);
 
-        public static bool TryParse(string s, out ColumnName? result)
+        public static bool TryParse(string s, [NotNullWhen(true)] out ColumnName? result)
         {
             if (string.IsNullOrWhiteSpace(s) || !s.All(char.IsLetter))
             {
@@ -192,7 +193,7 @@ namespace Dgt.Minesweeper.Engine
             return result != null;
         }
 
-        public static bool TryParse(int i, out ColumnName? result)
+        public static bool TryParse(int i, [NotNullWhen(true)] out ColumnName? result)
         {
             result = i > 0
                 ? new ColumnName { Value = GetValue(i) }
