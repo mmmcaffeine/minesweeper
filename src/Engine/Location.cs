@@ -60,7 +60,7 @@ namespace Dgt.Minesweeper.Engine
         public ColumnName ColumnName { get; } = default!;
         public int RowIndex { get; }
 
-        public void Deconstruct(out string columnName, out int rowIndex)
+        public void Deconstruct(out ColumnName columnName, out int rowIndex)
         {
             columnName = ColumnName;
             rowIndex = RowIndex;

@@ -267,5 +267,21 @@ namespace Dgt.Minesweeper.Engine
 
             leftLocation.IsAdjacentTo(rightLocation).Should().BeTrue();
         }
+
+        [Theory]
+        [MemberData(nameof(ValidLocationTestData))]
+        public void DeconstructIntoColumnNameAndInt_Should_DeconstructColumnNameAndRowIndex
+            (string location, ColumnName expectedColumnName, int expectedRowIndex)
+        {
+            // Arrange
+            var toDeconstruct = Location.Parse(location);
+            
+            // Act
+            var (columnName, rowIndex) = toDeconstruct;
+            
+            // Assert
+            columnName.Should().Be(expectedColumnName);
+            rowIndex.Should().Be(expectedRowIndex);
+        }
     }
 }
