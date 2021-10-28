@@ -6,27 +6,24 @@ namespace Dgt.Minesweeper.Engine
 {
     public class LocationTests
     {
-        public static TheoryData<string, string, int> ValidLocationTestData => new()
+        public static TheoryData<string, ColumnName, int> ValidLocationTestData => new()
         {
-            { "A1", "A", 1 },
-            { "a1", "A", 1 },
-            { "H8", "H", 8 },
-            { "AA99", "AA", 99 },
-            { "ZZZ1000", "ZZZ", 1000 }
+            { "A1", new ColumnName("A"), 1 },
+            { "a1", new ColumnName("A"), 1 },
+            { "H8", new ColumnName("H"), 8 },
+            { "AA99", new ColumnName("AA"), 99 },
+            { "ZZZ1000", new ColumnName("ZZZ"), 1000 }
         };
 
         public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
 
         public static TheoryData<string> MissingValuesTestData => new() { null!, string.Empty, "\t", "\r\n", "   " };
-
-        [Fact]
-        public void Ctor_Should_UpperCaseColumn() => new Location("a", 9).Column.Should().Be("A");
-
+        
         [Fact]
         public void Ctor_Should_ThrowWhenColumnIsNull()
         {
             // Arrange, Act
-            Action act = () => _ = new Location(null!, 1);
+            Action act = () => _ = new Location((string)null!, 1);
             
             // Assert
             act.Should().Throw<ArgumentNullException>()
@@ -35,40 +32,16 @@ namespace Dgt.Minesweeper.Engine
                 .WithParameterName("column");
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("  ")]
-        [InlineData("\t")]
-        [InlineData("\r")]
-        [InlineData("\n")]
-        public void Ctor_Should_ThrowWhenColumnIsEmptyOrWhitespace(string column)
+        [Fact]
+        public void Ctor_Should_ThrowWhenColumnNameIsNull()
         {
             // Arrange, Act
-            Action act = () => _ = new Location(column, 1);
+            Action act = () => _ = new Location(null!, 1);
             
             // Assert
-            act.Should().Throw<ArgumentException>()
-                .WithMessage("Value cannot be whitespace or an empty string.*")
-                .WithMessage("*Value must be one or more letters, with no other characters e.g. 'AA'.*")
-                .WithParameterName("column")
-                .Where(ex => ex.Data.Contains("column") && ex.Data["column"]!.Equals(column));
-        }
-
-        [Theory]
-        [InlineData("99")]
-        [InlineData("A1")]
-        [InlineData("!H!")]
-        public void Ctor_Should_ThrowWhenColumnIsNotOnlyCharacters(string column)
-        {
-            // Arrange, Act
-            Action act = () => _ = new Location(column, 1);
-            
-            // Assert
-            act.Should().Throw<ArgumentException>()
-                .WithMessage("Input string was not in a correct format.*")
-                .WithMessage("*Value must be one or more letters, with no other characters e.g. 'AA'.*")
-                .WithParameterName("column")
-                .Where(ex => ex.Data.Contains("column") && ex.Data["column"]!.Equals(column));
+            act.Should().Throw<ArgumentNullException>()
+                .WithMessage("Value cannot be null.*")
+                .WithParameterName("columnName");
         }
 
         [Theory]
@@ -89,14 +62,14 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(ValidLocationTestData))]
-        public void Parse_Should_ParseColumnAndRowWhenInputIsProperlyFormatted
-            (string input, string expectedColumn, int expectedRow)
+        public void Parse_Should_ParseColumnNameAndRowWhenInputIsProperlyFormatted
+            (string input, ColumnName expectedColumnName, int expectedRow)
         {
             // Arrange, Act
-            var (column, row) = Location.Parse(input);
+            var (columnName, row) = Location.Parse(input);
             
             // Assert
-            column.Should().Be(expectedColumn);
+            columnName.Should().Be(expectedColumnName);
             row.Should().Be(expectedRow);
         }
 
@@ -106,13 +79,13 @@ namespace Dgt.Minesweeper.Engine
         [InlineData("A       1", "A", 1)]
         [InlineData("   A  1   ", "A", 1)]
         public void Parse_Should_IgnoreWhitespaceWhenParsingInput
-            (string input, string expectedColumn, int expectedRow)
+            (string input, string expectedColumnName, int expectedRow)
         {
             // Arrange, Act
-            var (column, row) = Location.Parse(input);
+            var (columnName, row) = Location.Parse(input);
             
             // Assert
-            column.Should().Be(expectedColumn);
+            columnName.Should().Be(new ColumnName(expectedColumnName));
             row.Should().Be(expectedRow);
         }
 
@@ -135,7 +108,7 @@ namespace Dgt.Minesweeper.Engine
         [Theory]
         [MemberData(nameof(ValidLocationTestData))]
         public void TryParse_Should_ReturnTrueAndLocationWhenInputIsProperlyFormatted
-            (string input, string expectedColumn, int expectedRow)
+            (string input, ColumnName expectedColumnName, int expectedRow)
         {
             // Arrange, Act
             var parsed = Location.TryParse(input, out var location);
@@ -143,7 +116,7 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             parsed.Should().BeTrue();
             location.Should().NotBeNull();
-            location!.Column.Should().Be(expectedColumn);
+            location!.ColumnName.Should().Be(expectedColumnName);
             location.Row.Should().Be(expectedRow);
         }
 
@@ -164,10 +137,10 @@ namespace Dgt.Minesweeper.Engine
         [InlineData("A", 1, "A1")]
         [InlineData("ZZ", 1, "ZZ1")]
         [InlineData("A", 99, "A99")]
-        public void ConvertToString_Should_FormatAsColumnAndRow(string column, int row, string expected)
+        public void ConvertToString_Should_FormatAsColumnNameAndRow(string columnName, int row, string expected)
         {
             // Arrange
-            var location = new Location(column, row);
+            var location = new Location(new ColumnName(columnName), row);
 
             // Act
             string actual = location;
@@ -178,14 +151,14 @@ namespace Dgt.Minesweeper.Engine
 
         [Theory]
         [MemberData(nameof(ValidLocationTestData))]
-        public void ConvertFromString_Should_ParseColumnAndStringWhenInputIsProperlyFormatted
-            (string input, string expectedColumn, int expectedRow)
+        public void ConvertFromString_Should_ParseColumnNameAndRowWhenInputIsProperlyFormatted
+            (string input, ColumnName expectedColumnName, int expectedRow)
         {
             // Arrange, Act
             var location = (Location)input;
             
             // Assert
-            location.Column.Should().Be(expectedColumn);
+            location.ColumnName.Should().Be(expectedColumnName);
             location.Row.Should().Be(expectedRow);
         }
 

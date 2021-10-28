@@ -23,45 +23,55 @@ namespace Dgt.Minesweeper.Engine
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        // This validation logic is identical to that in ColumnNameConverter. Is that telling me we have the Primitive
-        // Obsession anti-pattern, and ColumnName needs to be a type in its own right?
         public Location(string column, int row)
+            : this(row)
         {
             if (column! is null) throw new ArgumentNullException(nameof(column), $"{ColumnErrors.CannotBeNull} {ColumnRequirement}");
             if (string.IsNullOrWhiteSpace(column)) throw CreateColumnException(ColumnErrors.CannotBeEmpty);
             if (column.Any(c => !char.IsLetter(c))) throw CreateColumnException(ColumnErrors.NotCorrectFormat);
-            if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
-            
-            Column = column.ToUpperInvariant();
-            Row = row;
+
+            ColumnName = (ColumnName)column;
 
             Exception CreateColumnException(string error) => new ArgumentException($"{error} {ColumnRequirement}", nameof(column))
             {
                 Data = { { nameof(column), column } }
             };
         }
+
+        public Location(ColumnName columnName, int row)
+            : this(row)
+        {
+            ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
+        }
+
+        private Location(int row)
+        {
+            if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
+            
+            Row = row;
+        }
         
         // We can bypass constructor validation logic because we have already done the validation when
         // we matched against the Regex
         private Location(Match match)
         {
-            Column = match.Groups["column"].Value.ToUpperInvariant();
+            ColumnName = (ColumnName)match.Groups["column"].Value;
             Row = int.Parse(match.Groups["row"].Value);
         }
-        
-        public string Column { get; }
+
+        public ColumnName ColumnName { get; } = default!;
         public int Row { get; }
 
         public void Deconstruct(out string column, out int row)
         {
-            column = Column;
+            column = ColumnName;
             row = Row;
         }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
         public static bool operator ==(Location location, (string Column, int Row) tuple) =>
-            location is not null && location.Column == tuple.Column && location.Row == tuple.Row;
+            location is not null && location.ColumnName == tuple.Column && location.Row == tuple.Row;
 
         public static bool operator !=(Location location, (string Column, int Row) tuple) => !(location == tuple);
 
@@ -69,7 +79,7 @@ namespace Dgt.Minesweeper.Engine
 
         public static bool operator !=((string Column, int Row) tuple, Location location) => !(tuple == location);
 
-        public static implicit operator string(Location location) => $"{location.Column}{location.Row}";
+        public static implicit operator string(Location location) => $"{location.ColumnName.Value}{location.Row}";
 
         public static explicit operator Location(string location)
         {
@@ -138,15 +148,15 @@ namespace Dgt.Minesweeper.Engine
             {
                 return false;
             }
-
+            
             // Although the check to Subtract would catch this we can potentially short-circuit with a much simpler
             // and faster check before we get into weeds enumerating strings, converting chars to bytes and so forth
-            if (Column == location.Column)
+            if (ColumnName == location.ColumnName)
             {
                 return true;
             }
 
-            if (Subtract(Column, location.Column) is < -1 or > 1)
+            if (Subtract(ColumnName, location.ColumnName) is < -1 or > 1)
             {
                 return false;
             }
