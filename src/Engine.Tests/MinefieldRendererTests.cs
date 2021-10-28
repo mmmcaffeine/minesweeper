@@ -7,10 +7,14 @@ namespace Dgt.Minesweeper.Engine
     public class MinefieldRendererTests
     {
         // TODO Currently our "unit" test is reliant on the implementation of both Minefield and MinefieldRenderer
-        //      Minefield itself is reliant on Location and ColumnName
-        //      Ideally, we would only be reliant on one of our types. Currently if our test fails we don't immediately
-        //      know which type is at fault. We can resolve this by extracting an interface from Minefield, have
-        //      MinefieldRenderer consume that rather than the concrete type and then use a fake
+        //      Minefield itself is reliant on Location and ColumnName. Currently if our test fails we don't
+        //      immediately know whether it is our test subject that is at fault, or if it is Minefield or one of
+        //      its dependencies. Our test subject now consumes IMinefield so we could use a fake. We'd need to fake:
+        //
+        //      * NumberOfColumns (easy)
+        //      * NumberOfRows (easy)
+        //      * IsMined (not so tough as we only have two locations)
+        //      * GetHint (probably not all that hard if it defaults to returning 0)
         [Fact]
         public void Render_Should_RenderMineOrHintForEveryLocation()
         {
