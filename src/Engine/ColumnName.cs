@@ -35,16 +35,23 @@ namespace Dgt.Minesweeper.Engine
                     Data = { { nameof(value), value } }
                 };
         }
-        
-        public string Value { get; }
+
+        // Used to bypass validation of Value if we have already done it, either explicitly (explicit conversion from a
+        // string), or implicitly (explicit conversion from an int)
+        private ColumnName()
+        {
+            Value = string.Empty;
+        }
+
+        public string Value { get; private init; }
 
         public static explicit operator ColumnName(string value)
         {
             if (value! is null) throw CreateInvalidValueException();
             if (string.IsNullOrWhiteSpace(value)) throw CreateInvalidValueException();
             if (value.Any(c => !char.IsLetter(c))) throw CreateInvalidValueException();
-            
-            return new ColumnName(value);
+
+            return new ColumnName { Value = value };
             
             Exception CreateInvalidValueException() =>
                 new InvalidCastException($"{Errors.InvalidCast} {ColumnNameRequirement}")
@@ -85,7 +92,7 @@ namespace Dgt.Minesweeper.Engine
             var characters = asciiCodes.Select(code => (char)code).ToArray();
             var columnNameValue = new string(characters);
 
-            return new ColumnName(columnNameValue);
+            return new ColumnName { Value = columnNameValue };
         }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
