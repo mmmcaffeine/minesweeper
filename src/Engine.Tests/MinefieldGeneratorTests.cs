@@ -6,6 +6,7 @@ namespace Dgt.Minesweeper.Engine
     public class MinefieldGeneratorTests
     {
         // TODO We're supposed to be testing the generator, but we're reliant on the implementation of Minefield.
+        //      That, in turn is reliant on the implementation of Location and ColumnName.
         //      We might be better off changing this type to return the constructor parameters we would need to pass
         //      i.e. the ints for columns and rows, and then the IEnumerable of Cells
         [Fact]
@@ -29,8 +30,8 @@ namespace Dgt.Minesweeper.Engine
             minefield.NumberOfRows.Should().Be(3);
             minefield.CountOfMines.Should().Be(2);
 
-            minefield.IsMined(0, 0).Should().BeTrue();
-            minefield.IsMined(2, 1).Should().BeTrue();
+            minefield.IsMined(Location.Parse("A3")).Should().BeTrue();
+            minefield.IsMined(Location.Parse("C2")).Should().BeTrue();
         }
         
         [Fact]
@@ -48,31 +49,31 @@ namespace Dgt.Minesweeper.Engine
         }
         
         [Fact]
-        public void GenerateMinefield_Should_PlaceMinesInCellsThatAreSpecified()
+        public void GenerateMinefield_Should_PlaceMinesInLocationsThatAreSpecified()
         {
             // Arrange
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(4, 3, new Cell(0, 0), new Cell(3, 2));
+            var minefield = sut.GenerateMinefield(4, 3, Location.Parse("A3"), Location.Parse("C2"));
 
             // Assert
-            minefield.IsMined(0, 0).Should().BeTrue();
-            minefield.IsMined(3, 2).Should().BeTrue();
+            minefield.IsMined(Location.Parse("A3")).Should().BeTrue();
+            minefield.IsMined(Location.Parse("C2")).Should().BeTrue();
         }
         
         [Fact]
-        public void GenerateMinefield_Should_NotPlaceMinesInCellsThatAreNotSpecified()
+        public void GenerateMinefield_Should_NotPlaceMinesInLocationsThatAreNotSpecified()
         {
             // Arrange
             var sut = new MinefieldGenerator();
             
             // Act
-            var minefield = sut.GenerateMinefield(4, 3, new Cell(0, 0), new Cell(3, 2));
+            var minefield = sut.GenerateMinefield(4, 3, Location.Parse("A3"), Location.Parse("C2"));
 
             // Assert
-            minefield.IsMined(1, 1).Should().BeFalse();
-            minefield.IsMined(3, 0).Should().BeFalse();
+            minefield.IsMined(Location.Parse("B2")).Should().BeFalse();
+            minefield.IsMined(Location.Parse("D3")).Should().BeFalse();
         }
     }
 }
