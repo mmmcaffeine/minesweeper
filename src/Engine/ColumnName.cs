@@ -147,5 +147,27 @@ namespace Dgt.Minesweeper.Engine
         public static bool operator ==(string value, ColumnName columnName) => columnName == value;
 
         public static bool operator !=(string value, ColumnName columnName) => !(value == columnName);
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // People can use the null forgiving operator to pass nulls for columnName
+        public static bool operator ==(ColumnName columnName, int value)
+        {
+            var hasColumnName = columnName is not null;
+            var hasValue = value > 0;
+
+            return (hasColumnName, hasValue) switch
+            {
+                (true, true) => (int)columnName! == value,
+                (true, false) => false,
+                (false, true) => false,
+                (false, false) => true
+            };
+        }
+
+        public static bool operator !=(ColumnName columnName, int value) => !(columnName == value);
+
+        public static bool operator ==(int value, ColumnName columnName) => columnName == value;
+
+        public static bool operator !=(int value, ColumnName columnName) => !(value == columnName);
     }
 }

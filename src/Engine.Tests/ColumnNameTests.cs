@@ -34,11 +34,10 @@ namespace Dgt.Minesweeper.Engine
         public static TheoryData<string> NonLetterTestData => new() { "AA7", "6BB", "CC9", "D-D", "-E", "F+" };
         public static TheoryData<string> LowerCaseValueTestData => new() { "a", "bc", "def" };
         public static TheoryData<string> ValidValueTestData => new() { "A", "BC", "DEF" };
+        public static TheoryData<int> NotPositiveNonZeroIntegerTestData => new() { int.MinValue, -1, 0 };
 
         [Theory]
-        [InlineData(int.MinValue)]
-        [InlineData(-1)]
-        [InlineData(0)]
+        [MemberData(nameof(NotPositiveNonZeroIntegerTestData))]
         public void ExplicitConversionFromInteger_Should_ThrowWhenIndexIsZeroOrNegative(int columnIndex)
         {
             // Arrange, Act
@@ -251,6 +250,23 @@ namespace Dgt.Minesweeper.Engine
         [MemberData(nameof(EmptyStringTestData))]
         [InlineData(null)]
         public void EqualityToString_Should_BeTrueWhenColumnIsNullAndStringDoesNotHaveValue(string value)
+        {
+            // Arrange
+            ColumnName columnName = null!;
+            
+            // Act, Assert
+            using (new AssertionScope())
+            {
+                (columnName == value).Should().BeTrue();
+                (columnName != value).Should().BeFalse();
+                (value == columnName).Should().BeTrue();
+                (value != columnName).Should().BeFalse();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(NotPositiveNonZeroIntegerTestData))]
+        public void EqualityToInt_Should_BeTrueWhenColumnIsNullAndIntIsNotPositiveNonZero(int value)
         {
             // Arrange
             ColumnName columnName = null!;
