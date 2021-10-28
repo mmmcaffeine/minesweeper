@@ -186,6 +186,17 @@ namespace Dgt.Minesweeper.Engine
             (new Location("A", 1) != ("A", 1)).Should().BeFalse();
             (("A", 1) != new Location("A", 1)).Should().BeFalse();
         }
+        
+        // We test the inequality operator here because we're forced to implement both operators together
+        [Fact]
+        public void EqualityToTupleOfStringAndInt_Should_CompareColumnNameAndInt()
+        {
+            (new Location("A", 1) == (new ColumnName("A"), 1)).Should().BeTrue();
+            ((new ColumnName("A"), 1) == new Location("A", 1)).Should().BeTrue();
+            
+            (new Location("A", 1) != (new ColumnName("A"), 1)).Should().BeFalse();
+            ((new ColumnName("A"), 1) != new Location("A", 1)).Should().BeFalse();
+        }
 
         // We test the inequality operator here because we're forced to implement both operators together
         [Fact]
