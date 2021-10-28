@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace Dgt.Minesweeper.Engine
@@ -208,6 +209,60 @@ namespace Dgt.Minesweeper.Engine
             
             // Assert
             actual.Should().Be(value);
+        }
+
+        [Theory]
+        [InlineData("A", "a")]
+        [InlineData("BC", "BC")]
+        [InlineData("DEF", "dEf")]
+        [InlineData("GHI", "GhI")]
+        public void EqualityToString_Should_BeTrueRegardlessOfCasing(string columnNameValue, string valueToCompare)
+        {
+            // Arrange
+            var columnName = new ColumnName(columnNameValue);
+
+            // Act, Assert
+            using (new AssertionScope())
+            {
+                (columnName == valueToCompare).Should().BeTrue();
+                (columnName != valueToCompare).Should().BeFalse();
+                (valueToCompare == columnName).Should().BeTrue();
+                (valueToCompare != columnName).Should().BeFalse();
+            }
+        }
+
+        [Fact]
+        public void EqualityToString_Should_BeFalseWhenColumnNameIsNullAndStringHasValue()
+        {
+            // Arrange
+            ColumnName columnName = null!;
+            
+            // Act, Assert
+            using (new AssertionScope())
+            {
+                (columnName == "ABC").Should().BeFalse();
+                (columnName != "ABC").Should().BeTrue();
+                ("ABC" == columnName).Should().BeFalse();
+                ("ABC" != columnName).Should().BeTrue();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(EmptyStringTestData))]
+        [InlineData(null)]
+        public void EqualityToString_Should_BeTrueWhenColumnIsNullAndStringDoesNotHaveValue(string value)
+        {
+            // Arrange
+            ColumnName columnName = null!;
+            
+            // Act, Assert
+            using (new AssertionScope())
+            {
+                (columnName == value).Should().BeTrue();
+                (columnName != value).Should().BeFalse();
+                (value == columnName).Should().BeTrue();
+                (value != columnName).Should().BeFalse();
+            }
         }
     }
 }

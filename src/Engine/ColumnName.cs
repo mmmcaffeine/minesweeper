@@ -125,5 +125,27 @@ namespace Dgt.Minesweeper.Engine
         {
             return value.Select(c => c - AsciiCodeForA + Offset);
         }
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // People can use the null forgiving operator to pass nulls for columnName
+        public static bool operator ==(ColumnName columnName, string value)
+        {
+            var hasColumnName = columnName is not null;
+            var hasValue = !(string.IsNullOrWhiteSpace(value));
+
+            return (hasColumnName, hasValue) switch
+            {
+                (true, true) => string.Equals(columnName!.Value, value, StringComparison.OrdinalIgnoreCase),
+                (true, false) => false,
+                (false, true) => false,
+                (false, false) => true
+            };
+        }
+
+        public static bool operator !=(ColumnName columnName, string value) => !(columnName == value);
+
+        public static bool operator ==(string value, ColumnName columnName) => columnName == value;
+
+        public static bool operator !=(string value, ColumnName columnName) => !(value == columnName);
     }
 }
