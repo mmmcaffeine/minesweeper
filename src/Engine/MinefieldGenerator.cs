@@ -17,7 +17,7 @@ namespace Dgt.Minesweeper.Engine
         // * All elements other than the first should be of the length indicated in the header
         // * The number elements other than the first should match the length indicated in the header
         // * Elements that make up the field can only be '.' or '*'
-        public Minefield GenerateMinefield(IEnumerable<string> lines)
+        public IMinefield GenerateMinefield(IEnumerable<string> lines)
         {
             var listOfLines = lines.ToList();
             var headerMatch = HeaderRegex.Match(listOfLines.First());
@@ -42,7 +42,7 @@ namespace Dgt.Minesweeper.Engine
             }
         }
 
-        public Minefield GenerateMinefield(int numberOfColumns, int numberOfRows, params Location[] minedLocations)
+        public IMinefield GenerateMinefield(int numberOfColumns, int numberOfRows, params Location[] minedLocations)
         {
             return new Minefield(numberOfColumns, numberOfRows, minedLocations);
         }

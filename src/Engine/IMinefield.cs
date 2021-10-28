@@ -7,6 +7,7 @@ namespace Dgt.Minesweeper.Engine
     {
         int NumberOfColumns { get; }
         int NumberOfRows { get; }
+        int CountOfMines { get; }
         bool IsMined(Location location);
         int GetHint(Location location);
 
