@@ -8,75 +8,76 @@ namespace Dgt.Minesweeper.Engine
 {
     public record Location
     {
-        private static class ColumnErrors
+        private static class ColumnNameErrors
         {
             public const string CannotBeNull = "Value cannot be null.";
             public const string CannotBeEmpty = "Value cannot be whitespace or an empty string.";
             public const string NotCorrectFormat = "Input string was not in a correct format.";
         }
         
-        private const string ColumnRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
-        private const string RowRequirement = "Value must be a positive, non-zero integer.";
-        private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
+        private const string ColumnNameRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
+        private const string RowIndexRequirement = "Value must be a positive, non-zero integer.";
+        private const string LocationPattern = @"^\s*(?<columnName>[A-Z]+)\s*(?<rowIndex>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public Location(string column, int row)
-            : this(row)
+        public Location(string columnName, int rowIndex)
+            : this(rowIndex)
         {
-            if (column! is null) throw new ArgumentNullException(nameof(column), $"{ColumnErrors.CannotBeNull} {ColumnRequirement}");
-            if (string.IsNullOrWhiteSpace(column)) throw CreateColumnException(ColumnErrors.CannotBeEmpty);
-            if (column.Any(c => !char.IsLetter(c))) throw CreateColumnException(ColumnErrors.NotCorrectFormat);
+            if (columnName! is null) throw new ArgumentNullException(nameof(columnName), $"{ColumnNameErrors.CannotBeNull} {ColumnNameRequirement}");
+            if (string.IsNullOrWhiteSpace(columnName)) throw CreateColumnNameException(ColumnNameErrors.CannotBeEmpty);
+            if (columnName.Any(c => !char.IsLetter(c))) throw CreateColumnNameException(ColumnNameErrors.NotCorrectFormat);
 
-            ColumnName = (ColumnName)column;
+            ColumnName = (ColumnName)columnName;
 
-            Exception CreateColumnException(string error) => new ArgumentException($"{error} {ColumnRequirement}", nameof(column))
-            {
-                Data = { { nameof(column), column } }
-            };
+            Exception CreateColumnNameException(string error) =>
+                new ArgumentException($"{error} {ColumnNameRequirement}", nameof(columnName))
+                {
+                    Data = { { nameof(columnName), columnName } }
+                };
         }
 
-        public Location(ColumnName columnName, int row)
-            : this(row)
+        public Location(ColumnName columnName, int rowIndex)
+            : this(rowIndex)
         {
             ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
         }
 
-        private Location(int row)
+        private Location(int rowIndex)
         {
-            if (row <= 0) throw new ArgumentOutOfRangeException(nameof(row), row, RowRequirement);
+            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, RowIndexRequirement);
             
-            Row = row;
+            RowIndex = rowIndex;
         }
         
         // We can bypass constructor validation logic because we have already done the validation when
         // we matched against the Regex
         private Location(Match match)
         {
-            ColumnName = (ColumnName)match.Groups["column"].Value;
-            Row = int.Parse(match.Groups["row"].Value);
+            ColumnName = (ColumnName)match.Groups["columnName"].Value;
+            RowIndex = int.Parse(match.Groups["rowIndex"].Value);
         }
 
         public ColumnName ColumnName { get; } = default!;
-        public int Row { get; }
+        public int RowIndex { get; }
 
-        public void Deconstruct(out string column, out int row)
+        public void Deconstruct(out string columnName, out int rowIndex)
         {
-            column = ColumnName;
-            row = Row;
+            columnName = ColumnName;
+            rowIndex = RowIndex;
         }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
-        public static bool operator ==(Location location, (string Column, int Row) tuple) =>
-            location is not null && location.ColumnName == tuple.Column && location.Row == tuple.Row;
+        public static bool operator ==(Location location, (string ColumnName, int RowIndex) tuple) =>
+            location is not null && location.ColumnName == tuple.ColumnName && location.RowIndex == tuple.RowIndex;
 
-        public static bool operator !=(Location location, (string Column, int Row) tuple) => !(location == tuple);
+        public static bool operator !=(Location location, (string ColumnName, int RowIndex) tuple) => !(location == tuple);
 
-        public static bool operator ==((string Column, int Row) tuple, Location location) => location == tuple;
+        public static bool operator ==((string ColumnName, int RowIndex) tuple, Location location) => location == tuple;
 
-        public static bool operator !=((string Column, int Row) tuple, Location location) => !(tuple == location);
+        public static bool operator !=((string ColumnName, int RowIndex) tuple, Location location) => !(tuple == location);
 
-        public static implicit operator string(Location location) => $"{location.ColumnName.Value}{location.Row}";
+        public static implicit operator string(Location location) => $"{location.ColumnName.Value}{location.RowIndex}";
 
         public static explicit operator Location(string location)
         {
@@ -131,7 +132,7 @@ namespace Dgt.Minesweeper.Engine
 
             return new FormatException(builder.ToString())
             {
-                Data = { [nameof(input)] = input }
+                Data = { { nameof(input), input } }
             };
         }
         
@@ -153,7 +154,7 @@ namespace Dgt.Minesweeper.Engine
             };
         }
 
-        private static bool RowsAreAdjacent(Location left, Location right) => left.Row - right.Row is >= -1 and <= 1;
+        private static bool RowsAreAdjacent(Location left, Location right) => left.RowIndex - right.RowIndex is >= -1 and <= 1;
 
         private static bool ColumnsAreAdjacent(Location left, Location right) =>
             (int)left.ColumnName - (int)right.ColumnName is >= -1 and <= 1;
