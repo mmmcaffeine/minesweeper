@@ -15,9 +15,6 @@ namespace Dgt.Minesweeper.Engine
             public const string NotCorrectFormat = "Input string was not in a correct format.";
         }
         
-        private const int ColumnBase = 26;
-        private const int AsciiCodeForA = 65;
-        
         private const string ColumnRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
         private const string RowRequirement = "Value must be a positive, non-zero integer.";
         private const string LocationPattern = @"^\s*(?<column>[A-Z]+)\s*(?<row>\d+)\s*$";
