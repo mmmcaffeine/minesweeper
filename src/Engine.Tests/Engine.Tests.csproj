@@ -42,4 +42,10 @@
         <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="GameTests.cs" />
+      <Compile Remove="MinefieldGeneratorTests.cs" />
+      <Compile Remove="MinefieldRendererTests.cs" />
+    </ItemGroup>
+
 </Project>
