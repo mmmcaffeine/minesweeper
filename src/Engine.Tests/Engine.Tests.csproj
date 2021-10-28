@@ -42,8 +42,4 @@
         <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="GameTests.cs" />
-    </ItemGroup>
-
 </Project>
