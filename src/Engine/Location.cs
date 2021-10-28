@@ -148,34 +148,13 @@ namespace Dgt.Minesweeper.Engine
             {
                 return false;
             }
-            
-            // Although the check to Subtract would catch this we can potentially short-circuit with a much simpler
-            // and faster check before we get into weeds enumerating strings, converting chars to bytes and so forth
-            if (ColumnName == location.ColumnName)
-            {
-                return true;
-            }
 
-            if (Subtract(ColumnName, location.ColumnName) is < -1 or > 1)
+            if (((int)ColumnName - (int)location.ColumnName) is < -1 or > 1)
             {
                 return false;
             }
 
             return true;
-        }
-
-        private static int Subtract(string left, string right) => ConvertToInt(left) - ConvertToInt(right);
-        
-        private static int ConvertToInt(string value)
-        {
-            var converted = 0;
-            
-            for (var index = value.Length - 1; index >= 0; index--)
-            {
-                converted += (value[index] - AsciiCodeForA) + (ColumnBase * index);
-            }
-
-            return converted;
         }
     }
 }
