@@ -23,6 +23,38 @@ namespace Dgt.Minesweeper.Engine
             hint.Should().Be(expectedHint);
         }
 
+        [Theory]
+        [InlineData("A3")]
+        [InlineData("C2")]
+        public void IsMined_Should_ReturnTrueWhenLocationIsMined(string location)
+        {
+            // Arrange
+            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            
+            // Act
+            var isMined = sut.IsMined(Location.Parse(location));
+            
+            // Assert
+            isMined.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("A1")]
+        [InlineData("B2")]
+        [InlineData("C3")]
+        [InlineData("D1")]
+        public void IsMined_Should_ReturnFalseWhenLocationIsNotMined(string location)
+        {
+            // Arrange
+            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            
+            // Act
+            var isMined = sut.IsMined(Location.Parse(location));
+            
+            // Assert
+            isMined.Should().BeFalse();
+        }
+
         // TODO We could make our exception better by:
         // * Putting the actual location on the exception (maybe in Data if we don't want to write our own exception type)
         // * Indicating whether it is column, row, or both that are out of range

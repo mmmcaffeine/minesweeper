@@ -37,10 +37,9 @@ namespace Dgt.Minesweeper.Engine
 
         private bool HasLocation(Location location) => HasLocation((int)location.ColumnName, location.RowIndex);
 
-        // I think this is off by one as we inherited it from when we were using a zero-based coordinate system
-        private bool HasLocation(int columnIndex, int rowIndex) => columnIndex >= 0
-                                                     && columnIndex < NumberOfColumns
-                                                     && rowIndex >= 0
-                                                     && rowIndex < NumberOfRows;
+        private bool HasLocation(int columnIndex, int rowIndex) => columnIndex > 0
+                                                     && columnIndex <= NumberOfColumns
+                                                     && rowIndex > 0
+                                                     && rowIndex <= NumberOfRows;
     }
 }
