@@ -27,7 +27,7 @@ namespace Dgt.Minesweeper.Engine
         // * Putting the actual location on the exception (maybe in Data if we don't want to write our own exception type)
         // * Indicating whether it is column, row, or both that are out of range
         [Fact]
-        public void IsMined_Should_ThrowWhenCellIsNotInMinefield()
+        public void IsMined_Should_ThrowWhenLocationIsNotInMinefield()
         {
             // Arrange
             var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
