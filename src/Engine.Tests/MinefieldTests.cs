@@ -79,7 +79,7 @@ namespace Dgt.Minesweeper.Engine
         public void GetHint_Should_ReturnNumberOfAdjacentMines(string location, int expectedHint)
         {
             // Arrange
-            var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            var minefield = new Minefield(4, 3, new[] { "A3", "C2" });
 
             // Act
             var hint = minefield.GetHint(Location.Parse(location));
@@ -94,7 +94,7 @@ namespace Dgt.Minesweeper.Engine
         public void IsMined_Should_ReturnTrueWhenLocationIsMined(string location)
         {
             // Arrange
-            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            var sut = new Minefield(4, 3, new[] { "A3", "C2" });
             
             // Act
             var isMined = sut.IsMined(Location.Parse(location));
@@ -111,7 +111,7 @@ namespace Dgt.Minesweeper.Engine
         public void IsMined_Should_ReturnFalseWhenLocationIsNotMined(string location)
         {
             // Arrange
-            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            var sut = new Minefield(4, 3, new[] { "A3", "C2" });
             
             // Act
             var isMined = sut.IsMined(Location.Parse(location));
@@ -127,7 +127,7 @@ namespace Dgt.Minesweeper.Engine
         public void IsMined_Should_ThrowWhenLocationIsNotInMinefield()
         {
             // Arrange
-            var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            var minefield = new Minefield(4, 3, new[] { "A3", "C2" });
             var locationToTest = Location.Parse("E1");
             
             // Act, Assert
