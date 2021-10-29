@@ -75,6 +75,15 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
+        [InlineData("A1", 1)]
+        [InlineData("B1", 2)]
+        [InlineData("F1", 6)]
+        public void ColumnIndex_Should_BeIntegerValueOfColumnName(string location, int expectedColumnIndex)
+        {
+            Location.Parse(location).ColumnIndex.Should().Be(expectedColumnIndex);
+        }
+
+        [Theory]
         [MemberData(nameof(ValidLocationTestData))]
         public void Parse_Should_ParseColumnNameAndRowIndexWhenInputIsProperlyFormatted
             (string input, ColumnName expectedColumnName, int expectedRowIndex)
