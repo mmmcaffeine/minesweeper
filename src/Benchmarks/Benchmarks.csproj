@@ -28,8 +28,4 @@
       <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="GameBenchmarks.cs" />
-    </ItemGroup>
-
 </Project>

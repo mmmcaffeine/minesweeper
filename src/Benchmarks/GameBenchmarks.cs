@@ -25,19 +25,19 @@ namespace Dgt.Minesweeper.Benchmarks
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         [Benchmark]
 #pragma warning disable CA1822
-        public void GetCells_Using_NestedForLoop(int numberOfRowsAndColumns)
+        public void GetLocations_Using_NestedForLoop(int numberOfRowsAndColumns)
 #pragma warning restore CA1822
         {
-            DoGetCellsUsingNestedForLoop(numberOfRowsAndColumns).Consume(Consumer);
+            DoGetLocationsUsingNestedForLoop(numberOfRowsAndColumns).Consume(Consumer);
         }
 
-        private static IEnumerable<Cell> DoGetCellsUsingNestedForLoop(int numberOfRowsAndColumns)
+        private static IEnumerable<Location> DoGetLocationsUsingNestedForLoop(int numberOfRowsAndColumns)
         {
-            for (var columnIndex = 0; columnIndex < numberOfRowsAndColumns; columnIndex++)
+            for (var columnIndex = 1; columnIndex <= numberOfRowsAndColumns; columnIndex++)
             {
-                for (var rowIndex = 0; rowIndex < numberOfRowsAndColumns; rowIndex++)
+                for (var rowIndex = 1; rowIndex <= numberOfRowsAndColumns; rowIndex++)
                 {
-                    yield return new Cell(columnIndex, rowIndex);
+                    yield return new Location((ColumnName)columnIndex, rowIndex);
                 }
             }
         }
@@ -45,22 +45,22 @@ namespace Dgt.Minesweeper.Benchmarks
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         [Benchmark]
 #pragma warning disable CA1822
-        public void GetCells_Using_NestedForEachLoop(int numberOfRowsAndColumns)
+        public void GetLocations_Using_NestedForEachLoop(int numberOfRowsAndColumns)
 #pragma warning restore CA1822
         {
-            DoGetCellsUsingNestedForEachLoop(numberOfRowsAndColumns).Consume(Consumer);
+            DoGetLocationsUsingNestedForEachLoop(numberOfRowsAndColumns).Consume(Consumer);
         }
 
-        private static IEnumerable<Cell> DoGetCellsUsingNestedForEachLoop(int numberOfRowsAndColumns)
+        private static IEnumerable<Location> DoGetLocationsUsingNestedForEachLoop(int numberOfRowsAndColumns)
         {
-            var columnIndices = Enumerable.Range(0, numberOfRowsAndColumns);
-            var rowIndices = Enumerable.Range(0, numberOfRowsAndColumns).ToList();
+            var columnIndices = Enumerable.Range(1, numberOfRowsAndColumns);
+            var rowIndices = Enumerable.Range(1, numberOfRowsAndColumns).ToList();
 
             foreach (var columnIndex in columnIndices)
             {
                 foreach (var rowIndex in rowIndices)
                 {
-                    yield return new Cell(columnIndex, rowIndex);
+                    yield return new Location((ColumnName)columnIndex, rowIndex);
                 }
             }
         }
@@ -68,31 +68,31 @@ namespace Dgt.Minesweeper.Benchmarks
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         [Benchmark]
 #pragma warning disable CA1822
-        public void GetCells_Using_SelectMany(int numberOfRowsAndColumns)
+        public void GetLocations_Using_SelectMany(int numberOfRowsAndColumns)
 #pragma warning restore CA1822
         {
-            var columnIndices = Enumerable.Range(0, numberOfRowsAndColumns);
-            var rowIndices = Enumerable.Range(0, numberOfRowsAndColumns);
+            var columnIndices = Enumerable.Range(1, numberOfRowsAndColumns);
+            var rowIndices = Enumerable.Range(1, numberOfRowsAndColumns);
+
+            var locations = columnIndices.SelectMany(_ => rowIndices, (ci, ri) => new Location((ColumnName)ci, ri));
             
-            var cells = columnIndices.SelectMany(_ => rowIndices, (ci, ri) => new Cell(ci, ri));
-            
-            cells.Consume(Consumer);
+            locations.Consume(Consumer);
         }
         
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         [Benchmark]
 #pragma warning disable CA1822
-        public void GetCells_Using_QueryExpression(int numberOfRowsAndColumns)
+        public void GetLocations_Using_QueryExpression(int numberOfRowsAndColumns)
 #pragma warning restore CA1822
         {
-            var columnIndices = Enumerable.Range(0, numberOfRowsAndColumns);
-            var rowIndices = Enumerable.Range(0, numberOfRowsAndColumns);
+            var columnIndices = Enumerable.Range(1, numberOfRowsAndColumns);
+            var rowIndices = Enumerable.Range(1, numberOfRowsAndColumns);
+
+            var locations = from columnIndex in columnIndices
+                            from rowIndex in rowIndices
+                            select new Location((ColumnName)columnIndex, rowIndex);
             
-            var cells = from columnIndex in columnIndices
-                        from rowIndex in rowIndices
-                        select new Cell(columnIndex, rowIndex);
-            
-            cells.Consume(Consumer);
+            locations.Consume(Consumer);
         }
     }
 }
