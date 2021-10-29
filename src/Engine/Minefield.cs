@@ -73,12 +73,11 @@ namespace Dgt.Minesweeper.Engine
         private Exception CreateLocationNotInMinefieldException(Location location, string paramName)
         {
             var builder = new StringBuilder();
-            var (columnName, rowIndex) = location;
 
             builder.Append("The location does not exist in the minefield.");
 
-            if ((int)columnName > NumberOfColumns) builder.Append(" The column is out of bounds.");
-            if (rowIndex > NumberOfRows) builder.Append(" The row is out of bounds.");
+            if (location.ColumnIndex > NumberOfColumns) builder.Append(" The column is out of bounds.");
+            if (location.RowIndex > NumberOfRows) builder.Append(" The row is out of bounds.");
 
             return new ArgumentException(builder.ToString(), paramName)
             {
@@ -86,7 +85,7 @@ namespace Dgt.Minesweeper.Engine
             };
         }
 
-        private bool HasLocation(Location location) => HasLocation((int)location.ColumnName, location.RowIndex);
+        private bool HasLocation(Location location) => HasLocation(location.ColumnIndex, location.RowIndex);
 
         private bool HasLocation(int columnIndex, int rowIndex) => columnIndex > 0
                                                      && columnIndex <= NumberOfColumns
