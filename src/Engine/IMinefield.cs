@@ -13,9 +13,9 @@ namespace Dgt.Minesweeper.Engine
 
         private IEnumerable<Location> GetLocations()
         {
-            for (var columnIndex = 0; columnIndex < NumberOfColumns; columnIndex++)
+            for (var columnIndex = 1; columnIndex <= NumberOfColumns; columnIndex++)
             {
-                for (var rowIndex = 0; rowIndex < NumberOfRows; rowIndex++)
+                for (var rowIndex = 1; rowIndex <= NumberOfRows; rowIndex++)
                 {
                     yield return new Location((ColumnName)columnIndex, rowIndex);
                 }
