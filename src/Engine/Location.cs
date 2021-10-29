@@ -151,9 +151,17 @@ namespace Dgt.Minesweeper.Engine
         
         public bool IsAdjacentTo(Location location)
         {
-            return AreDifferentLocations(this, location)
-                   && RowsAreAdjacent(this, location)
-                   && ColumnsAreAdjacent(this, location);
+            if (!AreDifferentLocations(this, location))
+            {
+                return false;
+            }
+
+            return (this - location) switch
+            {
+                (< -1 or > 1, _) => false,
+                (_, < -1 or > 1) => false,
+                (_, _) => true
+            };
         }
 
         private static bool AreDifferentLocations(Location left, Location right)
@@ -166,10 +174,5 @@ namespace Dgt.Minesweeper.Engine
                 _ => true
             };
         }
-
-        private static bool RowsAreAdjacent(Location left, Location right) => left.RowIndex - right.RowIndex is >= -1 and <= 1;
-
-        private static bool ColumnsAreAdjacent(Location left, Location right) =>
-            (int)left.ColumnName - (int)right.ColumnName is >= -1 and <= 1;
     }
 }
