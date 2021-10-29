@@ -16,9 +16,14 @@ namespace Dgt.Minesweeper.Engine
         }
         
         private const string ColumnNameRequirement = "Value must be one or more letters, with no other characters e.g. 'AA'.";
-        private const string RowIndexRequirement = "Value must be a positive, non-zero integer.";
+        private const string IndexRequirement = "Value must be a positive, non-zero integer.";
         private const string LocationPattern = @"^\s*(?<columnName>[A-Z]+)\s*(?<rowIndex>\d+)\s*$";
         private static readonly Regex LocationRegex = new(LocationPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        public Location(int columnIndex, int rowIndex)
+            : this(columnIndex > 0 ? (ColumnName)columnIndex : throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, IndexRequirement), rowIndex)
+        {
+        }
 
         public Location(string columnName, int rowIndex)
             : this(rowIndex)
@@ -44,7 +49,7 @@ namespace Dgt.Minesweeper.Engine
 
         private Location(int rowIndex)
         {
-            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, RowIndexRequirement);
+            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, IndexRequirement);
             
             RowIndex = rowIndex;
         }

@@ -18,6 +18,8 @@ namespace Dgt.Minesweeper.Engine
         public static TheoryData<string> InvalidLocationTestData => new() { "A", "1", "1A", "Nope!" };
 
         public static TheoryData<string> MissingValuesTestData => new() { null!, string.Empty, "\t", "\r\n", "   " };
+
+        public static TheoryData<int> InvalidIndexTestData => new() { int.MinValue, -1, 0 };
         
         [Fact]
         public void Ctor_Should_ThrowWhenColumnNameStringIsNull()
@@ -45,10 +47,22 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Theory]
-        [InlineData(int.MinValue)]
-        [InlineData(-1)]
-        [InlineData(0)]
-        public void Ctor_Should_ThrowWhenRowIndexIsNotPositive(int rowIndex)
+        [MemberData(nameof(InvalidIndexTestData))]
+        public void Ctor_Should_ThrowWhenColumnNameIsNotPositiveNonZero(int columnIndex)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Location(columnIndex, 1);
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("columnIndex")
+                .And.ActualValue.Should().Be(columnIndex);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidIndexTestData))]
+        public void Ctor_Should_ThrowWhenRowIndexIsNotPositiveNonZero(int rowIndex)
         {
             // Arrange, Act
             Action act = () => _ = new Location("AA", rowIndex);
