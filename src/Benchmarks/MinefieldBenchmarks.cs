@@ -8,35 +8,35 @@ namespace Dgt.Minesweeper.Benchmarks
     [MemoryDiagnoser]
     public class MinefieldBenchmarks
     {
-        public static IEnumerable<int> ValuesForNumberOfMines
+        private HashSet<Location> _minedLocations = default!;
+        
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // BenchmarkDotNet requires public read / write properties for us to use the Params attributes
+        [Params(2, 10, 100, 1000)]
+        public int NumberOfMines { get; set; }
+
+        [GlobalSetup]
+        public void GlobalSetup()
         {
-            get
-            {
-                yield return 2;
-                yield return 10;
-                yield return 100;
-                yield return 1000;
-            }
+            _minedLocations = new HashSet<Location>();
+            
+            PopulateMinefield();
         }
 
-        private readonly HashSet<Location> _minedLocations = new();
-
-        private void PopulateMinefield(int numberOfMines)
+        private void PopulateMinefield()
         {
-            for (var i = 1; i < numberOfMines; i++)
+            for (var i = 1; i <= NumberOfMines; i++)
             {
                 _minedLocations.Add(new Location((ColumnName)i, i));
             }
         }
 
-        [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark(Baseline = true)]
-        public int GetHint_By_CountingAdjacentLocationsThatAreMined(int numberOfMines)
+        public int GetHint_By_CountingAdjacentLocationsThatAreMined()
         {
-            PopulateMinefield(numberOfMines);
-
             var location = Location.Parse("B1");
-            var adjacentLocations = GetAdjacentLocations(location, numberOfMines);
+            var adjacentLocations = GetAdjacentLocations(location);
 
             return adjacentLocations.Count(l => _minedLocations.Contains(l));
         }
@@ -46,7 +46,7 @@ namespace Dgt.Minesweeper.Benchmarks
         // and thus ColumnName that implementation has now been split up. Location now knows whether two Locations
         // are adjacent. However, being able to convert a ColumnName into an integer (index) value is now in
         // ColumnName. Although no longer reflective of the actual implementation it is still a reasonable test
-        private static IEnumerable<Location> GetAdjacentLocations(Location location, int numberOfMines)
+        private IEnumerable<Location> GetAdjacentLocations(Location location)
         {
             var locationColumnIndex = (int)location.ColumnName;
             
@@ -54,7 +54,7 @@ namespace Dgt.Minesweeper.Benchmarks
             {
                 for (var rowIndex = location.RowIndex - 1; rowIndex <= location.RowIndex + 1; rowIndex++)
                 {
-                    if (!HasLocation(columnIndex, rowIndex, numberOfMines))
+                    if (!HasLocation(columnIndex, rowIndex))
                     {
                         continue;
                     }
@@ -68,20 +68,17 @@ namespace Dgt.Minesweeper.Benchmarks
         }
         
         // Lifted from the implementation of Minefield
-        private static bool HasLocation(int columnIndex, int rowIndex, int numberOfMines)
+        private bool HasLocation(int columnIndex, int rowIndex)
         {
             return columnIndex > 0
-                   && columnIndex <= numberOfMines
+                   && columnIndex <= NumberOfMines
                    && rowIndex > 0
-                   && rowIndex <= numberOfMines;
+                   && rowIndex <= NumberOfMines;
         }
 
-        [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark]
-        public int GetHint_By_CountingMinedLocationsThatAreAdjacent(int numberOfMines)
+        public int GetHint_By_CountingMinedLocationsThatAreAdjacent()
         {
-            PopulateMinefield(numberOfMines);
-
             var location = Location.Parse("B1");
             
             return _minedLocations.Count(l => l.IsAdjacentTo(location));
