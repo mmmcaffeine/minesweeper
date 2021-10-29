@@ -310,7 +310,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Fact]
-        public void Subtract_ShouldReturnDefaultTupleWhenWhenEitherOperandIsNull()
+        public void Subtract_Should_ReturnDefaultTupleWhenWhenEitherOperandIsNull()
         {
             // Arrange
             var notNullLocation = Location.Parse("A1");
