@@ -249,6 +249,24 @@ namespace Dgt.Minesweeper.Engine
         [Theory]
         [MemberData(nameof(EmptyStringTestData))]
         [InlineData(null)]
+        public void EqualityToString_Should_BeFalseWhenColumnNameIsNotNullAndStringDoesNotHaveValue(string value)
+        {
+            // Arrange
+            var columnName = new ColumnName("A");
+
+            // Act, Assert
+            using (new AssertionScope())
+            {
+                (columnName == value).Should().BeFalse();
+                (columnName != value).Should().BeTrue();
+                (value == columnName).Should().BeFalse();
+                (value != columnName).Should().BeTrue();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(EmptyStringTestData))]
+        [InlineData(null)]
         public void EqualityToString_Should_BeTrueWhenColumnIsNullAndStringDoesNotHaveValue(string value)
         {
             // Arrange
