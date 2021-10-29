@@ -8,6 +8,15 @@ namespace Dgt.Minesweeper.Engine
     {
         private readonly HashSet<Location> _minedLocations;
 
+        public Minefield(int numberOfRowsAndColumns, IEnumerable<string> minedLocations)
+            : this
+            (
+                numberOfRowsAndColumns,
+                (minedLocations ?? throw new ArgumentNullException(nameof(minedLocations))).Select(Location.Parse)
+            )
+        {
+        }
+
         public Minefield(int numberOfRowsAndColumns, IEnumerable<Location> minedLocations)
             : this
             (
@@ -20,7 +29,16 @@ namespace Dgt.Minesweeper.Engine
         {
         }
 
-        // TODO Validate non-null enumerable for mined cells
+        public Minefield(int numberOfColumns, int numberOfRows, IEnumerable<string> minedLocations)
+            : this
+            (
+                numberOfColumns,
+                numberOfRows,
+                (minedLocations ?? throw new ArgumentNullException(nameof(minedLocations))).Select(Location.Parse)
+            )
+        {
+        }
+
         public Minefield(int numberOfColumns, int numberOfRows, IEnumerable<Location> minedLocations)
         {
             NumberOfColumns = numberOfColumns > 0
@@ -29,7 +47,9 @@ namespace Dgt.Minesweeper.Engine
             NumberOfRows = numberOfRows > 0
                 ? numberOfRows
                 : throw CreateNumberOfException(numberOfRows, nameof(numberOfRows));
-            _minedLocations = new HashSet<Location>(minedLocations);
+            _minedLocations = minedLocations is not null
+                ? new HashSet<Location>(minedLocations)
+                : throw new ArgumentNullException(nameof(minedLocations));
         }
 
         private static Exception CreateNumberOfException(int numberOf, string paramName) =>

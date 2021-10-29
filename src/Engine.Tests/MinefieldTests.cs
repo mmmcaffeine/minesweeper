@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace Dgt.Minesweeper.Engine
@@ -48,6 +50,25 @@ namespace Dgt.Minesweeper.Engine
                 .WithMessage("Value must be a positive, non-zero integer.*")
                 .WithParameterName("numberOfRows")
                 .And.ActualValue.Should().Be(numberOfRows);
+        }
+
+        [Fact]
+        public void Ctor_Should_ThrowWhenMinedLocationsIsNull()
+        {
+            // Arrange, Act
+            var acts = new List<Action>
+            {
+                () => _ = new Minefield(2, 2, (IEnumerable<Location>)null!),
+                () => _ = new Minefield(2, 2, (IEnumerable<string>)null!),
+                () => _ = new Minefield(2, (IEnumerable<Location>)null!),
+                () => _ = new Minefield(2, (IEnumerable<string>)null!)
+            };
+
+            // Assert
+            using (new AssertionScope())
+            {
+                acts.ForEach(x => x.Should().Throw<ArgumentNullException>().WithParameterName("minedLocations"));
+            }
         }
         
         [Theory]
