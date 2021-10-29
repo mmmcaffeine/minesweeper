@@ -294,5 +294,40 @@ namespace Dgt.Minesweeper.Engine
             columnName.Should().Be(expectedColumnName);
             rowIndex.Should().Be(expectedRowIndex);
         }
+
+        [Fact]
+        public void Subtract_ShouldReturnDefaultTupleWhenWhenEitherOperandIsNull()
+        {
+            // Arrange
+            var notNullLocation = Location.Parse("A1");
+            var nullLocation = (Location)null!;
+
+            // Act, Assert
+            (notNullLocation - nullLocation).Should().Be((0, 0));
+            (nullLocation - notNullLocation).Should().Be((0, 0));
+            (nullLocation - nullLocation).Should().Be((0, 0));
+        }
+
+        [Theory]
+        [InlineData("A1", "A1", 0, 0)]
+        [InlineData("B1", "A1", 1, 0)]
+        [InlineData("A1", "B1", -1, 0)]
+        [InlineData("A2", "A1", 0, 1)]
+        [InlineData("A1", "A2", 0, -1)]
+        [InlineData("E5", "C3", 2, 2)]
+        public void Subtract_Should_ReturnColumnDifferenceAndRowDifference
+            (string left, string right, int expectedColumnDifference, int expectedRowDifference)
+        {
+            // Arrange
+            var leftLocation = Location.Parse(left);
+            var rightLocation = Location.Parse(right);
+            
+            // Act
+            var (columnDifference, rowDifference) = leftLocation - rightLocation;
+            
+            // Assert
+            columnDifference.Should().Be(expectedColumnDifference);
+            rowDifference.Should().Be(expectedRowDifference);
+        }
     }
 }

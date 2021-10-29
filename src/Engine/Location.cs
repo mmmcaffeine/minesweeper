@@ -66,6 +66,19 @@ namespace Dgt.Minesweeper.Engine
             rowIndex = RowIndex;
         }
 
+        public static (int ColumnDifference, int RowDifference) operator -(Location left, Location right)
+        {
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
+            // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
+            if (left is null || right is null) return default;
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
+            
+            var columnDifference = (int)left.ColumnName - (int)right.ColumnName;
+            var rowDifference = left.RowIndex - right.RowIndex;
+
+            return (columnDifference, rowDifference);
+        }
+
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         // People can use the null forgiving operator to pass nulls for location and cause NullReferenceExceptions
         public static bool operator ==(Location location, (string ColumnName, int RowIndex) tuple) =>
