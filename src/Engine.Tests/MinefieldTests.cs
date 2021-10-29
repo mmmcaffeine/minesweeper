@@ -130,8 +130,11 @@ namespace Dgt.Minesweeper.Engine
             var minefield = new Minefield(4, 3, new[] { "A3", "C2" });
             var locationToTest = Location.Parse("E1");
             
+            // Act
+            Action act = () => _ = minefield.IsMined(locationToTest);
+            
             // Act, Assert
-            minefield.Invoking(x => x.IsMined(locationToTest)).Should().Throw<ArgumentException>()
+            act.Should().Throw<ArgumentException>()
                 .WithMessage("The location does not exist in the minefield.*")
                 .WithParameterName("location");
         }
