@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Microsoft.VisualBasic;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -61,16 +63,27 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsMined(Location location)
         {
-            if (!HasLocation(location)) throw CreateLocationNotInMinefieldException(nameof(location));
+            if (!HasLocation(location)) throw CreateLocationNotInMinefieldException(location, nameof(location));
 
             return _minedLocations.Contains(location);
         }
 
         public int GetHint(Location location) => _minedLocations.Count(c => c.IsAdjacentTo(location));
 
-        private static Exception CreateLocationNotInMinefieldException(string paramName)
+        private Exception CreateLocationNotInMinefieldException(Location location, string paramName)
         {
-            return new ArgumentException("The location does not exist in the minefield.", paramName);
+            var builder = new StringBuilder();
+            var (columnName, rowIndex) = location;
+
+            builder.Append("The location does not exist in the minefield.");
+
+            if ((int)columnName > NumberOfColumns) builder.Append(" The column is out of bounds.");
+            if (rowIndex > NumberOfRows) builder.Append(" The row is out of bounds.");
+
+            return new ArgumentException(builder.ToString(), paramName)
+            {
+                Data = { { nameof(location), location } }
+            };
         }
 
         private bool HasLocation(Location location) => HasLocation((int)location.ColumnName, location.RowIndex);

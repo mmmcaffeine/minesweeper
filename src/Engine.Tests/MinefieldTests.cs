@@ -120,15 +120,12 @@ namespace Dgt.Minesweeper.Engine
             isMined.Should().BeFalse();
         }
 
-        // TODO We could make our exception better by:
-        // * Putting the actual location on the exception (maybe in Data if we don't want to write our own exception type)
-        // * Indicating whether it is column, row, or both that are out of range
         [Fact]
         public void IsMined_Should_ThrowWhenLocationIsNotInMinefield()
         {
             // Arrange
             var minefield = new Minefield(4, 3, new[] { "A3", "C2" });
-            var locationToTest = Location.Parse("E1");
+            var locationToTest = Location.Parse("E7");
             
             // Act
             Action act = () => _ = minefield.IsMined(locationToTest);
@@ -136,7 +133,10 @@ namespace Dgt.Minesweeper.Engine
             // Act, Assert
             act.Should().Throw<ArgumentException>()
                 .WithMessage("The location does not exist in the minefield.*")
-                .WithParameterName("location");
+                .WithMessage("*The column is out of bounds.*")
+                .WithMessage("*The row is out of bounds.*")
+                .WithParameterName("location")
+                .Where(ex => ex.Data.Contains("location") && ex.Data["location"]!.Equals(locationToTest));
         }
     }
 }
