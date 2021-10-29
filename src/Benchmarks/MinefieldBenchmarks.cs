@@ -19,61 +19,72 @@ namespace Dgt.Minesweeper.Benchmarks
             }
         }
 
-        private readonly HashSet<Cell> _minedCells = new();
+        private readonly HashSet<Location> _minedLocations = new();
 
         private void PopulateMinefield(int numberOfMines)
         {
-            for (var i = 0; i < numberOfMines; i++)
+            for (var i = 1; i < numberOfMines; i++)
             {
-                _minedCells.Add(new Cell(i, i));
+                _minedLocations.Add(new Location((ColumnName)i, i));
             }
         }
 
         [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark(Baseline = true)]
-        public int GetHint_By_CountingAdjacentCellsThatAreMined(int numberOfMines)
+        public int GetHint_By_CountingAdjacentLocationsThatAreMined(int numberOfMines)
         {
             PopulateMinefield(numberOfMines);
-            
-            return GetAdjacentCells(new Cell(1, 0), numberOfMines).Count(cell => _minedCells.Contains(cell));
+
+            var location = Location.Parse("B1");
+            var adjacentLocations = GetAdjacentLocations(location, numberOfMines);
+
+            return adjacentLocations.Count(l => _minedLocations.Contains(l));
         }
 
-        // Lifted from the implementation of Minefield, and tweaked to account for us not knowing the size of the
-        // "minefield" until the specific benchmark runs
-        private static IEnumerable<Cell> GetAdjacentCells(Cell cell, int numberOfMines)
+        // Originally lifted from the implementation of Minefield, and tweaked to account for us not knowing the size
+        // of the "minefield" until the specific benchmark runs. However, since switching Minefield to use Location
+        // and thus ColumnName that implementation has now been split up. Location now knows whether two Locations
+        // are adjacent. However, being able to convert a ColumnName into an integer (index) value is now in
+        // ColumnName. Although no longer reflective of the actual implementation it is still a reasonable test
+        private static IEnumerable<Location> GetAdjacentLocations(Location location, int numberOfMines)
         {
-            for (var columnIndex = cell.ColumnIndex - 1; columnIndex <= cell.ColumnIndex + 1; columnIndex++)
+            var locationColumnIndex = (int)location.ColumnName;
+            
+            for (var columnIndex = locationColumnIndex - 1; columnIndex <= locationColumnIndex + 1; columnIndex++)
             {
-                for (var rowIndex = cell.RowIndex - 1; rowIndex <= cell.RowIndex + 1; rowIndex++)
+                for (var rowIndex = location.RowIndex - 1; rowIndex <= location.RowIndex + 1; rowIndex++)
                 {
-                    var currentCell = new Cell(columnIndex, rowIndex);
-                    
-                    if (HasCell(currentCell, numberOfMines) && currentCell != cell)
+                    if (!HasLocation(columnIndex, rowIndex, numberOfMines))
                     {
-                        yield return new Cell(columnIndex, rowIndex);
+                        continue;
                     }
+                    
+                    var currentColumnName = (ColumnName)columnIndex;
+                    var currentLocation = new Location(currentColumnName, rowIndex);
+                    
+                    yield return currentLocation;
                 }
             }
         }
         
         // Lifted from the implementation of Minefield
-        private static bool HasCell(Cell cell, int numberOfMines)
+        private static bool HasLocation(int columnIndex, int rowIndex, int numberOfMines)
         {
-            var (columnIndex, rowIndex) = cell;
-            
-            return columnIndex >= 0
-                   && columnIndex < numberOfMines
-                   && rowIndex >= 0
-                   && rowIndex < numberOfMines;
+            return columnIndex > 0
+                   && columnIndex <= numberOfMines
+                   && rowIndex > 0
+                   && rowIndex <= numberOfMines;
         }
 
         [ArgumentsSource(nameof(ValuesForNumberOfMines))]
         [Benchmark]
-        public int GetHint_ByCountingMinedCellsThatAreAdjacent(int numberOfMines)
+        public int GetHint_By_CountingMinedLocationsThatAreAdjacent(int numberOfMines)
         {
             PopulateMinefield(numberOfMines);
+
+            var location = Location.Parse("B1");
             
-            return _minedCells.Count(cell => cell.IsAdjacentTo(new Cell(1, 0)));
+            return _minedLocations.Count(l => l.IsAdjacentTo(location));
         }
     }
 }
