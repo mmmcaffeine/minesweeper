@@ -6,6 +6,50 @@ namespace Dgt.Minesweeper.Engine
 {
     public class MinefieldTests
     {
+        public static TheoryData<int> InvalidNumberOfTestData = new() { int.MinValue, -1, 0 };
+
+        [Theory]
+        [MemberData(nameof(InvalidNumberOfTestData))]
+        public void Ctor_Should_ThrowWhenNumberOfRowsAndColumnsIsNotPositiveNonZero(int numberOfRowsAndColumns)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Minefield(numberOfRowsAndColumns, Array.Empty<Location>());
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("numberOfRowsAndColumns")
+                .And.ActualValue.Should().Be(numberOfRowsAndColumns);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidNumberOfTestData))]
+        public void Ctor_Should_ThrowWhenNumberOfColumnsIsNotPositiveNonZero(int numberOfColumns)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Minefield(numberOfColumns, 2, Array.Empty<Location>());
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("numberOfColumns")
+                .And.ActualValue.Should().Be(numberOfColumns);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidNumberOfTestData))]
+        public void Ctor_Should_ThrowWhenNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
+        {
+            // Arrange, Act
+            Action act = () => _ = new Minefield(2, numberOfRows, Array.Empty<Location>());
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("numberOfRows")
+                .And.ActualValue.Should().Be(numberOfRows);
+        }
+        
         [Theory]
         [InlineData("B3", 2)]
         [InlineData("A1", 0)]

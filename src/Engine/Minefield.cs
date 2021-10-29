@@ -8,14 +8,32 @@ namespace Dgt.Minesweeper.Engine
     {
         private readonly HashSet<Location> _minedLocations;
 
-        // TODO Validate positive non-zero integers (and maybe more than 1 makes sense?
+        public Minefield(int numberOfRowsAndColumns, IEnumerable<Location> minedLocations)
+            : this
+            (
+                numberOfRowsAndColumns > 0
+                    ? numberOfRowsAndColumns
+                    : throw CreateNumberOfException(numberOfRowsAndColumns, nameof(numberOfRowsAndColumns)),
+                numberOfRowsAndColumns,
+                minedLocations
+            )
+        {
+        }
+
         // TODO Validate non-null enumerable for mined cells
         public Minefield(int numberOfColumns, int numberOfRows, IEnumerable<Location> minedLocations)
         {
-            NumberOfColumns = numberOfColumns;
-            NumberOfRows = numberOfRows;
+            NumberOfColumns = numberOfColumns > 0
+                ? numberOfColumns
+                : throw CreateNumberOfException(numberOfColumns, nameof(numberOfColumns));
+            NumberOfRows = numberOfRows > 0
+                ? numberOfRows
+                : throw CreateNumberOfException(numberOfRows, nameof(numberOfRows));
             _minedLocations = new HashSet<Location>(minedLocations);
         }
+
+        private static Exception CreateNumberOfException(int numberOf, string paramName) =>
+            new ArgumentOutOfRangeException(paramName, numberOf, "Value must be a positive, non-zero integer.");
 
         public int NumberOfColumns { get; }
         public int NumberOfRows { get; }
