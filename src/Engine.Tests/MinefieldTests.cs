@@ -6,64 +6,69 @@ namespace Dgt.Minesweeper.Engine
 {
     public class MinefieldTests
     {
-        // TODO What should the hint for a mined cell be?
         [Theory]
-        [InlineData(1, 0, 2)]
-        [InlineData(0, 2, 0)]
-        [InlineData(3, 2, 1)]
-        public void GetHint_Should_ReturnNumberOfAdjacentMines(int column, int row, int expectedHint)
+        [InlineData("B3", 2)]
+        [InlineData("A1", 0)]
+        [InlineData("D2", 1)]
+        [InlineData("A3", 0)]
+        public void GetHint_Should_ReturnNumberOfAdjacentMines(string location, int expectedHint)
         {
             // Arrange
-            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
+            var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
 
             // Act
-            var hint = minefield.GetHint(column, row);
+            var hint = minefield.GetHint(Location.Parse(location));
             
             // Assert
             hint.Should().Be(expectedHint);
         }
 
+        [Theory]
+        [InlineData("A3")]
+        [InlineData("C2")]
+        public void IsMined_Should_ReturnTrueWhenLocationIsMined(string location)
+        {
+            // Arrange
+            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            
+            // Act
+            var isMined = sut.IsMined(Location.Parse(location));
+            
+            // Assert
+            isMined.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("A1")]
+        [InlineData("B2")]
+        [InlineData("C3")]
+        [InlineData("D1")]
+        public void IsMined_Should_ReturnFalseWhenLocationIsNotMined(string location)
+        {
+            // Arrange
+            var sut = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            
+            // Act
+            var isMined = sut.IsMined(Location.Parse(location));
+            
+            // Assert
+            isMined.Should().BeFalse();
+        }
+
         // TODO We could make our exception better by:
-        // * Putting the actual cell on the exception (maybe in Data if we don't want to write our own exception type)
+        // * Putting the actual location on the exception (maybe in Data if we don't want to write our own exception type)
         // * Indicating whether it is column, row, or both that are out of range
         [Fact]
-        public void IsMined_Should_ThrowWhenCellIsNotInMinefield()
+        public void IsMined_Should_ThrowWhenLocationIsNotInMinefield()
         {
             // Arrange
-            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
-            var cellToTest = new Cell(4, 0);
+            var minefield = new Minefield(4, 3, new[] { Location.Parse("A3"), Location.Parse("C2") });
+            var locationToTest = Location.Parse("E1");
             
             // Act, Assert
-            minefield.Invoking(x => x.IsMined(cellToTest)).Should().Throw<ArgumentException>()
-                .WithMessage("The cell does not exist in the minefield.*")
-                .WithParameterName("cell");
-        }
-
-        [Fact]
-        public void IsMined_Should_ThrowWhenColumnIsOutOfRange()
-        {
-            // Arrange
-            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
-            
-            // Act, Assert
-            minefield.Invoking(x => x.IsMined(4, 0)).Should().Throw<ArgumentOutOfRangeException>()
-                .WithMessage("Value must be greater than or equal to zero, and less than the number of columns.*")
-                .WithParameterName("columnIndex")
-                .And.ActualValue.Should().Be(4);
-        }
-        
-        [Fact]
-        public void IsMined_Should_ThrowWhenRowIsOutOfRange()
-        {
-            // Arrange
-            var minefield = new Minefield(4, 3, new[] { new Cell(0, 0), new Cell(2, 1) });
-            
-            // Act, Assert
-            minefield.Invoking(x => x.IsMined(0, 3)).Should().Throw<ArgumentOutOfRangeException>()
-                .WithMessage("Value must be greater than or equal to zero, and less than the number of rows.*")
-                .WithParameterName("rowIndex")
-                .And.ActualValue.Should().Be(3);
-
+            minefield.Invoking(x => x.IsMined(locationToTest)).Should().Throw<ArgumentException>()
+                .WithMessage("The location does not exist in the minefield.*")
+                .WithParameterName("location");
         }
     }
 }
