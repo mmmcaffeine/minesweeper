@@ -29,51 +29,51 @@ namespace Dgt.Minesweeper.Benchmarks
         // ReSharper restore MemberCanBePrivate.Global
 
         private IMinefield _minefield = default!;
-        private Dictionary<Cell, CellState> _cellStates =default!;
+        private Dictionary<Location, CellState> _cellStates =default!;
 
         [GlobalSetup]
         public void GlobalSetUp()
         {
-            var minedCells = GetMinedCells(NumberOfMines, NumberOfRowsAndColumns).ToList();
+            var minedLocations = GetMinedLocations(NumberOfMines, NumberOfRowsAndColumns).ToList();
             
-            _minefield = new Minefield(NumberOfRowsAndColumns, NumberOfRowsAndColumns, minedCells);
-            _cellStates = new Dictionary<Cell, CellState>();
+            _minefield = new Minefield(NumberOfRowsAndColumns, NumberOfRowsAndColumns, minedLocations);
+            _cellStates = new Dictionary<Location, CellState>();
 
-            foreach (var cell in _minefield)
+            foreach (var location in _minefield)
             {
-                var cellState = (minedCells.Contains(cell), IsWon) switch
+                var cellState = (minedLocations.Contains(location), IsWon) switch
                 {
                     (true, _) => CellState.Mined,
                     (_, true) => CellState.Cleared,
                     (_, false) => CellState.Uncleared
                 };
 
-                _cellStates[cell] = cellState;
+                _cellStates[location] = cellState;
             }
         }
 
-        private static IEnumerable<Cell> GetMinedCells(int numberOfMines, int numberOfRowsAndColumns)
+        private static IEnumerable<Location> GetMinedLocations(int numberOfMines, int numberOfRowsAndColumns)
         {
-            var columnIndex = -1;
-            var rowIndex = 0;
+            var columnIndex = 0;
+            var rowIndex = 1;
             var minesReturned = 0;
 
             while (minesReturned < numberOfMines)
             {
                 columnIndex++;
 
-                if (columnIndex >= numberOfRowsAndColumns)
+                if (columnIndex > numberOfRowsAndColumns)
                 {
                     rowIndex++;
-                    columnIndex = 0;
+                    columnIndex = 1;
                 }
 
-                if (rowIndex >= numberOfRowsAndColumns)
+                if (rowIndex > numberOfRowsAndColumns)
                 {
                     throw new InvalidOperationException("There are too many mines to place on the minefield");
                 }
 
-                yield return new Cell(columnIndex, rowIndex);
+                yield return new Location((ColumnName)columnIndex, rowIndex);
 
                 minesReturned++;
             }
@@ -83,8 +83,8 @@ namespace Dgt.Minesweeper.Benchmarks
         public bool IsWon_By_FilteringMinesThenCheckingCellState()
         {
             return _cellStates.Keys
-                .Where(cell => !_minefield.IsMined(cell))
-                .All(cell => _cellStates[cell] == CellState.Cleared);
+                .Where(location => !_minefield.IsMined(location))
+                .All(location => _cellStates[location] == CellState.Cleared);
         }
 
         [Benchmark]

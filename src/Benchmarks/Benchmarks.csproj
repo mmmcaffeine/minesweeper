@@ -30,7 +30,6 @@
 
     <ItemGroup>
       <Compile Remove="GameBenchmarks.cs" />
-      <Compile Remove="GameIsWonBenchmarks.cs" />
     </ItemGroup>
 
 </Project>
