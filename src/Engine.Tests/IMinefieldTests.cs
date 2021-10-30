@@ -38,37 +38,21 @@ namespace Dgt.Minesweeper.Engine
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
         }
 
-        [Fact]
-        public void Contains_Should_ReturnFalseWhenColumnIsOutOfBounds()
+        [Theory]
+        [InlineData(1, "A1", true)]
+        [InlineData(1, "A2", false)]        // Row is out of bounds
+        [InlineData(1, "B1", false)]        // Column is out of bounds
+        [InlineData(10, "I10", true)]
+        [InlineData(10, "M15", false)]      // Row and column are out of bounds
+        public void Contains_Should_ReturnTrueWhenLocationIsInMinefieldOtherwiseFalse
+            (int numberOfRowsAndColumns, string location, bool expected)
         {
             // Arrange
-            IMinefield sut = new TestableMinefield(1, 1);
-            var location = Location.Parse("B1");
+            IMinefield sut = new TestableMinefield(numberOfRowsAndColumns, numberOfRowsAndColumns);
+            var locationToTest = Location.Parse(location);
             
             // Act, Assert
-            sut.Contains(location).Should().BeFalse();
-        }
-
-        [Fact]
-        public void Contains_Should_ReturnFalseWhenRowIsOutOfBounds()
-        {
-            // Arrange
-            IMinefield sut = new TestableMinefield(1, 1);
-            var location = Location.Parse("A2");
-            
-            // Act, Assert
-            sut.Contains(location).Should().BeFalse();
-        }
-
-        [Fact]
-        public void Contains_Should_ReturnTrueWhenLocationIsInMinefield()
-        {
-            // Arrange
-            IMinefield sut = new TestableMinefield(1, 1);
-            var location = Location.Parse("A1");
-            
-            // Act, Assert
-            sut.Contains(location).Should().BeTrue();
+            sut.Contains(locationToTest).Should().Be(expected);
         }
     }
 }
