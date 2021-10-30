@@ -62,7 +62,10 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsMined(Location location)
         {
-            if (!HasLocation(location)) throw CreateLocationNotInMinefieldException(location, nameof(location));
+            if (!((IMinefield)this).Contains(location))
+            {
+                throw CreateLocationNotInMinefieldException(location, nameof(location));
+            }
 
             return _minedLocations.Contains(location);
         }
@@ -83,12 +86,5 @@ namespace Dgt.Minesweeper.Engine
                 Data = { { nameof(location), location } }
             };
         }
-
-        private bool HasLocation(Location location) => HasLocation(location.ColumnIndex, location.RowIndex);
-
-        private bool HasLocation(int columnIndex, int rowIndex) => columnIndex > 0
-                                                     && columnIndex <= NumberOfColumns
-                                                     && rowIndex > 0
-                                                     && rowIndex <= NumberOfRows;
     }
 }
