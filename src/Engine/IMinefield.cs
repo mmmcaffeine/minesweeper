@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Dgt.Minesweeper.Engine
@@ -8,6 +9,19 @@ namespace Dgt.Minesweeper.Engine
         int NumberOfColumns { get; }
         int NumberOfRows { get; }
         int CountOfMines { get; }
+
+        bool Contains(Location location)
+        {
+            if (location is null) throw new ArgumentNullException(nameof(location));
+
+            return (NumberOfColumns - location.ColumnIndex, NumberOfRows - location.RowIndex) switch
+            {
+                (< 0, _) => false,
+                (_, < 0) => false,
+                _ => true
+            };
+        }
+        
         bool IsMined(Location location);
         int GetHint(Location location);
 
