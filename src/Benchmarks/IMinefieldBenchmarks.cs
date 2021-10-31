@@ -58,6 +58,7 @@ namespace Dgt.Minesweeper.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Contains", "LINQ")]
         public bool ContainsUsingLinq()
         {
             // Cast is required to ensure we get the Linq implementation, not the interface implementation
@@ -65,6 +66,7 @@ namespace Dgt.Minesweeper.Benchmarks
         }
         
         [Benchmark]
+        [BenchmarkCategory("Contains", "DefaultInterfaceImplementation")]
         public bool ContainsUsingDefaultInterfaceImplementation()
         {
             return _minefield.Contains(_location);
@@ -81,6 +83,20 @@ namespace Dgt.Minesweeper.Benchmarks
             };
             
             return new Location(index, index);
+        }
+
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Size", "LINQ")]
+        public int CountUsingLinq()
+        {
+            return _minefield.Count();
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Size", "DefaultInterfaceImplementation")]
+        public int SizeUsingDefaultInterfaceImplementation()
+        {
+            return _minefield.Size;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Dgt.Minesweeper.Engine
     {
         int NumberOfColumns { get; }
         int NumberOfRows { get; }
+        int Size => NumberOfColumns * NumberOfRows;
         int CountOfMines { get; }
 
         bool Contains(Location location)

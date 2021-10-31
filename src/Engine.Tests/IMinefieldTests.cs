@@ -75,5 +75,14 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             actualLocations.Should().BeEquivalentTo(expectedLocations);
         }
+
+        [Theory]
+        [InlineData(2, 2, 4)]
+        [InlineData(3, 4, 12)]
+        [InlineData(4, 6, 24)]
+        public void Size_Should_BeProductOfColumnsAndRows(int numberOfColumns, int numberOfRows, int expectedSize)
+        {
+            ((IMinefield)new TestableMinefield(numberOfColumns, numberOfRows)).Size.Should().Be(expectedSize);
+        }
     }
 }
