@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -53,6 +54,26 @@ namespace Dgt.Minesweeper.Engine
             
             // Act, Assert
             sut.Contains(locationToTest).Should().Be(expected);
+        }
+
+        [Fact]
+        public void EnumerableOfLocation_Should_ContainAllLocations()
+        {
+            // Arrange
+            var sut = new TestableMinefield(2, 2);
+            var expectedLocations = new[]
+            {
+                Location.Parse("A1"),
+                Location.Parse("A2"),
+                Location.Parse("B1"),
+                Location.Parse("B2")
+            };
+
+            // Act
+            var actualLocations = sut.ToList();
+
+            // Assert
+            actualLocations.Should().BeEquivalentTo(expectedLocations);
         }
     }
 }
