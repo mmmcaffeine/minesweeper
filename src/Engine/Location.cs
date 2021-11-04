@@ -79,7 +79,7 @@ namespace Dgt.Minesweeper.Engine
             if (left is null || right is null) return default;
             // ReSharper restore ConditionIsAlwaysTrueOrFalse
             
-            var columnDifference = (int)left.ColumnName - (int)right.ColumnName;
+            var columnDifference = left.ColumnIndex - right.ColumnIndex;
             var rowDifference = left.RowIndex - right.RowIndex;
 
             return (columnDifference, rowDifference);
