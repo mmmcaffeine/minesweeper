@@ -11,7 +11,7 @@ namespace Dgt.Minesweeper.Engine
         {
             foreach (var location in minefield)
             {
-                _cells[location] = new Cell(location, minefield.IsMined(location), false);
+                _cells[location] = new Cell(location, minefield.IsMined(location), false, minefield.GetHint(location));
             }
 
             NumberOfCellsToReveal = minefield.Size - minefield.CountOfMines;

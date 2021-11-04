@@ -39,6 +39,35 @@ namespace Dgt.Minesweeper.Engine
                 sut.GetCell(Location.Parse("B2")).IsMined.Should().BeFalse();
             }
         }
+
+        [Fact]
+        public void Ctor_Should_InitialiseAllCellsWithHint()
+        {
+            // Arrange
+            var minefield = new Minefield(3, new[] { Location.Parse("A1"), Location.Parse("A2") });
+            
+            // Act
+            var sut = new Game(minefield);
+            
+            // Assert
+            
+            // Our game should look like:
+            // 1 1 0
+            // * 2 0
+            // * 2 0
+            using (new AssertionScope())
+            {
+                sut.GetCell(Location.Parse("A1")).Hint.Should().Be(1);
+                sut.GetCell(Location.Parse("A2")).Hint.Should().Be(1);
+                sut.GetCell(Location.Parse("A3")).Hint.Should().Be(1);
+                sut.GetCell(Location.Parse("B1")).Hint.Should().Be(2);
+                sut.GetCell(Location.Parse("B2")).Hint.Should().Be(2);
+                sut.GetCell(Location.Parse("B3")).Hint.Should().Be(1);
+                sut.GetCell(Location.Parse("C1")).Hint.Should().Be(0);
+                sut.GetCell(Location.Parse("C2")).Hint.Should().Be(0);
+                sut.GetCell(Location.Parse("C3")).Hint.Should().Be(0);
+            }
+        }
         
         [Fact]
         public void Ctor_Should_InitialiseGameToStateThatIsNotWonAndNotLost()

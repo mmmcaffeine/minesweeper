@@ -12,6 +12,6 @@ namespace Dgt.Minesweeper.Engine
         [InlineData(true, true, true)]
         public void IsExploded_Should_BeTrueIfCellIsMinedAndRevealed
             (bool isMined, bool isRevealed, bool expectedIsExploded) =>
-            new Cell(Location.Parse("A1"), isMined, isRevealed).IsExploded.Should().Be(expectedIsExploded);
+            new Cell(Location.Parse("A1"), isMined, isRevealed, 0).IsExploded.Should().Be(expectedIsExploded);
     }
 }
