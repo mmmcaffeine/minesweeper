@@ -29,7 +29,7 @@ namespace Dgt.Minesweeper.Benchmarks
         // ReSharper restore MemberCanBePrivate.Global
 
         private IMinefield _minefield = default!;
-        private Dictionary<Location, CellState> _cellStates =default!;
+        private Dictionary<Location, Cell> _cells = default!;
 
         [GlobalSetup]
         public void GlobalSetUp()
@@ -37,18 +37,14 @@ namespace Dgt.Minesweeper.Benchmarks
             var minedLocations = GetMinedLocations(NumberOfMines, NumberOfRowsAndColumns).ToList();
             
             _minefield = new Minefield(NumberOfRowsAndColumns, NumberOfRowsAndColumns, minedLocations);
-            _cellStates = new Dictionary<Location, CellState>();
+            _cells = new Dictionary<Location, Cell>();
 
             foreach (var location in _minefield)
             {
-                var cellState = (minedLocations.Contains(location), IsWon) switch
-                {
-                    (true, _) => CellState.Mined,
-                    (_, true) => CellState.Cleared,
-                    (_, false) => CellState.Uncleared
-                };
+                var isMined = minedLocations.Contains(location);
+                var isRevealed = !isMined && IsWon;
 
-                _cellStates[location] = cellState;
+                _cells[location] = new Cell(location, isMined, isRevealed);
             }
         }
 
@@ -80,18 +76,15 @@ namespace Dgt.Minesweeper.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public bool IsWon_By_FilteringMinesThenCheckingCellState()
+        public bool IsWon_By_CheckingValuesForIsRevealedAndIsMined()
         {
-            return _cellStates.Keys
-                .Where(location => !_minefield.IsMined(location))
-                .All(location => _cellStates[location] == CellState.Cleared);
+            return _cells.Values.All(cell => cell.IsRevealed || cell.IsMined);
         }
 
         [Benchmark]
-        public bool IsWon_By_CheckingCellStateThenCheckingMinedStatus()
+        public bool IsWon_By_CheckingDictionaryEntriesForIsRevealedAndIsMined()
         {
-            // Test the cell state _first_ because it is the faster check
-            return _cellStates.All(kvPair => kvPair.Value == CellState.Cleared || !_minefield.IsMined(kvPair.Key));
+            return _cells.All(kvPair => kvPair.Value.IsRevealed || kvPair.Value.IsMined);
         }
     }
 }
