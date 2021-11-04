@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -12,15 +11,22 @@ namespace Dgt.Minesweeper.Engine
         {
             foreach (var location in minefield)
             {
-                _cells[location] = new Cell(location, minefield.IsMined(location), false);
+                var cell = new Cell(location, minefield.IsMined(location), false);
+
+                if (!cell.IsMined)
+                {
+                    NumberOfCellsToReveal++;
+                }
+                
+                _cells[location] = cell;
             }
         }
-
-        // TODO Do we want to improve performance by storing a value here, rather than calculating it every time?
-        public bool IsWon => _cells.Values.All(cell => cell.IsRevealed || cell.IsMined);
         
-        // TODO Do we want to improve performance by storing a value here, rather than calculating it every time?
-        public bool IsLost => _cells.Values.Any(cell => cell.IsExploded);
+        public int NumberOfCellsToReveal { get; private set; }
+
+        public bool IsWon => NumberOfCellsToReveal == 0;
+        
+        public bool IsLost { get; private set; }
 
         // TODO Validate the cell exists in our dictionary of cells
         public Cell GetCell(Location location) => _cells[location];
@@ -30,6 +36,15 @@ namespace Dgt.Minesweeper.Engine
         {
             var oldCell = _cells[location];
             var newCell = oldCell with { IsRevealed = true };
+
+            if (oldCell.IsMined)
+            {
+                IsLost = true;
+            }
+            else if (!oldCell.IsRevealed)
+            {
+                NumberOfCellsToReveal--;
+            }
             
             _cells[location] = newCell;
             

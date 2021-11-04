@@ -21,7 +21,6 @@ namespace Dgt.Minesweeper.Benchmarks
         [Params(1, 40, 99)]
         public int NumberOfMines { get; set; }
         
-        
         [ParamsAllValues]
         public bool IsWon { get; set; }
         
@@ -29,6 +28,7 @@ namespace Dgt.Minesweeper.Benchmarks
         // ReSharper restore MemberCanBePrivate.Global
 
         private IMinefield _minefield = default!;
+        private Game _game = default!;
         private Dictionary<Location, Cell> _cells = default!;
 
         [GlobalSetup]
@@ -37,12 +37,18 @@ namespace Dgt.Minesweeper.Benchmarks
             var minedLocations = GetMinedLocations(NumberOfMines, NumberOfRowsAndColumns).ToList();
             
             _minefield = new Minefield(NumberOfRowsAndColumns, NumberOfRowsAndColumns, minedLocations);
+            _game = new Game(_minefield);
             _cells = new Dictionary<Location, Cell>();
 
             foreach (var location in _minefield)
             {
                 var isMined = minedLocations.Contains(location);
                 var isRevealed = !isMined && IsWon;
+
+                if (isRevealed)
+                {
+                    _game.Reveal(location);
+                }
 
                 _cells[location] = new Cell(location, isMined, isRevealed);
             }
@@ -86,5 +92,8 @@ namespace Dgt.Minesweeper.Benchmarks
         {
             return _cells.All(kvPair => kvPair.Value.IsRevealed || kvPair.Value.IsMined);
         }
+
+        [Benchmark]
+        public bool IsWon_By_CountingNumberOfCellsToReveal() => _game.IsWon;
     }
 }
