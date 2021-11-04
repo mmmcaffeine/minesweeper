@@ -166,7 +166,7 @@ namespace Dgt.Minesweeper.Engine
 
             return (hasColumnName, hasValue) switch
             {
-                (true, true) => (int)columnName! == value,
+                (true, true) => columnName! == value,
                 (true, false) => false,
                 (false, true) => false,
                 (false, false) => true
