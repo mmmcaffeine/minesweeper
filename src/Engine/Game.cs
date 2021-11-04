@@ -11,15 +11,10 @@ namespace Dgt.Minesweeper.Engine
         {
             foreach (var location in minefield)
             {
-                var cell = new Cell(location, minefield.IsMined(location), false);
-
-                if (!cell.IsMined)
-                {
-                    NumberOfCellsToReveal++;
-                }
-                
-                _cells[location] = cell;
+                _cells[location] = new Cell(location, minefield.IsMined(location), false);
             }
+
+            NumberOfCellsToReveal = minefield.Size - minefield.CountOfMines;
         }
         
         public int NumberOfCellsToReveal { get; private set; }
