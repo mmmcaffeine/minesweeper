@@ -69,8 +69,26 @@ namespace Dgt.Minesweeper.Engine
 
             return _minedLocations.Contains(location);
         }
+        
+        public int GetHint(Location location) => GetAdjacentLocations(location).Count(l => _minedLocations.Contains(l));
 
-        public int GetHint(Location location) => _minedLocations.Count(c => c.IsAdjacentTo(location));
+        public IEnumerable<Location> GetAdjacentLocations(Location location)
+        {
+            var (columnName, rowIndex) = location;
+            var columnIndices = GetIndices(columnName, NumberOfColumns);
+            var rowIndices = GetIndices(rowIndex, NumberOfRows);
+            
+            return columnIndices
+                .SelectMany(ci => rowIndices.Select(ri => new Location(ci, ri)))
+                .Except(new[] { location });
+
+            IEnumerable<int> GetIndices(int index, int maximum)
+            {
+                if (index > 1) yield return index - 1;
+                yield return index;
+                if (index < maximum) yield return index + 1;
+            }
+        }
 
         private Exception CreateLocationNotInMinefieldException(Location location, string paramName)
         {

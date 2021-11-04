@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
@@ -137,6 +138,51 @@ namespace Dgt.Minesweeper.Engine
                 .WithMessage("*The row is out of bounds.*")
                 .WithParameterName("location")
                 .Where(ex => ex.Data.Contains("location") && ex.Data["location"]!.Equals(locationToTest));
+        }
+
+        [Fact]
+        public void GetAdjacentLocations_Should_Return_AllEightAdjacentLocations()
+        {
+            // Arrange
+            var minefield = new Minefield(3, Array.Empty<Location>());
+
+            // Act
+            var actual = minefield.GetAdjacentLocations(Location.Parse("B2")).ToList();
+            
+            // Assert
+            var expected = new[] { "A1", "A2", "A3", "B1", "B3", "C1", "C2", "C3" }.Select(Location.Parse);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetAdjacentLocations_Should_NotReturnLocationsWithTooSmallIndices()
+        {
+            // Arrange
+            var minefield = new Minefield(3, Array.Empty<Location>());
+
+            // Act
+            var actual = minefield.GetAdjacentLocations(Location.Parse("A1")).ToList();
+
+            // Assert
+            var expected = new[] { "A2", "B1", "B2" }.Select(Location.Parse);
+            
+            actual.Should().BeEquivalentTo(expected);
+        }
+        
+        [Fact]
+        public void GetAdjacentLocations_Should_NotReturnLocationsWithTooLargeIndices()
+        {
+            // Arrange
+            var minefield = new Minefield(3, Array.Empty<Location>());
+
+            // Act
+            var actual = minefield.GetAdjacentLocations(Location.Parse("C3")).ToList();
+
+            // Assert
+            var expected = new[] { "B2", "B3", "C2" }.Select(Location.Parse);
+            
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }
