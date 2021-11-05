@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Dgt.Minesweeper.Engine;
@@ -25,6 +26,8 @@ namespace Dgt.Minesweeper.Benchmarks
             public int CountOfMines => 0;
             public bool IsMined(Location location) => throw new NotSupportedException();
             public int GetHint(Location location) => throw new NotSupportedException();
+            public IEnumerable<Location> GetAdjacentLocations(Location location) => throw new NotSupportedException();
+            public IEnumerable<Location> GetMinedLocations() => throw new NotSupportedException();
         }
         
         public enum LocationPosition

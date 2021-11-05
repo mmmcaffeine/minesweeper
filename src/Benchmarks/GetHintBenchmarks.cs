@@ -6,9 +6,10 @@ using Dgt.Minesweeper.Engine;
 namespace Dgt.Minesweeper.Benchmarks
 {
     [MemoryDiagnoser]
-    public class MinefieldBenchmarks
+    public class GetHintBenchmarks
     {
         private HashSet<Location> _minedLocations = default!;
+        private IMinefield _minefield = default!;
         
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -21,10 +22,17 @@ namespace Dgt.Minesweeper.Benchmarks
         {
             _minedLocations = new HashSet<Location>();
             
-            PopulateMinefield();
+            PopulateMinedLocations();
+            
+            _minefield = new Minefield
+            (
+                _minedLocations.Max(x => x.ColumnIndex),
+                _minedLocations.Max(x => x.RowIndex),
+                _minedLocations
+            );
         }
 
-        private void PopulateMinefield()
+        private void PopulateMinedLocations()
         {
             for (var i = 1; i <= NumberOfMines; i++)
             {
@@ -32,7 +40,7 @@ namespace Dgt.Minesweeper.Benchmarks
             }
         }
 
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public int GetHint_By_CountingAdjacentLocationsThatAreMined()
         {
             var location = Location.Parse("B1");
@@ -83,5 +91,24 @@ namespace Dgt.Minesweeper.Benchmarks
             
             return _minedLocations.Count(l => l.IsAdjacentTo(location));
         }
+
+        [Benchmark]
+        public int GetHint_By_CountingMinedLocationsGetHintStrategy()
+        {
+            var strategy = new CountMinedLocationsThatAreAdjacentGetHintStrategy();
+            var location = Location.Parse("B1");
+            return strategy.GetHint(location, _minefield);
+        }
+
+        [Benchmark]
+        public int GetHint_By_CountingAdjacentLocationsGetHintStrategy()
+        {
+            var strategy = new CountAdjacentLocationsThatAreMinedGetHintStrategy();
+            var location = Location.Parse("B1");
+            return strategy.GetHint(location, _minefield);
+        }
+
+        [Benchmark(Baseline = true)]
+        public int GetHint_By_UsingMinefield() => _minefield.GetHint(Location.Parse("B1"));
     }
 }

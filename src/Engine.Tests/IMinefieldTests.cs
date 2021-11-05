@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -22,6 +23,8 @@ namespace Dgt.Minesweeper.Engine
             public int NumberOfColumns { get; }
             public int NumberOfRows { get; }
             public int CountOfMines => 0;
+            public IEnumerable<Location> GetAdjacentLocations(Location location) => throw new NotSupportedException();
+            public IEnumerable<Location> GetMinedLocations() => throw new NotSupportedException();
             public bool IsMined(Location location) => throw new NotSupportedException();
             public int GetHint(Location location) =>  throw new NotSupportedException();
         }

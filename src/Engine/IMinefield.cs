@@ -22,7 +22,10 @@ namespace Dgt.Minesweeper.Engine
                 _ => true
             };
         }
-        
+
+        IEnumerable<Location> GetAdjacentLocations(Location location);
+        IEnumerable<Location> GetMinedLocations();
+
         bool IsMined(Location location);
         int GetHint(Location location);
 

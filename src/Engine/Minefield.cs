@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Dgt.Minesweeper.Engine
     public class Minefield : IMinefield
     {
         private readonly HashSet<Location> _minedLocations;
+        private readonly IGetHintStrategy _getHintStrategy;
 
         public Minefield(int numberOfRowsAndColumns, IEnumerable<string> minedLocations)
             : this
@@ -51,6 +53,9 @@ namespace Dgt.Minesweeper.Engine
             _minedLocations = minedLocations is not null
                 ? new HashSet<Location>(minedLocations)
                 : throw new ArgumentNullException(nameof(minedLocations));
+            _getHintStrategy = _minedLocations.Count <= 8
+                ? new CountMinedLocationsThatAreAdjacentGetHintStrategy()
+                : new CountAdjacentLocationsThatAreMinedGetHintStrategy();
         }
 
         private static Exception CreateNumberOfException(int numberOf, string paramName) =>
@@ -70,7 +75,8 @@ namespace Dgt.Minesweeper.Engine
             return _minedLocations.Contains(location);
         }
         
-        public int GetHint(Location location) => GetAdjacentLocations(location).Count(l => _minedLocations.Contains(l));
+        
+        public int GetHint(Location location) => _getHintStrategy.GetHint(location, this);
 
         public IEnumerable<Location> GetAdjacentLocations(Location location)
         {
@@ -89,6 +95,8 @@ namespace Dgt.Minesweeper.Engine
                 if (index < maximum) yield return index + 1;
             }
         }
+
+        public IEnumerable<Location> GetMinedLocations() => _minedLocations.ToImmutableList();
 
         private Exception CreateLocationNotInMinefieldException(Location location, string paramName)
         {
