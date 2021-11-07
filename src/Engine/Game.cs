@@ -5,17 +5,20 @@ namespace Dgt.Minesweeper.Engine
 {
     public class Game
     {
+        private readonly IMinefield _minefield;
         private readonly Dictionary<Location, Cell> _cells = new();
 
         // TODO Validate no nulls (even though we have enabled Nullable Types)
         public Game(IMinefield minefield)
         {
-            foreach (var location in minefield)
+            _minefield = minefield;
+            
+            foreach (var location in _minefield)
             {
-                _cells[location] = new Cell(location, minefield.IsMined(location), minefield.GetHint(location));
+                _cells[location] = new Cell(location, _minefield.IsMined(location), _minefield.GetHint(location));
             }
 
-            NumberOfCellsToReveal = minefield.Size - minefield.CountOfMines;
+            NumberOfCellsToReveal = _minefield.Size - _minefield.CountOfMines;
         }
         
         public int NumberOfCellsToReveal { get; private set; }
@@ -27,13 +30,16 @@ namespace Dgt.Minesweeper.Engine
         // TODO Validate the cell exists in our dictionary of cells
         public Cell GetCell(Location location) => _cells[location];
 
-        // TODO Validate the location exists in our dictionary of cells
         // TODO You cannot toggle flag on an exploded cell
         // TODO You cannot toggle flag on a revealed cell
         // TODO You cannot toggle flag if the game is won or lost
         public Cell ToggleFlag(Location location)
         {
             if (location is null) throw new ArgumentNullException(nameof(location));
+            if (!_minefield.Contains(location))
+            {
+                throw new InvalidLocationException(location, _minefield.NumberOfColumns, _minefield.NumberOfRows);
+            }
             
             var oldCell = _cells[location];
             var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
@@ -43,7 +49,6 @@ namespace Dgt.Minesweeper.Engine
             return newCell;
         }
         
-        // TODO Validate the location exists in our dictionary of cells
         // TODO You cannot reveal an exploded cell
         // TODO You cannot reveal a revealed cell
         // TODO You cannot reveal a flagged cell
@@ -51,6 +56,10 @@ namespace Dgt.Minesweeper.Engine
         public Cell Reveal(Location location)
         {
             if (location is null) throw new ArgumentNullException(nameof(location));
+            if (!_minefield.Contains(location))
+            {
+                throw new InvalidLocationException(location, _minefield.NumberOfColumns, _minefield.NumberOfRows);
+            }
             
             var oldCell = _cells[location];
             var newCell = oldCell with { IsRevealed = true };

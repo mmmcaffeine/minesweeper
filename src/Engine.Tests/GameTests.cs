@@ -138,6 +138,24 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
         }
+
+        [Fact]
+        public void Reveal_Should_ThrowWhenLocationIsNotInMinefield()
+        {
+            // Arrange
+            var locationToTest = Location.Parse("C3");
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => sut.Reveal(locationToTest);
+            
+            // Assert
+            act.Should().Throw<InvalidLocationException>()
+                .Where(ex => ex.Location == locationToTest)
+                .Where(ex => ex.MaximumColumnName == new ColumnName("B"))
+                .Where(ex => ex.MaximumRowIndex == 2);
+        }
         
         [Fact]
         public void Reveal_Should_PutMinedCellIntoRevealedAndExplodedState()
@@ -262,6 +280,24 @@ namespace Dgt.Minesweeper.Engine
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_ThrowWhenLocationIsNotInMinefield()
+        {
+            // Arrange
+            var locationToTest = Location.Parse("C3");
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => sut.ToggleFlag(locationToTest);
+            
+            // Assert
+            act.Should().Throw<InvalidLocationException>()
+                .Where(ex => ex.Location == locationToTest)
+                .Where(ex => ex.MaximumColumnName == new ColumnName("B"))
+                .Where(ex => ex.MaximumRowIndex == 2);
         }
 
         [Fact]
