@@ -42,7 +42,10 @@ namespace Dgt.Minesweeper.Engine
         }
         
         // TODO Validate the location exists in our dictionary of cells
+        // TODO You cannot reveal an exploded cell
+        // TODO You cannot reveal a revealed cell
         // TODO You cannot reveal a flagged cell
+        // TODO You cannot reveal if the game is won or lost 
         public Cell Reveal(Location location)
         {
             var oldCell = _cells[location];
