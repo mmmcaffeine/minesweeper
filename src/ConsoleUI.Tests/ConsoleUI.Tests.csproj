@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <AssemblyName>Dgt.Minesweeper.ConsoleUI</AssemblyName>
+        <AssemblyName>Dgt.Minesweeper.ConsoleUI.Tests</AssemblyName>
         <RootNamespace>Dgt.Minesweeper.ConsoleUI</RootNamespace>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
         <RepositoryUrl>https://github.com/mmmcaffeine/minesweeper</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Product>Minesweeper</Product>
-        <OutputType>Exe</OutputType>
+        <OutputType>Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -23,13 +23,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Engine\Engine.csproj" />
+        <PackageReference Include="FluentAssertions" Version="6.1.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="xunit" Version="2.4.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Minefield.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+      <ProjectReference Include="..\ConsoleUI\ConsoleUI.csproj" />
     </ItemGroup>
 
 </Project>
