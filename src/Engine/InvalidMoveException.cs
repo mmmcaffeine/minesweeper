@@ -40,11 +40,10 @@ namespace Dgt.Minesweeper.Engine
         
         #endregion
 
-        public InvalidMoveException(Cell cell, Location location, string state, string reason)
-            : this(CreateMessage(location, state, reason))
+        public InvalidMoveException(Cell cell, string state, string reason)
+            : this(CreateMessage(cell.Location, state, reason))
         {
             Cell = cell;
-            Location = location;
         }
 
         private static string CreateMessage(Location location, string state, string explanation)
@@ -58,6 +57,6 @@ namespace Dgt.Minesweeper.Engine
         }
         
         public Cell? Cell { get; }
-        public Location? Location { get; } 
+        public Location? Location => Cell?.Location;
     }
 }
