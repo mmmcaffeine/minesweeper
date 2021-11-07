@@ -124,6 +124,38 @@ namespace Dgt.Minesweeper.Engine
                 sut.IsLost.Should().BeFalse();
             }
         }
+
+        [Fact]
+        public void GetCell_Should_ThrowWhenLocationIsNull()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => _ = sut.GetCell(null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("location");
+        }
+
+        [Fact]
+        public void GetCell_Should_ThrowWhenLocationIsNotInMinefield()
+        {
+            // Arrange
+            var locationToTest = Location.Parse("C3");
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => _ = sut.GetCell(locationToTest);
+            
+            // Assert
+            act.Should().Throw<InvalidLocationException>()
+                .Where(ex => ex.Location == locationToTest)
+                .Where(ex => ex.MaximumColumnName == new ColumnName("B"))
+                .Where(ex => ex.MaximumRowIndex == 2);
+        }
         
         [Fact]
         public void Reveal_Should_ThrowWhenLocationIsNull()

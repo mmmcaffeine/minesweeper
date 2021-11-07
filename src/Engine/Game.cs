@@ -27,13 +27,7 @@ namespace Dgt.Minesweeper.Engine
         
         public bool IsLost { get; private set; }
 
-        // TODO Validate the cell exists in our dictionary of cells
-        public Cell GetCell(Location location) => _cells[location];
-
-        // TODO You cannot toggle flag on an exploded cell
-        // TODO You cannot toggle flag on a revealed cell
-        // TODO You cannot toggle flag if the game is won or lost
-        public Cell ToggleFlag(Location location)
+        public Cell GetCell(Location location)
         {
             if (location is null) throw new ArgumentNullException(nameof(location));
             if (!_minefield.Contains(location))
@@ -41,7 +35,15 @@ namespace Dgt.Minesweeper.Engine
                 throw new InvalidLocationException(location, _minefield.NumberOfColumns, _minefield.NumberOfRows);
             }
             
-            var oldCell = _cells[location];
+            return _cells[location];
+        }
+
+        // TODO You cannot toggle flag on an exploded cell
+        // TODO You cannot toggle flag on a revealed cell
+        // TODO You cannot toggle flag if the game is won or lost
+        public Cell ToggleFlag(Location location)
+        {
+            var oldCell = GetCell(location);
             var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
 
             _cells[location] = newCell;
@@ -55,13 +57,7 @@ namespace Dgt.Minesweeper.Engine
         // TODO You cannot reveal if the game is won or lost 
         public Cell Reveal(Location location)
         {
-            if (location is null) throw new ArgumentNullException(nameof(location));
-            if (!_minefield.Contains(location))
-            {
-                throw new InvalidLocationException(location, _minefield.NumberOfColumns, _minefield.NumberOfRows);
-            }
-            
-            var oldCell = _cells[location];
+            var oldCell = GetCell(location);
             var newCell = oldCell with { IsRevealed = true };
 
             if (oldCell.IsMined)
