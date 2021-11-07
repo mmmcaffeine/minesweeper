@@ -34,5 +34,10 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             sut.Message.Should().EndWith("The Game has already been lost.");
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Ctor_Should_InitialiseIsWon(bool isWon) => new GameOverException(isWon).IsWon.Should().Be(isWon);
     }
 }

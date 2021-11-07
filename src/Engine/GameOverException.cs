@@ -42,11 +42,14 @@ namespace Dgt.Minesweeper.Engine
         public GameOverException(bool isWon)
             : this(CreateMessage(isWon))
         {
+            IsWon = isWon;
         }
 
         private static string CreateMessage(bool isWon)
         {
             return $"{DefaultMessage}. The Game has already been {(isWon ? "won" : "lost")}.";
         }
+        
+        public bool? IsWon { get; }
     }
 }
