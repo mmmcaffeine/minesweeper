@@ -235,5 +235,89 @@ namespace Dgt.Minesweeper.Engine
                 sut.IsLost.Should().BeFalse("no mined cells have been revealed");
             }
         }
+
+        [Fact]
+        public void ToggleFlag_Should_PutMinedAndNotFlaggedCellIntoFlaggedState()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+            
+            // Act
+            var returnedCell = sut.ToggleFlag(minedLocation);
+            var retrievedCell = sut.GetCell(minedLocation);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCell.IsFlagged.Should().BeTrue();
+                retrievedCell.IsFlagged.Should().BeTrue();
+            }
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_PutNotMinedAndNotFlaggedCellIntoFlaggedState()
+        {
+            // Arrange
+            var notMinedLocation = Location.Parse("B2");
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            var returnedCell = sut.ToggleFlag(notMinedLocation);
+            var retrievedCell = sut.GetCell(notMinedLocation);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCell.IsFlagged.Should().BeTrue();
+                retrievedCell.IsFlagged.Should().BeTrue();
+            }
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_PutMinedAndFlaggedCellIntoNotFlaggedState()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+            
+            _ = sut.ToggleFlag(minedLocation);
+            
+            // Act
+            var returnedCell = sut.ToggleFlag(minedLocation);
+            var retrievedCell = sut.GetCell(minedLocation);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCell.IsFlagged.Should().BeFalse();
+                retrievedCell.IsFlagged.Should().BeFalse();
+            }
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_PutNotMinedAndFlaggedCellIntoNotFlaggedState()
+        {
+            // Arrange
+            var notMinedLocation = Location.Parse("B2");
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+
+            _ = sut.ToggleFlag(notMinedLocation);
+            
+            // Act
+            var returnedCell = sut.ToggleFlag(notMinedLocation);
+            var retrievedCell = sut.GetCell(notMinedLocation);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                returnedCell.IsFlagged.Should().BeFalse();
+                retrievedCell.IsFlagged.Should().BeFalse();
+            }
+        }
     }
 }

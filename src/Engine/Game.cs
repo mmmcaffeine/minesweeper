@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -25,8 +26,23 @@ namespace Dgt.Minesweeper.Engine
 
         // TODO Validate the cell exists in our dictionary of cells
         public Cell GetCell(Location location) => _cells[location];
+
+        // TODO Validate the location exists in our dictionary of cells
+        // TODO You cannot toggle flag on an exploded cell
+        // TODO You cannot toggle flag on a revealed cell
+        // TODO You cannot toggle flag if the game is won or lost
+        public Cell ToggleFlag(Location location)
+        {
+            var oldCell = _cells[location];
+            var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
+
+            _cells[location] = newCell;
+            
+            return newCell;
+        }
         
         // TODO Validate the location exists in our dictionary of cells
+        // TODO You cannot reveal a flagged cell
         public Cell Reveal(Location location)
         {
             var oldCell = _cells[location];
