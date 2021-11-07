@@ -8,6 +8,16 @@ namespace Dgt.Minesweeper.Engine
     public class GameTests
     {
         [Fact]
+        public void Ctor_Should_ThrowWhenMinefieldIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = new Game(null!);
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("minefield");
+        }
+        
+        [Fact]
         public void Ctor_Should_InitialiseCellsAtLocationsThatAreMinedToMined()
         {
             // Arrange

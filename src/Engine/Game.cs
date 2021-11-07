@@ -8,10 +8,9 @@ namespace Dgt.Minesweeper.Engine
         private readonly IMinefield _minefield;
         private readonly Dictionary<Location, Cell> _cells = new();
 
-        // TODO Validate no nulls (even though we have enabled Nullable Types)
         public Game(IMinefield minefield)
         {
-            _minefield = minefield;
+            _minefield = minefield ?? throw new ArgumentNullException(nameof(minefield));
             
             foreach (var location in _minefield)
             {
