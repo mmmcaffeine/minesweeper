@@ -144,7 +144,9 @@ namespace Dgt.Minesweeper.Engine
             var sut = new Game(minefield);
             
             // Act
-            Action act = () => _ = sut.GetCell(null!);
+            // ReSharper disable once RedundantCast
+            // To guarantee we get the correct overload
+            Action act = () => _ = sut.GetCell((Location)null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
@@ -176,7 +178,9 @@ namespace Dgt.Minesweeper.Engine
             var sut = new Game(minefield);
             
             // Act
-            Action act = () => sut.Reveal(null!);
+            // ReSharper disable once RedundantCast
+            // To guarantee we get the correct overload
+            Action act = () => sut.Reveal((Location)null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
@@ -226,13 +230,12 @@ namespace Dgt.Minesweeper.Engine
         public void Reveal_Should_PutNotMinedCellIntoRevealedAndNotExplodedState()
         {
             // Arrange
-            var notMinedLocation = Location.Parse("A1");
             var minefield = new Minefield(4, new[] { Location.Parse("B2") });
             var sut = new Game(minefield);
             
             // Act
-            var returnedCell = sut.Reveal(notMinedLocation);
-            var retrievedCell = sut.GetCell(notMinedLocation);
+            var returnedCell = sut.Reveal("A1");
+            var retrievedCell = sut.GetCell("A1");
             
             // Assert
             using (new AssertionScope())
@@ -268,12 +271,11 @@ namespace Dgt.Minesweeper.Engine
         public void Reveal_Should_NotLoseGameIfRevealedCellIsNotMined()
         {
             // Arrange
-            var notMinedLocation = Location.Parse("A1");
             var minefield = new Minefield(4, new[] { Location.Parse("B2") });
             var sut = new Game(minefield);
             
             // Act
-            _ = sut.Reveal(notMinedLocation);
+            _ = sut.Reveal("A1");
             
             // Assert
             using (new AssertionScope())
@@ -288,12 +290,7 @@ namespace Dgt.Minesweeper.Engine
         public void Reveal_Should_WinGameIfAllCellsWithoutMinesAreNowRevealed()
         {
             // Arrange
-            var notMinedLocations = new[]
-            {
-                Location.Parse("A2"),
-                Location.Parse("B1"),
-                Location.Parse("B2")
-            };
+            var notMinedLocations = new[] { "A2", "B1", "B2" };
             var minefield = new Minefield(2, new[] { Location.Parse("A1") });
             var sut = new Game(minefield);
             
@@ -324,7 +321,7 @@ namespace Dgt.Minesweeper.Engine
             _ = sut.Reveal(minedLocation);
             
             // Act
-            Action act = () => _ = sut.Reveal(Location.Parse("A2"));
+            Action act = () => _ = sut.Reveal("A2");
             
             // Assert
             act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == false);
@@ -338,9 +335,9 @@ namespace Dgt.Minesweeper.Engine
             var minefield = new Minefield(2, new[] { minedLocation });
             var sut = new Game(minefield);
 
-            _ = sut.Reveal(Location.Parse("A2"));
-            _ = sut.Reveal(Location.Parse("B1"));
-            _ = sut.Reveal(Location.Parse("B2"));
+            _ = sut.Reveal("A2");
+            _ = sut.Reveal("B1");
+            _ = sut.Reveal("B2");
             
             // Act
             Action act = () => _ = sut.Reveal(minedLocation);
@@ -357,7 +354,9 @@ namespace Dgt.Minesweeper.Engine
             var sut = new Game(minefield);
             
             // Act
-            Action act = () => sut.ToggleFlag(null!);
+            // ReSharper disable once RedundantCast
+            // To guarantee we get the correct overload
+            Action act = () => sut.ToggleFlag((Location)null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("location");
@@ -405,13 +404,12 @@ namespace Dgt.Minesweeper.Engine
         public void ToggleFlag_Should_PutNotMinedAndNotFlaggedCellIntoFlaggedState()
         {
             // Arrange
-            var notMinedLocation = Location.Parse("B2");
             var minefield = new Minefield(2, Array.Empty<Location>());
             var sut = new Game(minefield);
             
             // Act
-            var returnedCell = sut.ToggleFlag(notMinedLocation);
-            var retrievedCell = sut.GetCell(notMinedLocation);
+            var returnedCell = sut.ToggleFlag("B2");
+            var retrievedCell = sut.GetCell("B2");
             
             // Assert
             using (new AssertionScope())
@@ -447,15 +445,14 @@ namespace Dgt.Minesweeper.Engine
         public void ToggleFlag_Should_PutNotMinedAndFlaggedCellIntoNotFlaggedState()
         {
             // Arrange
-            var notMinedLocation = Location.Parse("B2");
             var minefield = new Minefield(2, Array.Empty<Location>());
             var sut = new Game(minefield);
 
-            _ = sut.ToggleFlag(notMinedLocation);
+            _ = sut.ToggleFlag("B2");
             
             // Act
-            var returnedCell = sut.ToggleFlag(notMinedLocation);
-            var retrievedCell = sut.GetCell(notMinedLocation);
+            var returnedCell = sut.ToggleFlag("B2");
+            var retrievedCell = sut.GetCell("B2");
             
             // Assert
             using (new AssertionScope())
@@ -476,7 +473,7 @@ namespace Dgt.Minesweeper.Engine
             _ = sut.Reveal(minedLocation);
             
             // Act
-            Action act = () => _ = sut.ToggleFlag(Location.Parse("A2"));
+            Action act = () => _ = sut.ToggleFlag("A2");
             
             // Assert
             act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == false);
@@ -490,9 +487,9 @@ namespace Dgt.Minesweeper.Engine
             var minefield = new Minefield(2, new[] { minedLocation });
             var sut = new Game(minefield);
 
-            _ = sut.Reveal(Location.Parse("A2"));
-            _ = sut.Reveal(Location.Parse("B1"));
-            _ = sut.Reveal(Location.Parse("B2"));
+            _ = sut.Reveal("A2");
+            _ = sut.Reveal("B1");
+            _ = sut.Reveal("B2");
             
             // Act
             Action act = () => _ = sut.ToggleFlag(minedLocation);

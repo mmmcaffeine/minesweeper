@@ -28,6 +28,8 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsOver => IsLost || IsWon;
 
+        public Cell GetCell(string location) => GetCell(Location.Parse(location));
+
         public Cell GetCell(Location location)
         {
             if (location is null) throw new ArgumentNullException(nameof(location));
@@ -38,6 +40,8 @@ namespace Dgt.Minesweeper.Engine
             
             return _cells[location];
         }
+
+        public Cell ToggleFlag(string location) => ToggleFlag(Location.Parse(location));
 
         // TODO You cannot toggle flag on an exploded cell
         // TODO You cannot toggle flag on a revealed cell
@@ -52,6 +56,8 @@ namespace Dgt.Minesweeper.Engine
             
             return newCell;
         }
+
+        public Cell Reveal(string location) => Reveal(Location.Parse(location));
         
         // TODO You cannot reveal an exploded cell
         // TODO You cannot reveal a revealed cell
