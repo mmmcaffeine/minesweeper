@@ -43,13 +43,14 @@ namespace Dgt.Minesweeper.Engine
 
         public Cell ToggleFlag(string location) => ToggleFlag(Location.Parse(location));
 
-        // TODO You cannot toggle flag on an exploded cell
-        // TODO You cannot toggle flag on a revealed cell
         public Cell ToggleFlag(Location location)
         {
             if (IsOver) throw new GameOverException(IsWon);
             
             var oldCell = GetCell(location);
+
+            if (oldCell.IsRevealed) throw new InvalidMoveException(oldCell, "revealed", "A revealed Cell cannot be flagged");
+            
             var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
 
             _cells[location] = newCell;
@@ -59,14 +60,15 @@ namespace Dgt.Minesweeper.Engine
 
         public Cell Reveal(string location) => Reveal(Location.Parse(location));
         
-        // TODO You cannot reveal an exploded cell
-        // TODO You cannot reveal a revealed cell
-        // TODO You cannot reveal a flagged cell
         public Cell Reveal(Location location)
         {
             if (IsOver) throw new GameOverException(IsWon);
             
             var oldCell = GetCell(location);
+            
+            if (oldCell.IsRevealed) throw new InvalidMoveException(oldCell, "revealed", "A revealed Cell cannot be revealed again");
+            if (oldCell.IsFlagged) throw new InvalidMoveException(oldCell, "revealed", "A flagged Cell cannot be revealed");
+            
             var newCell = oldCell with { IsRevealed = true };
 
             if (oldCell.IsMined)

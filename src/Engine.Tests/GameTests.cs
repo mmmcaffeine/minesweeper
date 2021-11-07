@@ -309,6 +309,44 @@ namespace Dgt.Minesweeper.Engine
                 sut.IsOver.Should().BeTrue("the game has been won");
             }
         }
+        
+        [Fact]
+        public void Reveal_Should_ThrowIfCellHasAlreadyBeenRevealed()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal("A1");
+            
+            // Act
+            Action act = () => _ = sut.Reveal("A1");
+            
+            // Assert
+            act.Should().Throw<InvalidMoveException>()
+                .WithMessage("*The Cell at Location \"A1\" has been revealed.*")
+                .WithMessage("*A revealed Cell cannot be revealed again.")
+                .Where(ex => ex.Cell == sut.GetCell("A1"));
+        }
+        
+        [Fact]
+        public void Reveal_Should_ThrowIfCellHasBeenFlagged()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+
+            _ = sut.ToggleFlag("A1");
+            
+            // Act
+            Action act = () => _ = sut.Reveal("A1");
+            
+            // Assert
+            act.Should().Throw<InvalidMoveException>()
+                .WithMessage("*The Cell at Location \"A1\" has been revealed.*")
+                .WithMessage("*A flagged Cell cannot be revealed.")
+                .Where(ex => ex.Cell == sut.GetCell("A1"));
+        }
 
         [Fact]
         public void Reveal_Should_ThrowIfGameHasAlreadyBeenLost()
@@ -460,6 +498,25 @@ namespace Dgt.Minesweeper.Engine
                 returnedCell.IsFlagged.Should().BeFalse();
                 retrievedCell.IsFlagged.Should().BeFalse();
             }
+        }
+
+        [Fact]
+        public void ToggleFlag_Should_ThrowIfCellHasBeenRevealed()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal("A1");
+            
+            // Act
+            Action act = () => _ = sut.ToggleFlag("A1");
+            
+            // Assert
+            act.Should().Throw<InvalidMoveException>()
+                .WithMessage("*The Cell at Location \"A1\" has been revealed.*")
+                .WithMessage("*A revealed Cell cannot be flagged.")
+                .Where(ex => ex.Cell == sut.GetCell("A1"));
         }
         
         [Fact]
