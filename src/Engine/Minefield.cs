@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -69,7 +68,7 @@ namespace Dgt.Minesweeper.Engine
         {
             if (!((IMinefield)this).Contains(location))
             {
-                throw CreateLocationNotInMinefieldException(location, nameof(location));
+                throw CreateLocationNotInMinefieldException(location);
             }
 
             return _minedLocations.Contains(location);
@@ -98,19 +97,7 @@ namespace Dgt.Minesweeper.Engine
 
         public IEnumerable<Location> GetMinedLocations() => _minedLocations.ToImmutableList();
 
-        private Exception CreateLocationNotInMinefieldException(Location location, string paramName)
-        {
-            var builder = new StringBuilder();
-
-            builder.Append("The location does not exist in the minefield.");
-
-            if (location.ColumnIndex > NumberOfColumns) builder.Append(" The column is out of bounds.");
-            if (location.RowIndex > NumberOfRows) builder.Append(" The row is out of bounds.");
-
-            return new ArgumentException(builder.ToString(), paramName)
-            {
-                Data = { { nameof(location), location } }
-            };
-        }
+        private Exception CreateLocationNotInMinefieldException(Location location) =>
+            new InvalidLocationException(location, NumberOfColumns, NumberOfRows);
     }
 }

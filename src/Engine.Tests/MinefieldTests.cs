@@ -132,12 +132,10 @@ namespace Dgt.Minesweeper.Engine
             Action act = () => _ = minefield.IsMined(locationToTest);
             
             // Act, Assert
-            act.Should().Throw<ArgumentException>()
-                .WithMessage("The location does not exist in the minefield.*")
-                .WithMessage("*The column is out of bounds.*")
-                .WithMessage("*The row is out of bounds.*")
-                .WithParameterName("location")
-                .Where(ex => ex.Data.Contains("location") && ex.Data["location"]!.Equals(locationToTest));
+            act.Should().Throw<InvalidLocationException>()
+                .Where(ex => ex.Location == locationToTest)
+                .Where(ex => ex.MaximumColumnName == new ColumnName("D"))
+                .Where(ex => ex.MaximumRowIndex == 3);
         }
 
         [Fact]
