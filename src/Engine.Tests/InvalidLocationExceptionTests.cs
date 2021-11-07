@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Dgt.Minesweeper.Engine
 {
-    public class InvalidLocationTests
+    public class InvalidLocationExceptionTests
     {
         [Fact]
         public void Ctor_Should_InitialiseLocationWhenLocationIsPassed()
