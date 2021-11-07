@@ -50,7 +50,10 @@ namespace Dgt.Minesweeper.Benchmarks
                     _game.Reveal(location);
                 }
 
-                _cells[location] = new Cell(location, isMined, isRevealed, _minefield.GetHint(location));
+                _cells[location] = new Cell(location, isMined, _minefield.GetHint(location))
+                {
+                    IsRevealed = isRevealed
+                };
             }
         }
 
