@@ -41,6 +41,25 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Fact]
+        public void Ctor_Should_InitialiseAllCellsToNotRevealed()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            
+            // Act
+            var sut = new Game(minefield);
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                sut.GetCell(Location.Parse("A1")).IsRevealed.Should().BeFalse();
+                sut.GetCell(Location.Parse("A2")).IsRevealed.Should().BeFalse();
+                sut.GetCell(Location.Parse("B1")).IsRevealed.Should().BeFalse();
+                sut.GetCell(Location.Parse("B2")).IsRevealed.Should().BeFalse();
+            }
+        }
+
+        [Fact]
         public void Ctor_Should_InitialiseAllCellsWithHint()
         {
             // Arrange
