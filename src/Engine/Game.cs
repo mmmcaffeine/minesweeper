@@ -26,6 +26,8 @@ namespace Dgt.Minesweeper.Engine
         
         public bool IsLost { get; private set; }
 
+        public bool IsOver => IsLost || IsWon;
+
         public Cell GetCell(Location location)
         {
             if (location is null) throw new ArgumentNullException(nameof(location));
@@ -39,9 +41,10 @@ namespace Dgt.Minesweeper.Engine
 
         // TODO You cannot toggle flag on an exploded cell
         // TODO You cannot toggle flag on a revealed cell
-        // TODO You cannot toggle flag if the game is won or lost
         public Cell ToggleFlag(Location location)
         {
+            if (IsOver) throw new GameOverException(IsWon);
+            
             var oldCell = GetCell(location);
             var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
 
@@ -53,9 +56,10 @@ namespace Dgt.Minesweeper.Engine
         // TODO You cannot reveal an exploded cell
         // TODO You cannot reveal a revealed cell
         // TODO You cannot reveal a flagged cell
-        // TODO You cannot reveal if the game is won or lost 
         public Cell Reveal(Location location)
         {
+            if (IsOver) throw new GameOverException(IsWon);
+            
             var oldCell = GetCell(location);
             var newCell = oldCell with { IsRevealed = true };
 

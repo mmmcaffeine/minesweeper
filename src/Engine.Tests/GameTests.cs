@@ -311,6 +311,42 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Fact]
+        public void Reveal_Should_ThrowIfGameHasAlreadyBeenLost()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal(minedLocation);
+            
+            // Act
+            Action act = () => _ = sut.Reveal(Location.Parse("A2"));
+            
+            // Assert
+            act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == false);
+        }
+        
+        [Fact]
+        public void Reveal_Should_ThrowIfGameHasAlreadyBeenWon()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal(Location.Parse("A2"));
+            _ = sut.Reveal(Location.Parse("B1"));
+            _ = sut.Reveal(Location.Parse("B2"));
+            
+            // Act
+            Action act = () => _ = sut.Reveal(minedLocation);
+            
+            // Assert
+            act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == true);
+        }
+
+        [Fact]
         public void ToggleFlag_Should_ThrowWhenLocationIsNull()
         {
             // Arrange
@@ -424,6 +460,42 @@ namespace Dgt.Minesweeper.Engine
                 returnedCell.IsFlagged.Should().BeFalse();
                 retrievedCell.IsFlagged.Should().BeFalse();
             }
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_ThrowIfGameHasAlreadyBeenLost()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal(minedLocation);
+            
+            // Act
+            Action act = () => _ = sut.ToggleFlag(Location.Parse("A2"));
+            
+            // Assert
+            act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == false);
+        }
+        
+        [Fact]
+        public void ToggleFlag_Should_ThrowIfGameHasAlreadyBeenWon()
+        {
+            // Arrange
+            var minedLocation = Location.Parse("A1");
+            var minefield = new Minefield(2, new[] { minedLocation });
+            var sut = new Game(minefield);
+
+            _ = sut.Reveal(Location.Parse("A2"));
+            _ = sut.Reveal(Location.Parse("B1"));
+            _ = sut.Reveal(Location.Parse("B2"));
+            
+            // Act
+            Action act = () => _ = sut.ToggleFlag(minedLocation);
+            
+            // Assert
+            act.Should().Throw<GameOverException>().Where(ex => ex.IsWon == true);
         }
     }
 }
