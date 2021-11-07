@@ -132,6 +132,7 @@ namespace Dgt.Minesweeper.Engine
                 sut.NumberOfCellsToReveal.Should().Be(15, "there are 16 cells and one is mined");
                 sut.IsWon.Should().BeFalse();
                 sut.IsLost.Should().BeFalse();
+                sut.IsOver.Should().BeFalse();
             }
         }
 
@@ -258,7 +259,8 @@ namespace Dgt.Minesweeper.Engine
             using (new AssertionScope())
             {
                 sut.IsWon.Should().BeFalse();
-                sut.IsLost.Should().BeTrue();
+                sut.IsLost.Should().BeTrue("a mined cell has been revealed");
+                sut.IsOver.Should().BeTrue("the game has been lost");
             }
         }
         
@@ -307,6 +309,7 @@ namespace Dgt.Minesweeper.Engine
                 sut.NumberOfCellsToReveal.Should().Be(0, "all cells without mines have been revealed");
                 sut.IsWon.Should().BeTrue("all cells without mines have been revealed");
                 sut.IsLost.Should().BeFalse("no mined cells have been revealed");
+                sut.IsOver.Should().BeTrue("the game has been won");
             }
         }
 
