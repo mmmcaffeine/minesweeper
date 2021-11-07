@@ -33,6 +33,8 @@ namespace Dgt.Minesweeper.Engine
         // TODO You cannot toggle flag if the game is won or lost
         public Cell ToggleFlag(Location location)
         {
+            if (location is null) throw new ArgumentNullException(nameof(location));
+            
             var oldCell = _cells[location];
             var newCell = oldCell with { IsFlagged = !oldCell.IsFlagged };
 

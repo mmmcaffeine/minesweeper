@@ -251,6 +251,20 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Fact]
+        public void ToggleFlag_Should_ThrowWhenLocationIsNull()
+        {
+            // Arrange
+            var minefield = new Minefield(2, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => sut.ToggleFlag(null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("location");
+        }
+
+        [Fact]
         public void ToggleFlag_Should_PutMinedAndNotFlaggedCellIntoFlaggedState()
         {
             // Arrange
