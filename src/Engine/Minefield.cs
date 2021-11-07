@@ -8,7 +8,6 @@ namespace Dgt.Minesweeper.Engine
     public class Minefield : IMinefield
     {
         private readonly HashSet<Location> _minedLocations;
-        private readonly IGetHintStrategy _getHintStrategy;
 
         public Minefield(int numberOfRowsAndColumns, IEnumerable<string> minedLocations)
             : this
@@ -52,9 +51,6 @@ namespace Dgt.Minesweeper.Engine
             _minedLocations = minedLocations is not null
                 ? new HashSet<Location>(minedLocations)
                 : throw new ArgumentNullException(nameof(minedLocations));
-            _getHintStrategy = _minedLocations.Count <= 8
-                ? new CountMinedLocationsThatAreAdjacentGetHintStrategy()
-                : new CountAdjacentLocationsThatAreMinedGetHintStrategy();
         }
 
         private static Exception CreateNumberOfException(int numberOf, string paramName) =>
@@ -75,7 +71,7 @@ namespace Dgt.Minesweeper.Engine
         }
         
         
-        public int GetHint(Location location) => _getHintStrategy.GetHint(location, this);
+        public int GetHint(Location location) => GetAdjacentLocations(location).Count(IsMined);
 
         public IEnumerable<Location> GetAdjacentLocations(Location location)
         {

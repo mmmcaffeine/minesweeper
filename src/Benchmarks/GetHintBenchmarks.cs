@@ -92,22 +92,6 @@ namespace Dgt.Minesweeper.Benchmarks
             return _minedLocations.Count(l => l.IsAdjacentTo(location));
         }
 
-        [Benchmark]
-        public int GetHint_By_CountingMinedLocationsGetHintStrategy()
-        {
-            var strategy = new CountMinedLocationsThatAreAdjacentGetHintStrategy();
-            var location = Location.Parse("B1");
-            return strategy.GetHint(location, _minefield);
-        }
-
-        [Benchmark]
-        public int GetHint_By_CountingAdjacentLocationsGetHintStrategy()
-        {
-            var strategy = new CountAdjacentLocationsThatAreMinedGetHintStrategy();
-            var location = Location.Parse("B1");
-            return strategy.GetHint(location, _minefield);
-        }
-
         [Benchmark(Baseline = true)]
         public int GetHint_By_UsingMinefield() => _minefield.GetHint(Location.Parse("B1"));
     }
