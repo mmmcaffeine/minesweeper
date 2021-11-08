@@ -1,0 +1,42 @@
+﻿using System;
+using Dgt.Minesweeper.Engine;
+using FakeItEasy;
+using FluentAssertions;
+using Xunit;
+
+namespace Dgt.Minesweeper.ConsoleUI
+{
+    public class GameRendererTests
+    {
+        [Fact]
+        public void Ctor_Should_ThrowWhenCellRendererIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = new GameRenderer(null!);
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("cellRenderer");
+        }
+
+        [Theory]
+        [InlineData(1, 8, "1 ")]
+        [InlineData(3, 15, " 3 ")]
+        [InlineData(9, 100, "  9 ")]
+        [InlineData(27, 100, " 27 ")]
+        [InlineData(100, 100, "100 ")]
+        public void RenderRow_Should_StartWithRightAlignedRowIndex(int rowIndex, int numberOfRows, string expected)
+        {
+            // Arrange
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+            var sut = new GameRenderer(fakeCellRenderer);
+
+            A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).Returns('.');
+
+            // Act
+            var renderedRow = sut.RenderRow(rowIndex, numberOfRows, Array.Empty<Cell>()).ToString();
+
+            // Assert
+            renderedRow.Should().StartWith(expected);
+        }
+    }
+}
