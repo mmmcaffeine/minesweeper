@@ -8,22 +8,13 @@ namespace Dgt.Minesweeper.ConsoleUI
         public static char RenderCell(Cell cell)
         {
             if (cell is null) throw new ArgumentNullException(nameof(cell));
-            
-            if (cell.IsRevealed)
+
+            return (cell.IsRevealed, cell.IsMined) switch
             {
-                if (cell.IsMined)
-                {
-                    return '*';
-                }
-                else
-                {
-                    return cell.Hint == 0 ? ' ' : cell.Hint.ToString()[0];
-                }
-            }
-            else
-            {
-                return cell.IsFlagged ? 'F' : '.';
-            }
+                (false, _)    => cell.IsFlagged ? 'F' : '.',
+                (true, false) => cell.Hint == 0 ? ' ' : cell.Hint.ToString()[0],
+                (true, true)  => '*',
+            };
         }
     }
 }
