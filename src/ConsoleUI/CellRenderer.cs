@@ -3,9 +3,9 @@ using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
-    public static class CellRenderer
+    public class CellRenderer : ICellRenderer
     {
-        public static char RenderCell(Cell cell)
+        public char RenderCell(Cell cell)
         {
             if (cell is null) throw new ArgumentNullException(nameof(cell));
 

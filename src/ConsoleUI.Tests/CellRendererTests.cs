@@ -10,8 +10,11 @@ namespace Dgt.Minesweeper.ConsoleUI
         [Fact]
         public void RenderCell_Should_ThrowWhenCellIsNull()
         {
-            // Arrange, Act
-            Action act = () => _ = CellRenderer.RenderCell(null!);
+            // Arrange
+            var sut = new CellRenderer();
+            
+            // Act
+            Action act = () => _ = sut.RenderCell(null!);
             
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("cell");
@@ -25,6 +28,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderCell_Should_RenderNotRevealedAndNotFlaggedCellAsPeriod(bool isMined, int hint)
         {
             // Arrange
+            var sut = new CellRenderer();
             var cell = new Cell(Location.Parse("A1"), isMined, hint)
             {
                 IsRevealed = false,
@@ -32,7 +36,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             };
 
             // Act
-            var character = CellRenderer.RenderCell(cell);
+            var character = sut.RenderCell(cell);
 
             // Assert
             character.Should().Be('.');
@@ -46,6 +50,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderCell_Should_RenderNotRevealedAndFlaggedCellAsF(bool isMined, int hint)
         {
             // Arrange
+            var sut = new CellRenderer();
             var cell = new Cell(Location.Parse("A1"), isMined, hint)
             {
                 IsRevealed = false,
@@ -53,7 +58,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             };
 
             // Act
-            var character = CellRenderer.RenderCell(cell);
+            var character = sut.RenderCell(cell);
 
             // Assert
             character.Should().Be('F');
@@ -63,6 +68,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderCell_Should_RenderRevealedCellWithHintOfZeroAsSpace()
         {
             // Arrange
+            var sut = new CellRenderer();
             var cell = new Cell(Location.Parse("B2"), false, 0)
             {
                 IsRevealed = true,
@@ -70,7 +76,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             };
             
             // Act
-            var character = CellRenderer.RenderCell(cell);
+            var character = sut.RenderCell(cell);
             
             // Assert
             character.Should().Be(' ');
@@ -85,6 +91,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderCell_Should_RenderRevealedCellWithNonZeroHintAsHint(int hint, char expected)
         {
             // Arrange
+            var sut = new CellRenderer();
             var cell = new Cell(Location.Parse("B2"), false, hint)
             {
                 IsRevealed = true,
@@ -92,7 +99,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             };
             
             // Act
-            var character = CellRenderer.RenderCell(cell);
+            var character = sut.RenderCell(cell);
             
             // Assert
             character.Should().Be(expected);
@@ -105,6 +112,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderCell_Should_RenderRevealedAndMinedCellAsAsterisk(int hint)
         {
             // Arrange
+            var sut = new CellRenderer();
             var cell = new Cell(Location.Parse("C3"), true, hint)
             {
                 IsRevealed = true,
@@ -112,7 +120,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             };
             
             // Act
-            var character = CellRenderer.RenderCell(cell);
+            var character = sut.RenderCell(cell);
             
             // Assert
             character.Should().Be('*');
