@@ -1,4 +1,5 @@
-﻿using Dgt.Minesweeper.Engine;
+﻿using System;
+using Dgt.Minesweeper.Engine;
 using FluentAssertions;
 using Xunit;
 
@@ -6,6 +7,16 @@ namespace Dgt.Minesweeper.ConsoleUI
 {
     public class CellRendererTests
     {
+        [Fact]
+        public void RenderCell_Should_ThrowWhenCellIsNull()
+        {
+            // Arrange, Act
+            Action act = () => _ = CellRenderer.RenderCell(null!);
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("cell");
+        }
+        
         [Theory]
         [InlineData(false, 0)]
         [InlineData(false, 1)]

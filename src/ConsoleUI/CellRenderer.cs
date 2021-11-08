@@ -1,4 +1,5 @@
-﻿using Dgt.Minesweeper.Engine;
+﻿using System;
+using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
@@ -6,6 +7,8 @@ namespace Dgt.Minesweeper.ConsoleUI
     {
         public static char RenderCell(Cell cell)
         {
+            if (cell is null) throw new ArgumentNullException(nameof(cell));
+            
             if (cell.IsRevealed)
             {
                 if (cell.IsMined)
