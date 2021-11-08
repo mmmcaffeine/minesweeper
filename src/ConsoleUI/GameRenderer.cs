@@ -18,6 +18,15 @@ namespace Dgt.Minesweeper.ConsoleUI
         // of the fact we have typed the return as ReadOnlySpan<char> instead of string
         public ReadOnlySpan<char> RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
         {
+            if(rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be a positive, non-zero integer.");
+            if(numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
+            if (rowIndex > numberOfRows)
+            {
+                throw new InvalidOperationException("The row index must be less than the number of rows.")
+                {
+                    Data = { { "rowIndex", rowIndex }, { "numberOfRows", numberOfRows } }
+                };
+            }
             
             var length = numberOfRows.ToString().Length;
             var formatString = $"{{0,{length}}} ";
