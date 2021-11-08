@@ -47,5 +47,64 @@ namespace Dgt.Minesweeper.ConsoleUI
             // Assert
             character.Should().Be('F');
         }
+
+        [Fact]
+        public void RenderCell_Should_RenderRevealedCellWithHintOfZeroAsSpace()
+        {
+            // Arrange
+            var cell = new Cell(Location.Parse("B2"), false, 0)
+            {
+                IsRevealed = true,
+                IsFlagged = false
+            };
+            
+            // Act
+            var character = CellRenderer.RenderCell(cell);
+            
+            // Assert
+            character.Should().Be(' ');
+        }
+
+        // Don't just cast hint to char. Doing so treats the int as the ASCII code so e.g. 1 would come out as
+        // SOH (start of heading). We could do ToString()[0] but that is less clear
+        [Theory]
+        [InlineData(1, '1')]
+        [InlineData(3, '3')]
+        [InlineData(5, '5')]
+        public void RenderCell_Should_RenderRevealedCellWithNonZeroHintAsHint(int hint, char expected)
+        {
+            // Arrange
+            var cell = new Cell(Location.Parse("B2"), false, hint)
+            {
+                IsRevealed = true,
+                IsFlagged = false
+            };
+            
+            // Act
+            var character = CellRenderer.RenderCell(cell);
+            
+            // Assert
+            character.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(4)]
+        public void RenderCell_Should_RenderRevealedAndMinedCellAsAsterisk(int hint)
+        {
+            // Arrange
+            var cell = new Cell(Location.Parse("C3"), true, hint)
+            {
+                IsRevealed = true,
+                IsFlagged = false
+            };
+            
+            // Act
+            var character = CellRenderer.RenderCell(cell);
+            
+            // Assert
+            character.Should().Be('*');
+        }
     }
 }
