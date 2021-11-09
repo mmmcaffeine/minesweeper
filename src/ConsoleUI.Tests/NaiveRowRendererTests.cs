@@ -7,13 +7,13 @@ using Xunit;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
-    public class GameRendererTests
+    public class NaiveRowRendererTests
     {
         [Fact]
         public void Ctor_Should_ThrowWhenCellRendererIsNull()
         {
             // Arrange, Act
-            Action act = () => _ = new GameRenderer(null!);
+            Action act = () => _ = new NaiveRowRenderer(null!);
             
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("cellRenderer");
@@ -27,7 +27,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderTopBorder(numberOfRows, 5);
@@ -47,7 +47,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderTopBorder(5, numberOfColumns);
@@ -64,7 +64,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
             var topBorder = sut.RenderTopBorder(10, 3).ToString();
@@ -81,7 +81,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderRow(rowIndex, int.MaxValue, Array.Empty<Cell>());
@@ -101,7 +101,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderRow(1, numberOfRows, Array.Empty<Cell>());
@@ -118,7 +118,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderRow(2, 1, Array.Empty<Cell>());
@@ -140,7 +140,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).Returns('.');
 
@@ -161,7 +161,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).ReturnsNextFromSequence('1', '2', '3', '4', '5');
 
             var cells = new[] { "A1", "B1", "C1", "D1", "E1" }.Select(s => new Cell(Location.Parse(s), false, 0));
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             var renderedRow = sut.RenderRow(1, 3, cells).ToString();
@@ -178,7 +178,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderRowSeparator(numberOfRows, 5);
@@ -198,7 +198,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderRowSeparator(5, numberOfColumns);
@@ -215,7 +215,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
             var rowSeparator = sut.RenderRowSeparator(10, 3).ToString();
@@ -232,7 +232,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderBottomBorder(numberOfRows, 5);
@@ -252,7 +252,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => sut.RenderBottomBorder(5, numberOfColumns);
@@ -269,7 +269,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
             var bottomBorder = sut.RenderBottomBorder(10, 3).ToString();
@@ -286,7 +286,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => _ = sut.RenderColumnNames(numberOfRows, Array.Empty<ColumnName>()).ToList();
@@ -303,7 +303,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
             Action act = () => _ = sut.RenderColumnNames(10, null!).ToList();
@@ -321,7 +321,7 @@ namespace Dgt.Minesweeper.ConsoleUI
                 new ColumnName("A"), new ColumnName("ABCD"), new ColumnName("BB"), new ColumnName("CCC")
             };
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new GameRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
             var actual = sut.RenderColumnNames(10, columnNames).ToList();

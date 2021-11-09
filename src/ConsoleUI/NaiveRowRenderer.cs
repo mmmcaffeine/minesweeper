@@ -8,13 +8,13 @@ namespace Dgt.Minesweeper.ConsoleUI
 {
     // This is going to be slow and consume more memory than we need to. Considering this is likely to get
     // called a _lot_ we should benchmark this and try to improve the performance. 
-    public class GameRenderer
+    public class NaiveRowRenderer : IRowRenderer
     {
         private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
         
         private readonly ICellRenderer _cellRenderer;
 
-        public GameRenderer(ICellRenderer cellRenderer)
+        public NaiveRowRenderer(ICellRenderer cellRenderer)
         {
             _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
         }
