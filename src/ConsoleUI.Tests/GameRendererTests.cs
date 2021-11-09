@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dgt.Minesweeper.Engine;
 using FakeItEasy;
 using FluentAssertions;
@@ -94,6 +95,25 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             // Assert
             renderedRow.Should().StartWith(expected);
+        }
+
+        // Alt+186 (Unicode 2551 and 9553 as an int) for double pipe, but this might look better with
+        // the single pipe of Alt+179 (Unicode 2502 and 9474 as an int)
+        [Fact]
+        public void RenderRow_Should_EndWithCellsRenderedInSequenceAndDelimitedByDoublePipes()
+        {
+            // Arrange
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+            A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).ReturnsNextFromSequence('1', '2', '3', '4', '5');
+
+            var cells = new[] { "A1", "B1", "C1", "D1", "E1" }.Select(s => new Cell(Location.Parse(s), false, 0));
+            var sut = new GameRenderer(fakeCellRenderer);
+            
+            // Act
+            var renderedRow = sut.RenderRow(1, 3, cells).ToString();
+            
+            // Assert
+            renderedRow.Should().EndWith(" ║1║2║3║4║5║");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
@@ -27,11 +28,14 @@ namespace Dgt.Minesweeper.ConsoleUI
                     Data = { { "rowIndex", rowIndex }, { "numberOfRows", numberOfRows } }
                 };
             }
+
+            const char separator = '║';
             
             var length = numberOfRows.ToString().Length;
-            var formatString = $"{{0,{length}}} ";
-
-            return string.Format(formatString, rowIndex);
+            var renderedCells = string.Join(separator, cells.Select(cell => _cellRenderer.RenderCell(cell)));
+            var formatString = $"{{0,{length}}} {{1}}{{2}}{{1}}";
+            
+            return string.Format(formatString, rowIndex, separator, renderedCells, separator);
         }
     }
 }
