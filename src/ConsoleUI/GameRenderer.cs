@@ -19,26 +19,8 @@ namespace Dgt.Minesweeper.ConsoleUI
             _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
         }
 
-        public ReadOnlySpan<char> RenderTopBorder(int numberOfRows, int numberOfColumns)
-        {
-            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
-            if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
-            
-            var topBorderBuilder = new StringBuilder();
-
-            topBorderBuilder.Append(' ', numberOfRows.ToString().Length);
-            topBorderBuilder.Append(' ');
-            topBorderBuilder.Append("╔═");
-
-            for (var i = 0; i < numberOfColumns - 1; i++)
-            {
-                topBorderBuilder.Append("╦═");
-            }
-
-            topBorderBuilder.Append('╗');
-
-            return topBorderBuilder.ToString();
-        }
+        public ReadOnlySpan<char> RenderTopBorder(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╔', '╦', '╗');
 
         // We are not making use of the fact we have typed the return as ReadOnlySpan<char> instead of string,
         // so it might make sense to go to a more traditional return type
@@ -62,26 +44,31 @@ namespace Dgt.Minesweeper.ConsoleUI
             
             return string.Format(formatString, rowIndex, separator, renderedCells, separator);
         }
-        
-        public ReadOnlySpan<char> RenderBottomBorder(int numberOfRows, int numberOfColumns)
+
+        public ReadOnlySpan<char> RenderBottomBorder(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╚', '╩', '╝');
+
+        private static ReadOnlySpan<char> RenderBoxArt(int numberOfRows, int numberOfColumns, char left, char middle, char right)
         {
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
             
-            var topBorderBuilder = new StringBuilder();
+            var boxArtBuilder = new StringBuilder();
             
-            topBorderBuilder.Append(' ', numberOfRows.ToString().Length);
-            topBorderBuilder.Append(' ');
-            topBorderBuilder.Append("╚═");
+            boxArtBuilder.Append(' ', numberOfRows.ToString().Length);
+            boxArtBuilder.Append(' ');
+            boxArtBuilder.Append(left);
+            boxArtBuilder.Append('═');
             
             for (var i = 0; i < numberOfColumns - 1; i++)
             {
-                topBorderBuilder.Append("╩═");
+                boxArtBuilder.Append(middle);
+                boxArtBuilder.Append('═');
             }
             
-            topBorderBuilder.Append('╝');
-            
-            return topBorderBuilder.ToString();
+            boxArtBuilder.Append(right);
+
+            return boxArtBuilder.ToString();
         }
 
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
