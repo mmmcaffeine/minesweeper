@@ -116,6 +116,40 @@ namespace Dgt.Minesweeper.ConsoleUI
             renderedRow.Should().EndWith(" ║1║2║3║4║5║");
         }
         
+        [Theory]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void RenderColumnNames_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
+        {
+            // Arrange
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+            var sut = new GameRenderer(fakeCellRenderer);
+            
+            // Act
+            Action act = () => _ = sut.RenderColumnNames(numberOfRows, Array.Empty<ColumnName>()).ToList();
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("numberOfRows")
+                .Where(ex => ex.ActualValue!.Equals(numberOfRows));
+        }
+
+        [Fact]
+        public void RenderColumnNames_ShouldThrowIfColumnNamesIsNull()
+        {
+            // Arrange
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+            var sut = new GameRenderer(fakeCellRenderer);
+            
+            // Act
+            Action act = () => _ = sut.RenderColumnNames(10, null!).ToList();
+            
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("columnNames");
+        }
+        
         [Fact]
         public void RenderColumnNames_Should_RenderColumnNamesTopToBottomWithSpaceForRowNumbers()
         {

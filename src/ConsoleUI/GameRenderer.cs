@@ -38,13 +38,14 @@ namespace Dgt.Minesweeper.ConsoleUI
             return string.Format(formatString, rowIndex, separator, renderedCells, separator);
         }
 
-        // TODO Validate numberOfRows (see RenderRow)
-        // TODO Validate columnNames is not null, and has at least one element
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
         {
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
+            if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
+            
             var rowIndicesPrefix = new string(' ', numberOfRows.ToString().Length);
             var columnNameStrings = columnNames.Select(cn => (string)cn).ToList();
-
+            
             for (var i = 0; i < columnNameStrings.Max(s => s.Length); i++)
             {
                 // Don't use i in the lambda expression. To do so would capture a variable that is being modified
@@ -52,7 +53,7 @@ namespace Dgt.Minesweeper.ConsoleUI
                 var currentIndex = i; 
                 var currentCharacters = columnNameStrings.Select(s => currentIndex < s.Length ? s[currentIndex] : ' ');
                 var joinedCharacters = string.Join(' ', currentCharacters);
-
+            
                 // We need the second space after the row indices to account for the left border of the box art
                 yield return $"{rowIndicesPrefix}  {joinedCharacters}";
             }
