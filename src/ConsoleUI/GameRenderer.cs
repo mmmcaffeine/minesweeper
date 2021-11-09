@@ -62,6 +62,27 @@ namespace Dgt.Minesweeper.ConsoleUI
             
             return string.Format(formatString, rowIndex, separator, renderedCells, separator);
         }
+        
+        public ReadOnlySpan<char> RenderBottomBorder(int numberOfRows, int numberOfColumns)
+        {
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
+            if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
+            
+            var topBorderBuilder = new StringBuilder();
+            
+            topBorderBuilder.Append(' ', numberOfRows.ToString().Length);
+            topBorderBuilder.Append(' ');
+            topBorderBuilder.Append("╚═");
+            
+            for (var i = 0; i < numberOfColumns - 1; i++)
+            {
+                topBorderBuilder.Append("╩═");
+            }
+            
+            topBorderBuilder.Append('╝');
+            
+            return topBorderBuilder.ToString();
+        }
 
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
         {
