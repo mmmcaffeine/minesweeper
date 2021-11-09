@@ -16,6 +16,20 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("minefield");
         }
+
+        [Fact]
+        public void Ctor_Should_InitialiseNumberOfRowsAndColumnsToSameDimensionOnMinefield()
+        {
+            // Arrange
+            var minefield = new Minefield(10, 5, Array.Empty<Location>());
+            
+            // Act
+            var sut = new Game(minefield);
+
+            // Assert
+            sut.NumberOfColumns.Should().Be(10);
+            sut.NumberOfRows.Should().Be(5);
+        }
         
         [Fact]
         public void Ctor_Should_InitialiseCellsAtLocationsThatAreMinedToMined()

@@ -19,6 +19,10 @@ namespace Dgt.Minesweeper.Engine
 
             NumberOfCellsToReveal = _minefield.Size - _minefield.CountOfMines;
         }
+
+        public int NumberOfColumns => _minefield.NumberOfColumns;
+
+        public int NumberOfRows => _minefield.NumberOfRows;
         
         public int NumberOfCellsToReveal { get; private set; }
 
