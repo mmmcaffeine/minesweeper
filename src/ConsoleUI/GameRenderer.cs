@@ -10,6 +10,8 @@ namespace Dgt.Minesweeper.ConsoleUI
     // called a _lot_ we should benchmark this and try to improve the performance. 
     public class GameRenderer
     {
+        private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
+        
         private readonly ICellRenderer _cellRenderer;
 
         public GameRenderer(ICellRenderer cellRenderer)
@@ -19,8 +21,8 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         public ReadOnlySpan<char> RenderTopBorder(int numberOfRows, int numberOfColumns)
         {
-            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
-            if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, "Value must be a positive, non-zero integer.");
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
+            if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
             
             var topBorderBuilder = new StringBuilder();
 
@@ -42,8 +44,8 @@ namespace Dgt.Minesweeper.ConsoleUI
         // so it might make sense to go to a more traditional return type
         public ReadOnlySpan<char> RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
         {
-            if(rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be a positive, non-zero integer.");
-            if(numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
+            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, MustBePositiveNonZero);
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (rowIndex > numberOfRows)
             {
                 throw new InvalidOperationException("The row index must be less than the number of rows.")
@@ -63,7 +65,7 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
         {
-            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
             
             var rowIndicesPrefix = new string(' ', numberOfRows.ToString().Length);
