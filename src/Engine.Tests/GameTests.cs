@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
@@ -29,6 +30,20 @@ namespace Dgt.Minesweeper.Engine
             // Assert
             sut.NumberOfColumns.Should().Be(10);
             sut.NumberOfRows.Should().Be(5);
+        }
+
+        [Fact]
+        public void Ctor_Should_InitialiseColumnNamesToDistinctOrderedListOfColumnNames()
+        {
+            // Arrange
+            var minefield = new Minefield(5, 10, Array.Empty<Location>());
+            
+            // Act
+            var sut = new Game(minefield);
+            var columnNames = sut.ColumnNames.Select(cn => (string)cn).ToList();
+            
+            // Assert
+            columnNames.Should().BeEquivalentTo("A", "B", "C", "E", "D");
         }
         
         [Fact]

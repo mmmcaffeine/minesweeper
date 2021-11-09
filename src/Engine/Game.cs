@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -19,6 +20,11 @@ namespace Dgt.Minesweeper.Engine
 
             NumberOfCellsToReveal = _minefield.Size - _minefield.CountOfMines;
         }
+
+        public IEnumerable<ColumnName> ColumnNames => _cells.Keys
+            .Select(loc => loc.ColumnName)
+            .Distinct()
+            .OrderBy(x => x.Value);
 
         public int NumberOfColumns => _minefield.NumberOfColumns;
 
