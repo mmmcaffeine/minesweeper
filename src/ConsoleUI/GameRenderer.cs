@@ -5,6 +5,8 @@ using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
+    // This is going to be slow and consume more memory than we need to. Considering this is likely to get
+    // called a _lot_ we should benchmark this and try to improve the performance. 
     public class GameRenderer
     {
         private readonly ICellRenderer _cellRenderer;
@@ -14,9 +16,8 @@ namespace Dgt.Minesweeper.ConsoleUI
             _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
         }
 
-        // This is going to be slow and consume more memory than we need to. Considering this is likely to get
-        // called a _lot_ we should benchmark this and try to improve the performance. We are also not making use
-        // of the fact we have typed the return as ReadOnlySpan<char> instead of string
+        // We are not making use of the fact we have typed the return as ReadOnlySpan<char> instead of string,
+        // so it might make sense to go to a more traditional return type
         public ReadOnlySpan<char> RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
         {
             if(rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be a positive, non-zero integer.");
