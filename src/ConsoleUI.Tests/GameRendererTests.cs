@@ -115,5 +115,31 @@ namespace Dgt.Minesweeper.ConsoleUI
             // Assert
             renderedRow.Should().EndWith(" ║1║2║3║4║5║");
         }
+        
+        [Fact]
+        public void RenderColumnNames_Should_RenderColumnNamesTopToBottomWithSpaceForRowNumbers()
+        {
+            // Arrange
+            var columnNames = new[]
+            {
+                new ColumnName("A"), new ColumnName("ABCD"), new ColumnName("BB"), new ColumnName("CCC")
+            };
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+            var sut = new GameRenderer(fakeCellRenderer);
+
+            // Act
+            var actual = sut.RenderColumnNames(10, columnNames).ToList();
+
+            // Assert
+            // We're looking to create a layout like
+            //     A A B C
+            //       B B C
+            //       C   C
+            //       D
+            // With leading space for row numbers. In this case the row numbers go up to 10 so we need two spaces,
+            // another space to separate the row numbers from the box art, and a final space for the left-hand
+            // edge of the box art itself
+            actual.Should().BeEquivalentTo("    A A B C", "      B B C", "      C   C", "      D    ");
+        }
     }
 }
