@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
@@ -14,6 +15,27 @@ namespace Dgt.Minesweeper.ConsoleUI
         public GameRenderer(ICellRenderer cellRenderer)
         {
             _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
+        }
+
+        public ReadOnlySpan<char> RenderTopBorder(int numberOfRows, int numberOfColumns)
+        {
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, "Value must be a positive, non-zero integer.");
+            if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, "Value must be a positive, non-zero integer.");
+            
+            var topBorderBuilder = new StringBuilder();
+
+            topBorderBuilder.Append(' ', numberOfRows.ToString().Length);
+            topBorderBuilder.Append(' ');
+            topBorderBuilder.Append("╔═");
+
+            for (var i = 0; i < numberOfColumns - 1; i++)
+            {
+                topBorderBuilder.Append("╦═");
+            }
+
+            topBorderBuilder.Append('╗');
+
+            return topBorderBuilder.ToString();
         }
 
         // We are not making use of the fact we have typed the return as ReadOnlySpan<char> instead of string,
