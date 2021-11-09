@@ -48,6 +48,9 @@ namespace Dgt.Minesweeper.ConsoleUI
         public ReadOnlySpan<char> RenderBottomBorder(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╚', '╩', '╝');
 
+        public ReadOnlySpan<char> RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╠', '╬', '╣');
+
         private static ReadOnlySpan<char> RenderBoxArt(int numberOfRows, int numberOfColumns, char left, char middle, char right)
         {
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
