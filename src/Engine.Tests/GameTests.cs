@@ -219,6 +219,43 @@ namespace Dgt.Minesweeper.Engine
                 .BeEquivalentTo("A3", "B3", "C3", "D3", "E3")
                 .And.BeInAscendingOrder();
         }
+        
+        [Fact]
+        public void GetColumn_Should_ThrowWhenColumnNameDoesNotExist()
+        {
+            // Arrange
+            const string invalidValue = "GG";
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => _ = sut.GetColumn(invalidValue).ToList();
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a ColumnName that exists in the Game and IMinefield.*")
+                .WithMessage("*Expected between \"A\" and \"E\".*")
+                .WithParameterName("columnName")
+                .Where(ex => ex.ActualValue != null && ex.ActualValue.Equals(new ColumnName(invalidValue)))
+                .Where(ex => ex.Data.Contains("NumberOfColumns") && ex.Data["NumberOfColumns"]!.Equals(5));
+        }
+
+        [Fact]
+        public void GetColumn_Should_ReturnAllCellsInColumnOrderedByRowIndex()
+        {
+            // Arrange
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            var locations = sut.GetColumn("B").Select(cell => cell.Location);
+
+            // Assert
+            var expectedLocations = new[] { "B1", "B2", "B3", "B4", "B5" }.Select(Location.Parse);
+
+            locations.Should().BeEquivalentTo(expectedLocations)
+                .And.BeInAscendingOrder(location => location.RowIndex);
+        }
 
         [Fact]
         public void GetCell_Should_ThrowWhenLocationIsNull()

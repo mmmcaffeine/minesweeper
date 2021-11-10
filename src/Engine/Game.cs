@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Dgt.Minesweeper.Engine
 {
@@ -38,6 +39,30 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsOver => IsLost || IsWon;
 
+        public IEnumerable<Cell> GetColumn(string columnName) => GetColumn((ColumnName)columnName);
+
+        public IEnumerable<Cell> GetColumn(int columnIndex) => GetColumn((ColumnName)columnIndex);
+
+        public IEnumerable<Cell> GetColumn(ColumnName columnName)
+        {
+            if (NumberOfRows - columnName < 0) throw CreateColumnNameOutOfRangeException(columnName);
+            
+            return _cells.Values.Where(cell => cell.Location.ColumnName == columnName)
+                .OrderBy(cell => cell.Location.RowIndex);
+        }
+
+        private Exception CreateColumnNameOutOfRangeException(ColumnName columnName)
+        {
+            var messageBuilder = new StringBuilder("Value must be a ColumnName that exists in the Game and IMinefield.");
+            
+            messageBuilder.Append($" Expected between \"{((ColumnName)1).Value}\" and \"{((ColumnName)NumberOfColumns).Value}\".");
+
+            return new ArgumentOutOfRangeException(nameof(columnName), columnName, messageBuilder.ToString())
+            {
+                Data = { { nameof(NumberOfColumns), NumberOfColumns } }
+            };
+        }
+        
         public IEnumerable<Cell> GetRow(int rowIndex)
         {
             if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be a positive, non-zero integer.");
