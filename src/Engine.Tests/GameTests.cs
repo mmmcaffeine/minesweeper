@@ -43,7 +43,7 @@ namespace Dgt.Minesweeper.Engine
             var columnNames = sut.ColumnNames.Select(cn => (string)cn).ToList();
             
             // Assert
-            columnNames.Should().BeEquivalentTo("A", "B", "C", "E", "D");
+            columnNames.Should().BeEquivalentTo("A", "B", "C", "D", "E").And.BeInAscendingOrder();
         }
         
         [Fact]
