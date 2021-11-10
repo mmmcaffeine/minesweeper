@@ -67,7 +67,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
-            var topBorder = sut.RenderTopBorder(10, 3).ToString();
+            var topBorder = sut.RenderTopBorder(10, 3);
 
             // Assert
             topBorder.Should().Be("   ╔═╦═╦═╗");
@@ -145,7 +145,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).Returns('.');
 
             // Act
-            var renderedRow = sut.RenderRow(numberOfRows, rowIndex, Array.Empty<Cell>()).ToString();
+            var renderedRow = sut.RenderRow(numberOfRows, rowIndex, Array.Empty<Cell>());
 
             // Assert
             renderedRow.Should().StartWith(expected);
@@ -164,7 +164,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
-            var renderedRow = sut.RenderRow(3, 1, cells).ToString();
+            var renderedRow = sut.RenderRow(3, 1, cells);
             
             // Assert
             renderedRow.Should().EndWith(" ║1║2║3║4║5║");
@@ -218,7 +218,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
-            var rowSeparator = sut.RenderRowSeparator(10, 3).ToString();
+            var rowSeparator = sut.RenderRowSeparator(10, 3);
 
             // Assert
             rowSeparator.Should().Be("   ╠═╬═╬═╣");
@@ -272,7 +272,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
 
             // Act
-            var bottomBorder = sut.RenderBottomBorder(10, 3).ToString();
+            var bottomBorder = sut.RenderBottomBorder(10, 3);
 
             // Assert
             bottomBorder.Should().Be("   ╚═╩═╩═╝");
