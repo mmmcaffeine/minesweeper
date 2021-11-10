@@ -78,7 +78,7 @@ namespace Dgt.Minesweeper.Engine
 
             return new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, message)
             {
-                Data = { { "NumberOfRows", NumberOfRows } }
+                Data = { { nameof(NumberOfRows), NumberOfRows } }
             };
         }
 
