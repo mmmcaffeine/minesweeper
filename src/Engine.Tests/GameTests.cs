@@ -165,6 +165,61 @@ namespace Dgt.Minesweeper.Engine
             }
         }
 
+        [Theory]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void GetRow_Should_ThrowWhenRowIndexIsNotPositiveNonZero(int rowIndex)
+        {
+            // Arrange
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => _ = sut.GetRow(rowIndex).ToList();
+            
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be a positive, non-zero integer.*")
+                .WithParameterName("rowIndex")
+                .Where(ex => ex.ActualValue != null && ex.ActualValue.Equals(rowIndex));
+        }
+
+        [Fact]
+        public void GetRow_Should_ThrowWhenRowIndexIsGreaterThanNumberOfRows()
+        {
+            // Arrange
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            Action act = () => _ = sut.GetRow(int.MaxValue).ToList();
+
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+                .WithMessage("Value must be less than the number of rows.*")
+                .WithMessage("*Expected less than 5.*")
+                .WithParameterName("rowIndex")
+                .Where(ex => ex.ActualValue != null && ex.ActualValue.Equals(int.MaxValue))
+                .Where(ex => ex.Data.Contains("NumberOfRows") && ex.Data["NumberOfRows"]!.Equals(5));
+        }
+
+        [Fact]
+        public void GetRow_Should_ReturnAllCellsInRowOrderedByColumnName()
+        {
+            // Arrange
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var sut = new Game(minefield);
+            
+            // Act
+            var locations = sut.GetRow(3).Select(cell => (string)cell.Location).ToList();
+
+            // Assert
+            locations.Should()
+                .BeEquivalentTo("A3", "B3", "C3", "D3", "E3")
+                .And.BeInAscendingOrder();
+        }
+
         [Fact]
         public void GetCell_Should_ThrowWhenLocationIsNull()
         {

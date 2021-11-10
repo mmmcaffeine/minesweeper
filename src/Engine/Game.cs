@@ -38,6 +38,25 @@ namespace Dgt.Minesweeper.Engine
 
         public bool IsOver => IsLost || IsWon;
 
+        public IEnumerable<Cell> GetRow(int rowIndex)
+        {
+            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, "Value must be a positive, non-zero integer.");
+            if (rowIndex > NumberOfRows) throw CreateRowIndexTooHighException(rowIndex);
+            
+            return _cells.Values.Where(cell => cell.Location.RowIndex == rowIndex)
+                .OrderBy(cell => cell.Location.ColumnIndex);
+        }
+
+        private Exception CreateRowIndexTooHighException(int rowIndex)
+        {
+            var message = $"Value must be less than the number of rows. Expected less than {NumberOfRows}.";
+
+            return new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, message)
+            {
+                Data = { { "NumberOfRows", NumberOfRows } }
+            };
+        }
+
         public Cell GetCell(string location) => GetCell(Location.Parse(location));
 
         public Cell GetCell(Location location)
