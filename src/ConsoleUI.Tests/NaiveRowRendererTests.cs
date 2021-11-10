@@ -84,7 +84,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
-            Action act = () => sut.RenderRow(rowIndex, int.MaxValue, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(int.MaxValue, rowIndex, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -104,7 +104,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
-            Action act = () => sut.RenderRow(1, numberOfRows, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(numberOfRows, 1, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -121,7 +121,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
-            Action act = () => sut.RenderRow(2, 1, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(1, 2, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<InvalidOperationException>()
@@ -145,7 +145,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).Returns('.');
 
             // Act
-            var renderedRow = sut.RenderRow(rowIndex, numberOfRows, Array.Empty<Cell>()).ToString();
+            var renderedRow = sut.RenderRow(numberOfRows, rowIndex, Array.Empty<Cell>()).ToString();
 
             // Assert
             renderedRow.Should().StartWith(expected);
@@ -164,7 +164,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var sut = new NaiveRowRenderer(fakeCellRenderer);
             
             // Act
-            var renderedRow = sut.RenderRow(1, 3, cells).ToString();
+            var renderedRow = sut.RenderRow(3, 1, cells).ToString();
             
             // Assert
             renderedRow.Should().EndWith(" ║1║2║3║4║5║");

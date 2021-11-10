@@ -22,7 +22,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public string RenderTopBorder(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╔', '╦', '╗');
 
-        public string RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
+        public string RenderRow(int numberOfRows, int rowIndex, IEnumerable<Cell> cells)
         {
             if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, MustBePositiveNonZero);
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
