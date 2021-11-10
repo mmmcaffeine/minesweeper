@@ -19,12 +19,10 @@ namespace Dgt.Minesweeper.ConsoleUI
             _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
         }
 
-        public ReadOnlySpan<char> RenderTopBorder(int numberOfRows, int numberOfColumns) =>
+        public string RenderTopBorder(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╔', '╦', '╗');
 
-        // We are not making use of the fact we have typed the return as ReadOnlySpan<char> instead of string,
-        // so it might make sense to go to a more traditional return type
-        public ReadOnlySpan<char> RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
+        public string RenderRow(int rowIndex, int numberOfRows, IEnumerable<Cell> cells)
         {
             if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, MustBePositiveNonZero);
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
@@ -45,13 +43,13 @@ namespace Dgt.Minesweeper.ConsoleUI
             return string.Format(formatString, rowIndex, separator, renderedCells, separator);
         }
 
-        public ReadOnlySpan<char> RenderBottomBorder(int numberOfRows, int numberOfColumns) =>
+        public string RenderBottomBorder(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╚', '╩', '╝');
 
-        public ReadOnlySpan<char> RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
+        public string RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╠', '╬', '╣');
 
-        private static ReadOnlySpan<char> RenderBoxArt(int numberOfRows, int numberOfColumns, char left, char middle, char right)
+        private static string RenderBoxArt(int numberOfRows, int numberOfColumns, char left, char middle, char right)
         {
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
