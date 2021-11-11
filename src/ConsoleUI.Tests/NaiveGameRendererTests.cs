@@ -37,6 +37,8 @@ namespace Dgt.Minesweeper.ConsoleUI
             act.Should().Throw<ArgumentNullException>().WithParameterName("rowRenderer");
         }
         
+        // These kind of tests (with lots of interactions) are often quite brittle, but there doesn't
+        // immediately seem to be a whole lot we can do about it
         [Fact]
         public void Render_Should_RenderCurrentGame()
         {
@@ -49,7 +51,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             
             var fakeRowRenderer = A.Fake<IRowRenderer>();
             A.CallTo(() => fakeRowRenderer.RenderTopBorder(numberOfRows, numberOfColumns)).Returns("Top Border");
-            A.CallTo(() => fakeRowRenderer.RenderRow(A<int>._, numberOfRows, An<IEnumerable<Cell>>._))
+            A.CallTo(() => fakeRowRenderer.RenderRow(numberOfRows, A<int>._, An<IEnumerable<Cell>>._))
                 .ReturnsNextFromSequence("Row 3", "Row 2", "Row 1");
             A.CallTo(() => fakeRowRenderer.RenderRowSeparator(numberOfRows, numberOfColumns)).Returns("Row Separator");
             A.CallTo(() => fakeRowRenderer.RenderBottomBorder(numberOfRows, numberOfColumns)).Returns("Bottom Border");
