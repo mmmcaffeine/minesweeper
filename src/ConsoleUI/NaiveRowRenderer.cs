@@ -26,7 +26,7 @@ namespace Dgt.Minesweeper.ConsoleUI
                     Data = { { "rowIndex", rowIndex }, { "numberOfRows", numberOfRows } }
                 };
             }
-            if (cellRenderer == null) throw new ArgumentNullException(nameof(cellRenderer));
+            if (cellRenderer is null) throw new ArgumentNullException(nameof(cellRenderer));
             if (cells is null) throw new ArgumentNullException(nameof(cells));
 
             const char separator = '║';
