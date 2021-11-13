@@ -2,8 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <AssemblyName>Benchmarks</AssemblyName>
-        <RootNamespace>Dgt.Minesweeper.Benchmarks</RootNamespace>
+        <RootNamespace>Dgt.Minesweeper.Engine</RootNamespace>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>

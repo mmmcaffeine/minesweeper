@@ -2,9 +2,8 @@
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using Dgt.Minesweeper.Engine;
 
-namespace Dgt.Minesweeper.Benchmarks
+namespace Dgt.Minesweeper.Engine
 {
     [MemoryDiagnoser]
     public class MinefieldBenchmarks

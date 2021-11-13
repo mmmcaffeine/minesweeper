@@ -3,9 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
-using Dgt.Minesweeper.Engine;
 
-namespace Dgt.Minesweeper.Benchmarks
+namespace Dgt.Minesweeper.Engine
 {
     [MemoryDiagnoser]
     public class LocationBenchmarks

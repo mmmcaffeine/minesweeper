@@ -1,4 +1,4 @@
-﻿namespace Dgt.Minesweeper.Benchmarks
+﻿namespace Dgt.Minesweeper.Engine
 {
     public static class AssemblyMarker
     {

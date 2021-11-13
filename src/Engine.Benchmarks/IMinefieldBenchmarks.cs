@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using Dgt.Minesweeper.Engine;
 
-namespace Dgt.Minesweeper.Benchmarks
+namespace Dgt.Minesweeper.Engine
 {
     // ReSharper disable once InconsistentNaming
     // Resharper isn't keen on the name of this test fixture, and I'm not either. It sounds like it should be an

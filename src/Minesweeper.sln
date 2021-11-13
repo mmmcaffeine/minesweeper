@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Tests", "Engine.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{610AF433-7AAC-4CE3-93F6-99B400B96FBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{598AAFD9-7B22-4F19-B44B-C930F6F505B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Benchmarks", "Engine.Benchmarks\Engine.Benchmarks.csproj", "{598AAFD9-7B22-4F19-B44B-C930F6F505B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI.Tests", "ConsoleUI.Tests\ConsoleUI.Tests.csproj", "{34F8EE7B-6655-4A2A-A538-20AEF3CA1863}"
 EndProject
