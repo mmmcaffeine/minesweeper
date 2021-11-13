@@ -169,6 +169,20 @@ namespace Dgt.Minesweeper.ConsoleUI
         }
 
         [Theory]
+        [MemberData(nameof(RowRendererTestData))]
+        public void RenderRow_Should_ThrowIfCellsIsNull(IRowRenderer sut)
+        {
+            // Arrange
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+
+            // Act
+            Action act = () => _ = sut.RenderRow(10, 5, fakeCellRenderer, null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("cells");
+        }
+
+        [Theory]
         [MemberData(nameof(RowPrefixTestData))]
         public void RenderRow_Should_StartWithRightAlignedRowIndex(IRowRenderer sut, int rowIndex, int numberOfRows, string expected)
         {

@@ -27,6 +27,7 @@ namespace Dgt.Minesweeper.ConsoleUI
                 };
             }
             if (cellRenderer == null) throw new ArgumentNullException(nameof(cellRenderer));
+            if (cells is null) throw new ArgumentNullException(nameof(cells));
 
             const char separator = '║';
             
