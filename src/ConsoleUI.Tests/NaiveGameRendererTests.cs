@@ -51,7 +51,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             Action act = () => _ = new NaiveGameRenderer(game, fakeRowRenderer, null!);
 
             // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("celLRenderer");
+            act.Should().Throw<ArgumentNullException>().WithParameterName("cellRenderer");
         }
         
         // These kind of tests (with lots of interactions) are often quite brittle, but there doesn't
