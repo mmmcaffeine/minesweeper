@@ -5,8 +5,11 @@ using BenchmarkDotNet.Engines;
 
 namespace Dgt.Minesweeper.Engine
 {
+    // ReSharper disable once InconsistentNaming
+    // Resharper isn't keen on the name of this test fixture, and I'm not either. It sounds like it should be an
+    // interface. However, the benchmarks in this type are for default implementations on the IMinefield interface
     [MemoryDiagnoser]
-    public class MinefieldBenchmarks
+    public class IMinefieldGetLocationsBenchmarks
     {
         private static readonly Consumer Consumer = new();
         

@@ -5,7 +5,7 @@ using BenchmarkDotNet.Attributes;
 namespace Dgt.Minesweeper.Engine
 {
     [MemoryDiagnoser]
-    public class GetHintBenchmarks
+    public class MinefieldGetHintBenchmarks
     {
         private HashSet<Location> _minedLocations = default!;
         private IMinefield _minefield = default!;

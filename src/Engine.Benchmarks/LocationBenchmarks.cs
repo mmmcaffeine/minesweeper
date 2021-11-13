@@ -9,6 +9,12 @@ namespace Dgt.Minesweeper.Engine
     [MemoryDiagnoser]
     public class LocationBenchmarks
     {
+        private static class BenchmarkCategories
+        {
+            public const string TryParse = "TryParse";
+            public const string ValidateColumn = "ValidateColumn";
+        }
+        
         private Regex _parseRegex = default!;
         private Regex _columnRegex = default!;
         
@@ -32,6 +38,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.TryParse)]
         [ArgumentsSource(nameof(ValuesForLocation))]
 #pragma warning disable CA1822
         public bool TryParse_DelegatingToParse(string location)
@@ -55,6 +62,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.TryParse)]
         [ArgumentsSource(nameof(ValuesForLocation))]
         public bool TryParse_TestingForPatternMatch(string location)
         {
@@ -85,6 +93,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.ValidateColumn)]
         [ArgumentsSource(nameof(ValuesForColumn))]
 #pragma warning disable CA1822
         public bool ValidateColumn_EnumeratingChars(string column)
@@ -97,6 +106,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.ValidateColumn)]
         [ArgumentsSource(nameof(ValuesForColumn))]
         public bool ValidateColumn_TestingPattern(string column)
         {

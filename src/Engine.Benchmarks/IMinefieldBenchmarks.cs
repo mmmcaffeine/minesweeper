@@ -7,11 +7,18 @@ namespace Dgt.Minesweeper.Engine
 {
     // ReSharper disable once InconsistentNaming
     // Resharper isn't keen on the name of this test fixture, and I'm not either. It sounds like it should be an
-    // interface. However, the benchmarks in this type are for default implementations on the IMinefield interface,
-    // hence needing something that is separate from MinefieldTests
+    // interface. However, the benchmarks in this type are for default implementations on the IMinefield interface
     [MemoryDiagnoser]
     public class IMinefieldBenchmarks
     {
+        private static class BenchmarkCategories
+        {
+            public const string Contains = "Contains";
+            public const string Size = "Size";
+            public const string Linq = "LINQ";
+            public const string DefaultInterfaceImplementation = "Default Interface Implementation";
+        }
+        
         private class BenchmarkMinefield : IMinefield
         {
             public BenchmarkMinefield(int numberOfColumnsAndRows)
@@ -60,7 +67,7 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark(Baseline = true)]
-        [BenchmarkCategory("Contains", "LINQ")]
+        [BenchmarkCategory(BenchmarkCategories.Contains, BenchmarkCategories.Linq)]
         public bool ContainsUsingLinq()
         {
             // Cast is required to ensure we get the Linq implementation, not the interface implementation
@@ -68,7 +75,7 @@ namespace Dgt.Minesweeper.Engine
         }
         
         [Benchmark]
-        [BenchmarkCategory("Contains", "DefaultInterfaceImplementation")]
+        [BenchmarkCategory(BenchmarkCategories.Contains, BenchmarkCategories.DefaultInterfaceImplementation)]
         public bool ContainsUsingDefaultInterfaceImplementation()
         {
             return _minefield.Contains(_location);
@@ -88,14 +95,14 @@ namespace Dgt.Minesweeper.Engine
         }
 
         [Benchmark(Baseline = true)]
-        [BenchmarkCategory("Size", "LINQ")]
+        [BenchmarkCategory(BenchmarkCategories.Size, BenchmarkCategories.Linq)]
         public int CountUsingLinq()
         {
             return _minefield.Count();
         }
 
         [Benchmark]
-        [BenchmarkCategory("Size", "DefaultInterfaceImplementation")]
+        [BenchmarkCategory(BenchmarkCategories.Size, BenchmarkCategories.DefaultInterfaceImplementation)]
         public int SizeUsingDefaultInterfaceImplementation()
         {
             return _minefield.Size;
