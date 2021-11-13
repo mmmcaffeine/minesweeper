@@ -13,7 +13,10 @@ namespace Dgt.Minesweeper.ConsoleUI
             throw new NotImplementedException();
         }
 
-        public string RenderTopBorder(int numberOfRows, int numberOfColumns)
+        public string RenderTopBorder(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╔', '╦', '╗');
+
+        private static string RenderBoxArt(int numberOfRows, int numberOfColumns, char left, char middle, char right)
         {
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
@@ -27,14 +30,14 @@ namespace Dgt.Minesweeper.ConsoleUI
                 span.Fill('═');
 
                 span[..(prefixLength + 1)].Fill(' ');
-                span[prefixLength + 1] = '╔';
+                span[prefixLength + 1] = left;
 
                 for (var x = span.Length - 3; x >= i + 3; x -= 2)
                 {
-                    span[x] = '╦';
+                    span[x] = middle;
                 }
 
-                span[^1] = '╗';
+                span[^1] = right;
             });
         }
 
@@ -43,15 +46,11 @@ namespace Dgt.Minesweeper.ConsoleUI
             throw new NotImplementedException();
         }
 
-        public string RenderRowSeparator(int numberOfRows, int numberOfColumns)
-        {
-            throw new NotImplementedException();
-        }
+        public string RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╠', '╬', '╣');
 
-        public string RenderBottomBorder(int numberOfRows, int numberOfColumns)
-        {
-            throw new NotImplementedException();
-        }
+        public string RenderBottomBorder(int numberOfRows, int numberOfColumns) =>
+            RenderBoxArt(numberOfRows, numberOfColumns, '╚', '╩', '╝');
 
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
         {
