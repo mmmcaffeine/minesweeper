@@ -15,9 +15,10 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeRowRenderer = A.Fake<IRowRenderer>();
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
             
             // Act
-            Action act = () => _ = new NaiveGameRenderer(null!, fakeRowRenderer);
+            Action act = () => _ = new NaiveGameRenderer(null!, fakeRowRenderer, fakeCellRenderer);
             
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("game");
@@ -29,12 +30,28 @@ namespace Dgt.Minesweeper.ConsoleUI
             // Arrange
             var fakeMinefield = A.Fake<IMinefield>();
             var game = new Game(fakeMinefield);
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
             
             // Act
-            Action act = () => _ = new NaiveGameRenderer(game, null!);
+            Action act = () => _ = new NaiveGameRenderer(game, null!, fakeCellRenderer);
             
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("rowRenderer");
+        }
+
+        [Fact]
+        public void Ctor_Should_ThrowWhenCellRendererIsNull()
+        {
+            // Arrange
+            var fakeMinefield = A.Fake<IMinefield>();
+            var game = new Game(fakeMinefield);
+            var fakeRowRenderer = A.Fake<IRowRenderer>();
+
+            // Act
+            Action act = () => _ = new NaiveGameRenderer(game, fakeRowRenderer, null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("celLRenderer");
         }
         
         // These kind of tests (with lots of interactions) are often quite brittle, but there doesn't
@@ -51,14 +68,16 @@ namespace Dgt.Minesweeper.ConsoleUI
             
             var fakeRowRenderer = A.Fake<IRowRenderer>();
             A.CallTo(() => fakeRowRenderer.RenderTopBorder(numberOfRows, numberOfColumns)).Returns("Top Border");
-            A.CallTo(() => fakeRowRenderer.RenderRow(numberOfRows, A<int>._, An<IEnumerable<Cell>>._))
+            A.CallTo(() => fakeRowRenderer.RenderRow(numberOfRows, A<int>._, A<ICellRenderer>._, An<IEnumerable<Cell>>._))
                 .ReturnsNextFromSequence("Row 3", "Row 2", "Row 1");
             A.CallTo(() => fakeRowRenderer.RenderRowSeparator(numberOfRows, numberOfColumns)).Returns("Row Separator");
             A.CallTo(() => fakeRowRenderer.RenderBottomBorder(numberOfRows, numberOfColumns)).Returns("Bottom Border");
             A.CallTo(() => fakeRowRenderer.RenderColumnNames(numberOfRows, An<IEnumerable<ColumnName>>._))
                 .Returns(new[] { "Column Names" });
 
-            var sut = new NaiveGameRenderer(game, fakeRowRenderer);
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+
+            var sut = new NaiveGameRenderer(game, fakeRowRenderer, fakeCellRenderer);
             
             // Assert
             var renderedGame = sut.Render().ToList();

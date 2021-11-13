@@ -31,9 +31,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         [GlobalSetup]
         public void GlobalSetup()
         {
-            var cellRenderer = new CellRenderer();
-            
-            _naiveRowRenderer = new NaiveRowRenderer(cellRenderer);
+            _naiveRowRenderer = new NaiveRowRenderer();
             _efficientGameRenderer = new EfficientGameRenderer();
         }
 

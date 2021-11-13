@@ -9,16 +9,6 @@ namespace Dgt.Minesweeper.ConsoleUI
 {
     public class NaiveRowRendererTests
     {
-        [Fact]
-        public void Ctor_Should_ThrowWhenCellRendererIsNull()
-        {
-            // Arrange, Act
-            Action act = () => _ = new NaiveRowRenderer(null!);
-            
-            // Assert
-            act.Should().Throw<ArgumentNullException>().WithParameterName("cellRenderer");
-        }
-        
         [Theory]
         [InlineData(int.MinValue)]
         [InlineData(-1)]
@@ -26,8 +16,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderTopBorder_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderTopBorder(numberOfRows, 5);
@@ -46,8 +35,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderTopBorder_Should_ThrowIfNumberOfColumnsIsNotPositiveNonZero(int numberOfColumns)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderTopBorder(5, numberOfColumns);
@@ -63,8 +51,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderTopBorder_Should_RenderBoxArtWithSpacesForRowNumbers()
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
 
             // Act
             var topBorder = sut.RenderTopBorder(10, 3);
@@ -81,10 +68,10 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
-            Action act = () => sut.RenderRow(int.MaxValue, rowIndex, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(int.MaxValue, rowIndex, fakeCellRenderer, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -101,10 +88,10 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
-            Action act = () => sut.RenderRow(numberOfRows, 1, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(numberOfRows, 1, fakeCellRenderer, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>()
@@ -118,16 +105,29 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
-            Action act = () => sut.RenderRow(1, 2, Array.Empty<Cell>());
+            Action act = () => sut.RenderRow(1, 2, fakeCellRenderer, Array.Empty<Cell>());
             
             // Assert
             act.Should().Throw<InvalidOperationException>()
                 .WithMessage("The row index must be less than the number of rows.")
                 .Where(ex => ex.Data.Contains("rowIndex") && ex.Data["rowIndex"]!.Equals(2))
                 .Where(ex => ex.Data.Contains("numberOfRows") && ex.Data["numberOfRows"]!.Equals(1));
+        }
+
+        [Fact]
+        public void RenderRow_Should_ThrowIfCellRendererIsNull()
+        {
+            // Arrange
+            var sut = new NaiveRowRenderer();
+
+            // Act
+            Action act = () => sut.RenderRow(10, 5, null!, Array.Empty<Cell>());
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>().WithParameterName("cellRenderer");
         }
 
         [Theory]
@@ -140,12 +140,12 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             // Arrange
             var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
 
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).Returns('.');
 
             // Act
-            var renderedRow = sut.RenderRow(numberOfRows, rowIndex, Array.Empty<Cell>());
+            var renderedRow = sut.RenderRow(numberOfRows, rowIndex, fakeCellRenderer, Array.Empty<Cell>());
 
             // Assert
             renderedRow.Should().StartWith(expected);
@@ -161,10 +161,10 @@ namespace Dgt.Minesweeper.ConsoleUI
             A.CallTo(() => fakeCellRenderer.RenderCell(A<Cell>._)).ReturnsNextFromSequence('1', '2', '3', '4', '5');
 
             var cells = new[] { "A1", "B1", "C1", "D1", "E1" }.Select(s => new Cell(Location.Parse(s), false, 0));
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
-            var renderedRow = sut.RenderRow(3, 1, cells);
+            var renderedRow = sut.RenderRow(3, 1, fakeCellRenderer, cells);
             
             // Assert
             renderedRow.Should().EndWith(" ║1║2║3║4║5║");
@@ -177,8 +177,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderRowSeparator_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderRowSeparator(numberOfRows, 5);
@@ -197,8 +196,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderRowSeparator_Should_ThrowIfNumberOfColumnsIsNotPositiveNonZero(int numberOfColumns)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderRowSeparator(5, numberOfColumns);
@@ -214,8 +212,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderRowSeparator_Should_RenderBoxArtWithSpacesForRowNumbers()
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
 
             // Act
             var rowSeparator = sut.RenderRowSeparator(10, 3);
@@ -231,8 +228,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderBottomBorder_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderBottomBorder(numberOfRows, 5);
@@ -251,8 +247,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderBottomBorder_Should_ThrowIfNumberOfColumnsIsNotPositiveNonZero(int numberOfColumns)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => sut.RenderBottomBorder(5, numberOfColumns);
@@ -268,8 +263,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderBottomBorder_Should_RenderBoxArtWithSpacesForRowNumbers()
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
 
             // Act
             var bottomBorder = sut.RenderBottomBorder(10, 3);
@@ -285,8 +279,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderColumnNames_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => _ = sut.RenderColumnNames(numberOfRows, Array.Empty<ColumnName>()).ToList();
@@ -302,8 +295,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderColumnNames_ShouldThrowIfColumnNamesIsNull()
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
             
             // Act
             Action act = () => _ = sut.RenderColumnNames(10, null!).ToList();
@@ -320,8 +312,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             {
                 new ColumnName("A"), new ColumnName("ABCD"), new ColumnName("BB"), new ColumnName("CCC")
             };
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new NaiveRowRenderer();
 
             // Act
             var actual = sut.RenderColumnNames(10, columnNames).ToList();

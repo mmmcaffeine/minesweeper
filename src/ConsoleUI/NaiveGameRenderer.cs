@@ -8,11 +8,13 @@ namespace Dgt.Minesweeper.ConsoleUI
     {
         private readonly Game _game;
         private readonly IRowRenderer _rowRenderer;
+        private readonly ICellRenderer _cellRenderer;
 
-        public NaiveGameRenderer(Game game, IRowRenderer rowRenderer)
+        public NaiveGameRenderer(Game game, IRowRenderer rowRenderer, ICellRenderer cellRenderer)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _rowRenderer = rowRenderer ?? throw new ArgumentNullException(nameof(rowRenderer));
+            _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
         }
         
         public IEnumerable<string> Render()
@@ -23,7 +25,7 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             for (var i = _game.NumberOfRows; i > 0; i--)
             {
-                rows.Add(_rowRenderer.RenderRow(_game.NumberOfRows, i, _game.GetRow(i)));
+                rows.Add(_rowRenderer.RenderRow(_game.NumberOfRows, i, _cellRenderer, _game.GetRow(i)));
 
                 if (i > 1)
                 {

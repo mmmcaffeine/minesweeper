@@ -12,17 +12,10 @@ namespace Dgt.Minesweeper.ConsoleUI
     {
         private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
 
-        private readonly ICellRenderer _cellRenderer;
-
-        public NaiveRowRenderer(ICellRenderer cellRenderer)
-        {
-            _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
-        }
-
         public string RenderTopBorder(int numberOfRows, int numberOfColumns) =>
             RenderBoxArt(numberOfRows, numberOfColumns, '╔', '╦', '╗');
 
-        public string RenderRow(int numberOfRows, int rowIndex, IEnumerable<Cell> cells)
+        public string RenderRow(int numberOfRows, int rowIndex, ICellRenderer cellRenderer, IEnumerable<Cell> cells)
         {
             if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, MustBePositiveNonZero);
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
@@ -33,11 +26,12 @@ namespace Dgt.Minesweeper.ConsoleUI
                     Data = { { "rowIndex", rowIndex }, { "numberOfRows", numberOfRows } }
                 };
             }
+            if (cellRenderer == null) throw new ArgumentNullException(nameof(cellRenderer));
 
             const char separator = '║';
             
             var length = numberOfRows.ToString().Length;
-            var renderedCells = string.Join(separator, cells.Select(cell => _cellRenderer.RenderCell(cell)));
+            var renderedCells = string.Join(separator, cells.Select(cellRenderer.RenderCell));
             var formatString = $"{{0,{length}}} {{1}}{{2}}{{1}}";
             
             return string.Format(formatString, rowIndex, separator, renderedCells, separator);

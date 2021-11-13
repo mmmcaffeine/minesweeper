@@ -38,7 +38,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             });
         }
 
-        public string RenderRow(int numberOfRows, int rowIndex, IEnumerable<Cell> cells)
+        public string RenderRow(int numberOfRows, int rowIndex, ICellRenderer cellRenderer, IEnumerable<Cell> cells)
         {
             throw new NotImplementedException();
         }
