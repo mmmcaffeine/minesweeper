@@ -43,6 +43,18 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         public string RenderRow(int numberOfRows, int rowIndex, ICellRenderer cellRenderer, IEnumerable<Cell> cells)
         {
+            if (rowIndex <= 0) throw new ArgumentOutOfRangeException(nameof(rowIndex), rowIndex, MustBePositiveNonZero);
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
+            if (rowIndex > numberOfRows)
+            {
+                throw new InvalidOperationException("The row index must be less than the number of rows.")
+                {
+                    Data = { { "rowIndex", rowIndex }, { "numberOfRows", numberOfRows } }
+                };
+            }
+            if (cellRenderer is null) throw new ArgumentNullException(nameof(cellRenderer));
+            if (cells is null) throw new ArgumentNullException(nameof(cells));
+
             throw new NotImplementedException();
         }
 
@@ -54,6 +66,9 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         public IEnumerable<string> RenderColumnNames(int numberOfRows, IEnumerable<ColumnName> columnNames)
         {
+            if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
+            if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
+
             throw new NotImplementedException();
         }
     }
