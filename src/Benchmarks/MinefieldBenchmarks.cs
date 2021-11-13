@@ -7,7 +7,7 @@ using Dgt.Minesweeper.Engine;
 namespace Dgt.Minesweeper.Benchmarks
 {
     [MemoryDiagnoser]
-    public class GameBenchmarks
+    public class MinefieldBenchmarks
     {
         private static readonly Consumer Consumer = new();
         
