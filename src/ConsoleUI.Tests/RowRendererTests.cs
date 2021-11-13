@@ -155,11 +155,12 @@ namespace Dgt.Minesweeper.ConsoleUI
                 .Where(ex => ex.Data.Contains("numberOfRows") && ex.Data["numberOfRows"]!.Equals(1));
         }
 
-        [Fact]
-        public void RenderRow_Should_ThrowIfCellRendererIsNull()
+        [Theory]
+        [MemberData(nameof(RowRendererTestData))]
+        public void RenderRow_Should_ThrowIfCellRendererIsNull(IRowRenderer sut)
         {
             // Arrange
-            var sut = new NaiveRowRenderer();
+            // All handled by sut parameter
 
             // Act
             Action act = () => sut.RenderRow(10, 5, null!, Array.Empty<Cell>());
