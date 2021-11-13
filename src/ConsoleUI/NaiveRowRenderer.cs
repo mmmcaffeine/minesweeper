@@ -11,7 +11,7 @@ namespace Dgt.Minesweeper.ConsoleUI
     public class NaiveRowRenderer : IRowRenderer
     {
         private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
-        
+
         private readonly ICellRenderer _cellRenderer;
 
         public NaiveRowRenderer(ICellRenderer cellRenderer)
