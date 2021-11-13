@@ -1,5 +1,4 @@
 ﻿using System;
-using FakeItEasy;
 using FluentAssertions;
 using Xunit;
 
@@ -14,8 +13,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderTopBorder_Should_ThrowIfNumberOfRowsIsNotPositiveNonZero(int numberOfRows)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new EfficientGameRenderer();
 
             // Act
             Action act = () => sut.RenderTopBorder(numberOfRows, 5);
@@ -34,8 +32,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void RenderTopBorder_Should_ThrowIfNumberOfColumnsIsNotPositiveNonZero(int numberOfColumns)
         {
             // Arrange
-            var fakeCellRenderer = A.Fake<ICellRenderer>();
-            var sut = new NaiveRowRenderer(fakeCellRenderer);
+            var sut = new EfficientGameRenderer();
 
             // Act
             Action act = () => sut.RenderTopBorder(5, numberOfColumns);
