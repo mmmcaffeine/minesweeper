@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
+using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
@@ -17,11 +18,13 @@ namespace Dgt.Minesweeper.ConsoleUI
             public const string JoinedEnumerableOfString = "JoinedEnumerable";
 
             public const string RenderTopBorder = "RenderTopBorder";
+            public const string RenderRow = "RenderRow";
             public const string GetNumberOfDigits = "GetNumberOfDigits";
         }
         
         private IRowRenderer _naiveRowRenderer = default!;
         private IRowRenderer _efficientGameRenderer = default!;
+        private ICellRenderer _cellRenderer = default!;
 
         public static IEnumerable<int> ValuesForNumberOfRowsAndColumns
         {
@@ -39,6 +42,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             _naiveRowRenderer = new NaiveRowRenderer();
             _efficientGameRenderer = new EfficientGameRenderer();
+            _cellRenderer = new CellRenderer();
         }
 
         [Benchmark(Baseline = true)]
@@ -97,7 +101,36 @@ namespace Dgt.Minesweeper.ConsoleUI
             return $"{string.Join(null, prefix)} ╔{string.Join(null, columns)}═╗";
         }
 
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.NaiveRowRenderer)]
+        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
+        public string RenderRow_Using_NaiveRowRenderer(int numberOfRowsAndColumns)
+        {
+            const int rowIndex = 1;
+            var cells = GetCells(numberOfRowsAndColumns, rowIndex);
 
+            return _naiveRowRenderer.RenderRow(numberOfRowsAndColumns, rowIndex, _cellRenderer, cells);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.EfficientGameRenderer)]
+        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
+        public string RenderRow_Using_EfficientGameRenderer(int numberOfRowsAndColumns)
+        {
+            const int rowIndex = 1;
+            var cells = GetCells(numberOfRowsAndColumns, rowIndex);
+
+            return _efficientGameRenderer.RenderRow(numberOfRowsAndColumns, rowIndex, _cellRenderer, cells);
+        }
+
+        private static IEnumerable<Cell> GetCells(int numberOfColumns, int rowIndex)
+        {
+            for (var i = 0; i < numberOfColumns; i++)
+            {
+                var location = new Location(i + 1, rowIndex);
+                yield return new Cell(location, false, 0);
+            }
+        }
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
