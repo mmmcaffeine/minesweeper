@@ -123,6 +123,44 @@ namespace Dgt.Minesweeper.ConsoleUI
             return _efficientGameRenderer.RenderRow(numberOfRowsAndColumns, rowIndex, _cellRenderer, cells);
         }
 
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.CharArray)]
+        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
+        public string RenderRow_Using_CharArray(int numberOfRowsAndColumns)
+        {
+            const int rowIndex = 1;
+            var cells = GetCells(numberOfRowsAndColumns, rowIndex).ToList();
+            var rowHeaderLength = numberOfRowsAndColumns switch
+            {
+                < 10 => 1,
+                < 100 => 2,
+                < 1_000 => 3,
+                _ => numberOfRowsAndColumns.ToString().Length
+            };
+            var totalLength = rowHeaderLength + 1 + cells.Count * 2 + 1;
+            var chars = new char[totalLength];
+            var rowIndexChars = rowIndex.ToString().ToCharArray();
+
+            for (var i = 0; i < rowHeaderLength; i++)
+            {
+                chars[i] = rowHeaderLength - i <= rowIndexChars.Length
+                    ? rowIndexChars[i - rowHeaderLength + rowIndexChars.Length]
+                    : ' ';
+            }
+
+            chars[rowHeaderLength] = ' ';
+
+            for (var i = 0; i < cells.Count; i++)
+            {
+                chars[rowHeaderLength + 1 + (i * 2)] = '║';
+                chars[rowHeaderLength + 2 + (i * 2)] = _cellRenderer.RenderCell(cells[i]);
+            }
+
+            chars[^1] = '║';
+
+            return new string(chars);
+        }
+
         private static IEnumerable<Cell> GetCells(int numberOfColumns, int rowIndex)
         {
             for (var i = 0; i < numberOfColumns; i++)
