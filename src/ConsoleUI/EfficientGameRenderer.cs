@@ -61,30 +61,30 @@ namespace Dgt.Minesweeper.ConsoleUI
             // It is unclear if we need to pass everything we need in the SpanAction to avoid any closures and
             // thus unwanted heap allocations
             // See https://www.stevejgordon.co.uk/creating-strings-with-no-allocation-overhead-using-string-create-csharp
-            return string.Create(totalLength, (rowHeaderLength, rowIndex, cellRenderer, listOfCells), (span, state) =>
+            return string.Create(totalLength, (rowHeaderLength, rowIndex, cellRenderer, listOfCells), RenderRow);
+        }
+
+        private static void RenderRow(Span<char> span, (int RowHeaderLength, int RowIndex, ICellRenderer CellRenderer, List<Cell> Cells) state)
+        {
+            var (rowHeaderLength, rowIndex, cellRenderer, cells) = state;
+            var rowIndexChars = rowIndex.ToString().ToCharArray();
+
+            for (var i = 0; i < rowHeaderLength; i++)
             {
-                // I don't like the abbreviated variable names but we need to avoid name collisions with method
-                // parameters, or other variables in the outer scope
-                var (rhl, ri, cr, c) = state;
-                var rowIndexChars = ri.ToString().ToCharArray();
+                span[i] = rowHeaderLength - i <= rowIndexChars.Length
+                    ? rowIndexChars[i - rowHeaderLength + rowIndexChars.Length]
+                    : ' ';
+            }
 
-                for (var i = 0; i < rhl; i++)
-                {
-                    span[i] = rhl - i <= rowIndexChars.Length
-                        ? rowIndexChars[i - rhl + rowIndexChars.Length]
-                        : ' ';
-                }
+            span[rowHeaderLength] = ' ';
 
-                span[rhl] = ' ';
+            for (var i = 0; i < cells.Count; i++)
+            {
+                span[rowHeaderLength + 1 + (i * 2)] = '║';
+                span[rowHeaderLength + 2 + (i * 2)] = cellRenderer.RenderCell(cells[i]);
+            }
 
-                for (var i = 0; i < c.Count; i++)
-                {
-                    span[rhl + 1 + (i * 2)] = '║';
-                    span[rhl + 2 + (i * 2)] = cr.RenderCell(c[i]);
-                }
-
-                span[^1] = '║';
-            });
+            span[^1] = '║';
         }
 
         public string RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
