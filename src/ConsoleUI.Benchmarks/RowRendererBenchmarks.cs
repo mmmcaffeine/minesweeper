@@ -39,19 +39,19 @@ namespace Dgt.Minesweeper.ConsoleUI
         }
 
         [Benchmark(Baseline = true)]
-        [BenchmarkCategory(BenchmarkCategories.NaiveRowRenderer, BenchmarkCategories.RenderTopBorder)]
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.NaiveRowRenderer)]
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         public string RenderTopBorder_Using_NaiveRowRenderer(int numberOfRowsAndColumns) =>
             _naiveRowRenderer.RenderTopBorder(numberOfRowsAndColumns, numberOfRowsAndColumns);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.EfficientGameRenderer, BenchmarkCategories.RenderTopBorder)]
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.EfficientGameRenderer)]
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
         public string RenderTopBorder_Using_EfficientGameRenderer(int numberOfRowsAndColumns) =>
             _efficientGameRenderer.RenderTopBorder(numberOfRowsAndColumns, numberOfRowsAndColumns);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.CharArray, BenchmarkCategories.RenderTopBorder)]
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.CharArray)]
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
 #pragma warning disable CA1822
         public string RenderTopBorder_Using_CharArray(int numberOfRowsAndColumns)
@@ -81,7 +81,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         }
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.JoinedEnumerableOfString, BenchmarkCategories.RenderTopBorder)]
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.JoinedEnumerableOfString)]
         [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
 #pragma warning disable CA1822
         public string RenderTopBorder_Using_JoinedEnumerableOfString(int numberOfRowsAndColumns)
