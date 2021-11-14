@@ -99,7 +99,31 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
 
-            throw new NotImplementedException();
+            var columnNameArrays = columnNames.Select(cn => ((string)cn).ToCharArray()).ToArray();
+            var rowHeaderLength = GetNumberOfDigits(numberOfRows);
+            var totalLength = rowHeaderLength + 1 + columnNameArrays.Length * 2;
+            var maximumColumnNameLength = columnNameArrays.Max(a => a.Length);
+
+            for (var i = 0; i < maximumColumnNameLength; i++)
+            {
+                yield return string.Create(totalLength, (rowHeaderLength, columnNameArrays, i), (span, state) =>
+                {
+                    var (rhl, cna, lineIndex) = state;
+
+                    for (var spanIndex = 0; spanIndex <= rowHeaderLength; spanIndex++)
+                    {
+                        span[spanIndex] = ' ';
+                    }
+
+                    for (var columnNameIndex = 0; columnNameIndex < cna.Length; columnNameIndex++)
+                    {
+                        span[rhl + (columnNameIndex * 2) + 1] = ' ';
+                        span[rhl + (columnNameIndex * 2) + 2] = cna[columnNameIndex].Length > lineIndex
+                            ? cna[columnNameIndex][lineIndex]
+                            : ' ';
+                    }
+                });
+            }
         }
 
         private static int GetNumberOfDigits(int value)
