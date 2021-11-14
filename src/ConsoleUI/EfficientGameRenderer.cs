@@ -24,15 +24,15 @@ namespace Dgt.Minesweeper.ConsoleUI
             var prefixLength = GetNumberOfDigits(numberOfRows);
             var totalLength = prefixLength + 1 + numberOfColumns * 2 + 1;
 
-            return string.Create(totalLength, prefixLength, (span, i) =>
+            return string.Create(totalLength, prefixLength, (span, state) =>
             {
                 span[..(prefixLength + 1)].Fill(' ');
                 span[prefixLength + 1] = left;
 
-                for (var x = span.Length - 3; x >= i + 3; x -= 2)
+                for (var i = span.Length - 3; i >= state + 3; i -= 2)
                 {
-                    span[x] = middle;
-                    span[x - 1] = '═';
+                    span[i] = middle;
+                    span[i - 1] = '═';
                 }
 
                 span[^2] = '═';
