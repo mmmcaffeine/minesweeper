@@ -11,10 +11,13 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             public const string NaiveRowRenderer = "NaiveRowRenderer";
             public const string EfficientGameRenderer = "EfficientGameRenderer";
-            public const string RenderTopBorder = "RenderTopBorder";
+
             public const string StringCreate = "StringCreate";
             public const string CharArray = "CharArray";
             public const string JoinedEnumerableOfString = "JoinedEnumerable";
+
+            public const string RenderTopBorder = "RenderTopBorder";
+            public const string GetNumberOfDigits = "GetNumberOfDigits";
         }
         
         private IRowRenderer _naiveRowRenderer = default!;
@@ -92,6 +95,36 @@ namespace Dgt.Minesweeper.ConsoleUI
             var prefix = Enumerable.Range(0, prefixLength).Select(_ => ' ');
 
             return $"{string.Join(null, prefix)} ╔{string.Join(null, columns)}═╗";
+        }
+
+
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
+        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
+#pragma warning disable CA1822
+        public int GetNumberOfDigits_Using_StringLength(int numberOfRowsAndColumns) =>
+#pragma warning restore CA1822
+            numberOfRowsAndColumns.ToString().Length;
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
+        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
+#pragma warning disable CA1822
+        public int GetNumberOfDigits_Using_Lookup(int numberOfRowsAndColumns)
+#pragma warning restore CA1822
+        {
+            // This clearly does not work with negative numbers!
+            return numberOfRowsAndColumns switch
+            {
+                < 10 => 1,
+                < 100 => 2,
+                < 1_000 => 3,
+                < 10_000 => 4,
+                < 100_000 => 5,
+                < 1_000_000 => 6,
+                _ => numberOfRowsAndColumns.ToString().Length
+            };
         }
     }
 }
