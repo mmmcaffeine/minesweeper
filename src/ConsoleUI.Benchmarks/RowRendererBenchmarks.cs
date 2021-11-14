@@ -13,7 +13,6 @@ namespace Dgt.Minesweeper.ConsoleUI
             public const string NaiveRowRenderer = "NaiveRowRenderer";
             public const string EfficientGameRenderer = "EfficientGameRenderer";
 
-            public const string StringCreate = "StringCreate";
             public const string CharArray = "CharArray";
             public const string JoinedEnumerableOfString = "JoinedEnumerable";
 
@@ -21,21 +20,19 @@ namespace Dgt.Minesweeper.ConsoleUI
             public const string RenderRow = "RenderRow";
             public const string GetNumberOfDigits = "GetNumberOfDigits";
         }
+
+        private const int RowIndex = 1;
         
         private IRowRenderer _naiveRowRenderer = default!;
         private IRowRenderer _efficientGameRenderer = default!;
         private ICellRenderer _cellRenderer = default!;
+        private List<Cell> _cells = default!;
 
-        public static IEnumerable<int> ValuesForNumberOfRowsAndColumns
-        {
-            get
-            {
-                yield return 2;
-                yield return 10;
-                yield return 100;
-                yield return 1000;
-            }
-        }
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // BenchmarkDotNet requires public read / write properties for us to use the Params attributes
+        [Params(2, 10, 100, 1000)]
+        public int NumberOfRowsAndColumns { get; set; }
 
         [GlobalSetup]
         public void GlobalSetup()
@@ -43,29 +40,35 @@ namespace Dgt.Minesweeper.ConsoleUI
             _naiveRowRenderer = new NaiveRowRenderer();
             _efficientGameRenderer = new EfficientGameRenderer();
             _cellRenderer = new CellRenderer();
+            _cells = CreateCells().ToList();
+        }
+
+        private IEnumerable<Cell> CreateCells()
+        {
+            for (var i = 0; i < NumberOfRowsAndColumns; i++)
+            {
+                var location = new Location(i + 1, 1);
+
+                yield return new Cell(location, false, 0);
+            }
         }
 
         [Benchmark(Baseline = true)]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.NaiveRowRenderer)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-        public string RenderTopBorder_Using_NaiveRowRenderer(int numberOfRowsAndColumns) =>
-            _naiveRowRenderer.RenderTopBorder(numberOfRowsAndColumns, numberOfRowsAndColumns);
+        public string RenderTopBorder_Using_NaiveRowRenderer() =>
+            _naiveRowRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.EfficientGameRenderer)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-        public string RenderTopBorder_Using_EfficientGameRenderer(int numberOfRowsAndColumns) =>
-            _efficientGameRenderer.RenderTopBorder(numberOfRowsAndColumns, numberOfRowsAndColumns);
+        public string RenderTopBorder_Using_EfficientGameRenderer() =>
+            _efficientGameRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.CharArray)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-#pragma warning disable CA1822
-        public string RenderTopBorder_Using_CharArray(int numberOfRowsAndColumns)
-#pragma warning restore CA1822
+        public string RenderTopBorder_Using_CharArray()
         {
-            var prefixLength = numberOfRowsAndColumns.ToString().Length;
-            var totalLength = prefixLength + 1 + numberOfRowsAndColumns * 2 + 1;
+            var prefixLength = NumberOfRowsAndColumns.ToString().Length;
+            var totalLength = prefixLength + 1 + NumberOfRowsAndColumns * 2 + 1;
             var chars = new char[totalLength];
 
             for (var i = 0; i <= prefixLength + 1; i++)
@@ -89,13 +92,10 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.JoinedEnumerableOfString)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-#pragma warning disable CA1822
-        public string RenderTopBorder_Using_JoinedEnumerableOfString(int numberOfRowsAndColumns)
-#pragma warning restore CA1822
+        public string RenderTopBorder_Using_JoinedEnumerableOfString()
         {
-            var prefixLength = numberOfRowsAndColumns.ToString().Length;
-            var columns = Enumerable.Range(0, numberOfRowsAndColumns - 1).Select(_ => "═╦");
+            var prefixLength = NumberOfRowsAndColumns.ToString().Length;
+            var columns = Enumerable.Range(0, NumberOfRowsAndColumns - 1).Select(_ => "═╦");
             var prefix = Enumerable.Range(0, prefixLength).Select(_ => ' ');
 
             return $"{string.Join(null, prefix)} ╔{string.Join(null, columns)}═╗";
@@ -103,41 +103,27 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         [Benchmark(Baseline = true)]
         [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.NaiveRowRenderer)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-        public string RenderRow_Using_NaiveRowRenderer(int numberOfRowsAndColumns)
-        {
-            const int rowIndex = 1;
-            var cells = GetCells(numberOfRowsAndColumns, rowIndex);
-
-            return _naiveRowRenderer.RenderRow(numberOfRowsAndColumns, rowIndex, _cellRenderer, cells);
-        }
+        public string RenderRow_Using_NaiveRowRenderer() =>
+            _naiveRowRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.EfficientGameRenderer)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-        public string RenderRow_Using_EfficientGameRenderer(int numberOfRowsAndColumns)
-        {
-            const int rowIndex = 1;
-            var cells = GetCells(numberOfRowsAndColumns, rowIndex);
-
-            return _efficientGameRenderer.RenderRow(numberOfRowsAndColumns, rowIndex, _cellRenderer, cells);
-        }
+        public string RenderRow_Using_EfficientGameRenderer() =>
+            _efficientGameRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.CharArray)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-        public string RenderRow_Using_CharArray(int numberOfRowsAndColumns)
+        public string RenderRow_Using_CharArray()
         {
             const int rowIndex = 1;
-            var cells = GetCells(numberOfRowsAndColumns, rowIndex).ToList();
-            var rowHeaderLength = numberOfRowsAndColumns switch
+            var rowHeaderLength = NumberOfRowsAndColumns switch
             {
                 < 10 => 1,
                 < 100 => 2,
                 < 1_000 => 3,
-                _ => numberOfRowsAndColumns.ToString().Length
+                _ => NumberOfRowsAndColumns.ToString().Length
             };
-            var totalLength = rowHeaderLength + 1 + cells.Count * 2 + 1;
+            var totalLength = rowHeaderLength + 1 + _cells.Count * 2 + 1;
             var chars = new char[totalLength];
             var rowIndexChars = rowIndex.ToString().ToCharArray();
 
@@ -150,10 +136,10 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             chars[rowHeaderLength] = ' ';
 
-            for (var i = 0; i < cells.Count; i++)
+            for (var i = 0; i < _cells.Count; i++)
             {
                 chars[rowHeaderLength + 1 + (i * 2)] = '║';
-                chars[rowHeaderLength + 2 + (i * 2)] = _cellRenderer.RenderCell(cells[i]);
+                chars[rowHeaderLength + 2 + (i * 2)] = _cellRenderer.RenderCell(_cells[i]);
             }
 
             chars[^1] = '║';
@@ -161,32 +147,16 @@ namespace Dgt.Minesweeper.ConsoleUI
             return new string(chars);
         }
 
-        private static IEnumerable<Cell> GetCells(int numberOfColumns, int rowIndex)
-        {
-            for (var i = 0; i < numberOfColumns; i++)
-            {
-                var location = new Location(i + 1, rowIndex);
-                yield return new Cell(location, false, 0);
-            }
-        }
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
+        public int GetNumberOfDigits_Using_StringLength() => NumberOfRowsAndColumns.ToString().Length;
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-#pragma warning disable CA1822
-        public int GetNumberOfDigits_Using_StringLength(int numberOfRowsAndColumns) =>
-#pragma warning restore CA1822
-            numberOfRowsAndColumns.ToString().Length;
-
-        [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
-        [ArgumentsSource(nameof(ValuesForNumberOfRowsAndColumns))]
-#pragma warning disable CA1822
-        public int GetNumberOfDigits_Using_Lookup(int numberOfRowsAndColumns)
-#pragma warning restore CA1822
+        public int GetNumberOfDigits_Using_Lookup()
         {
             // This clearly does not work with negative numbers!
-            return numberOfRowsAndColumns switch
+            return NumberOfRowsAndColumns switch
             {
                 < 10 => 1,
                 < 100 => 2,
@@ -194,7 +164,7 @@ namespace Dgt.Minesweeper.ConsoleUI
                 < 10_000 => 4,
                 < 100_000 => 5,
                 < 1_000_000 => 6,
-                _ => numberOfRowsAndColumns.ToString().Length
+                _ => NumberOfRowsAndColumns.ToString().Length
             };
         }
     }
