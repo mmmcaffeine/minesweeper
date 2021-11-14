@@ -54,7 +54,37 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (cellRenderer is null) throw new ArgumentNullException(nameof(cellRenderer));
             if (cells is null) throw new ArgumentNullException(nameof(cells));
 
-            throw new NotImplementedException();
+            var listOfCells = new List<Cell>(cells);
+            var rowHeaderLength = GetNumberOfDigits(numberOfRows);
+            var totalLength = rowHeaderLength + 1 + listOfCells.Count * 2 + 1;
+
+            // It is unclear if we need to pass everything we need in the SpanAction to avoid any closures and
+            // thus unwanted heap allocations
+            // See https://www.stevejgordon.co.uk/creating-strings-with-no-allocation-overhead-using-string-create-csharp
+            return string.Create(totalLength, (rowHeaderLength, rowIndex, cellRenderer, listOfCells), (span, state) =>
+            {
+                // I don't like the abbreviated variable names but we need to avoid name collisions with method
+                // parameters, or other variables in the outer scope
+                var (rhl, ri, cr, c) = state;
+                var rowIndexChars = ri.ToString().ToCharArray();
+
+                for (var i = 0; i < rhl; i++)
+                {
+                    span[i] = rhl - i <= rowIndexChars.Length
+                        ? rowIndexChars[i - rhl + rowIndexChars.Length]
+                        : ' ';
+                }
+
+                span[rhl] = ' ';
+
+                for (var i = 0; i < c.Count; i++)
+                {
+                    span[rhl + 1 + (i * 2)] = '║';
+                    span[rhl + 2 + (i * 2)] = cr.RenderCell(c[i]);
+                }
+
+                span[^1] = '║';
+            });
         }
 
         public string RenderRowSeparator(int numberOfRows, int numberOfColumns) =>
