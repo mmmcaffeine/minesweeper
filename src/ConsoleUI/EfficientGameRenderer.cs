@@ -26,17 +26,16 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             return string.Create(totalLength, prefixLength, (span, i) =>
             {
-                // Would it be more efficient to _not_ pre-fill the span, but fill it within the loop?
-                span.Fill('═');
-
                 span[..(prefixLength + 1)].Fill(' ');
                 span[prefixLength + 1] = left;
 
                 for (var x = span.Length - 3; x >= i + 3; x -= 2)
                 {
                     span[x] = middle;
+                    span[x - 1] = '═';
                 }
 
+                span[^2] = '═';
                 span[^1] = right;
             });
         }
