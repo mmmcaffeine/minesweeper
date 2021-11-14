@@ -123,7 +123,8 @@ namespace Dgt.Minesweeper.ConsoleUI
                 < 1_000 => 3,
                 _ => NumberOfRowsAndColumns.ToString().Length
             };
-            var totalLength = rowHeaderLength + 1 + _cells.Count * 2 + 1;
+            var renderedCells = _cells.Select(_cellRenderer.RenderCell).ToArray();
+            var totalLength = rowHeaderLength + 1 + renderedCells.Length * 2 + 1;
             var chars = new char[totalLength];
             var rowIndexChars = rowIndex.ToString().ToCharArray();
 
@@ -139,7 +140,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             for (var i = 0; i < _cells.Count; i++)
             {
                 chars[rowHeaderLength + 1 + (i * 2)] = '║';
-                chars[rowHeaderLength + 2 + (i * 2)] = _cellRenderer.RenderCell(_cells[i]);
+                chars[rowHeaderLength + 2 + (i * 2)] = renderedCells[i];
             }
 
             chars[^1] = '║';
