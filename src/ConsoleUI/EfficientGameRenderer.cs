@@ -21,7 +21,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (numberOfColumns <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfColumns), numberOfColumns, MustBePositiveNonZero);
 
-            var prefixLength = numberOfRows.ToString().Length;
+            var prefixLength = GetNumberOfDigits(numberOfRows);
             var totalLength = prefixLength + 1 + numberOfColumns * 2 + 1;
 
             return string.Create(totalLength, prefixLength, (span, i) =>
@@ -69,6 +69,23 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
 
             throw new NotImplementedException();
+        }
+
+        private static int GetNumberOfDigits(int value)
+        {
+            // This will not work for negative numbers, but we don't care; we've already checked the value
+            // is a positive, non-zero value. We could just use the default arm in all cases, but using the
+            // lookup is much faster for the range of values we would expect to receive
+            return value switch
+            {
+                < 10 => 1,
+                < 100 => 2,
+                < 1_000 => 3,
+                < 10_000 => 4,
+                < 100_000 => 5,
+                < 1_000_000 => 6,
+                _ => value.ToString().Length
+            };
         }
     }
 }
