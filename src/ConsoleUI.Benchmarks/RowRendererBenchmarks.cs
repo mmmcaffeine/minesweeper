@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
 using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
@@ -18,15 +19,18 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             public const string RenderTopBorder = "RenderTopBorder";
             public const string RenderRow = "RenderRow";
+            public const string RenderColumnNames = "RenderColumnNames";
             public const string GetNumberOfDigits = "GetNumberOfDigits";
         }
 
         private const int RowIndex = 1;
-        
+
+        private Consumer _consumer = default!;
         private IRowRenderer _naiveRowRenderer = default!;
         private IRowRenderer _efficientGameRenderer = default!;
         private ICellRenderer _cellRenderer = default!;
         private List<Cell> _cells = default!;
+        private List<ColumnName> _columnNames = default!;
 
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -37,10 +41,12 @@ namespace Dgt.Minesweeper.ConsoleUI
         [GlobalSetup]
         public void GlobalSetup()
         {
+            _consumer = new Consumer();
             _naiveRowRenderer = new NaiveRowRenderer();
             _efficientGameRenderer = new EfficientGameRenderer();
             _cellRenderer = new CellRenderer();
             _cells = CreateCells().ToList();
+            _columnNames = _cells.Select(cell => cell.Location.ColumnName).ToList();
         }
 
         private IEnumerable<Cell> CreateCells()
@@ -147,6 +153,16 @@ namespace Dgt.Minesweeper.ConsoleUI
 
             return new string(chars);
         }
+
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.NaiveRowRenderer)]
+        public void RenderColumnNames_Using_NaiveRowRenderer() =>
+            _naiveRowRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.EfficientGameRenderer)]
+        public void RenderColumnNames_Using_EfficientGameRenderer() =>
+            _efficientGameRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]
