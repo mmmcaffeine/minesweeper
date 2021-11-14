@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
@@ -54,34 +55,34 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (cellRenderer is null) throw new ArgumentNullException(nameof(cellRenderer));
             if (cells is null) throw new ArgumentNullException(nameof(cells));
 
-            var listOfCells = new List<Cell>(cells);
+            var renderedCells = cells.Select(cellRenderer.RenderCell).ToArray();
             var rowHeaderLength = GetNumberOfDigits(numberOfRows);
-            var totalLength = rowHeaderLength + 1 + listOfCells.Count * 2 + 1;
+            var totalLength = rowHeaderLength + 1 + renderedCells.Length * 2 + 1;
 
             // It is unclear if we need to pass everything we need in the SpanAction to avoid any closures and
             // thus unwanted heap allocations
             // See https://www.stevejgordon.co.uk/creating-strings-with-no-allocation-overhead-using-string-create-csharp
-            return string.Create(totalLength, (rowHeaderLength, rowIndex, cellRenderer, listOfCells), RenderRow);
+            return string.Create(totalLength, (rowHeaderLength, rowIndex, renderedCells), RenderRow);
         }
 
-        private static void RenderRow(Span<char> span, (int RowHeaderLength, int RowIndex, ICellRenderer CellRenderer, List<Cell> Cells) state)
+        private static void RenderRow(Span<char> span, (int RowHeaderLength, int RowIndex, char[] RenderedCells) state)
         {
-            var (rowHeaderLength, rowIndex, cellRenderer, cells) = state;
-            var rowIndexChars = rowIndex.ToString().ToCharArray();
+            var (rowHeaderLength, rowIndex, renderedCells) = state;
+            var rowIndexString = rowIndex.ToString();
 
             for (var i = 0; i < rowHeaderLength; i++)
             {
-                span[i] = rowHeaderLength - i <= rowIndexChars.Length
-                    ? rowIndexChars[i - rowHeaderLength + rowIndexChars.Length]
+                span[i] = rowHeaderLength - i <= rowIndexString.Length
+                    ? rowIndexString[i - rowHeaderLength + rowIndexString.Length]
                     : ' ';
             }
 
             span[rowHeaderLength] = ' ';
 
-            for (var i = 0; i < cells.Count; i++)
+            for (var i = 0; i < renderedCells.Length; i++)
             {
                 span[rowHeaderLength + 1 + (i * 2)] = '║';
-                span[rowHeaderLength + 2 + (i * 2)] = cellRenderer.RenderCell(cells[i]);
+                span[rowHeaderLength + 2 + (i * 2)] = renderedCells[i];
             }
 
             span[^1] = '║';
