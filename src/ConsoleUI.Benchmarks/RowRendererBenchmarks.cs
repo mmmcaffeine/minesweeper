@@ -22,6 +22,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             public const string RenderRow = "RenderRow";
             public const string RenderColumnNames = "RenderColumnNames";
             public const string GetNumberOfDigits = "GetNumberOfDigits";
+            public const string GetMaxLength = "GetMaxLength";
         }
 
         private const int RowIndex = 1;
@@ -137,6 +138,51 @@ namespace Dgt.Minesweeper.ConsoleUI
                 < 1_000_000 => 6,
                 _ => NumberOfRowsAndColumns.ToString().Length
             };
+        }
+
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.GetMaxLength)]
+        public int GetMaxLength_Using_Linq() =>
+            _columnNames.Select(cn => ((string)cn).ToArray()).ToArray().Max(array => array.Length);
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetMaxLength)]
+        public int GetMaxLength_Using_ForLoop()
+        {
+            var arrays = _columnNames.Select(cn => ((string)cn).ToArray()).ToArray();
+            var maxLength = 0;
+
+            for (var i = 0; i < arrays.Length; i++)
+            {
+                var currentLength = arrays[i].Length;
+
+                if (currentLength > maxLength)
+                {
+                    maxLength = currentLength;
+                }
+            }
+
+            return maxLength;
+        }
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetMaxLength)]
+        public int GetMaxLength_UsingForEachLoop()
+        {
+            var arrays = _columnNames.Select(cn => ((string)cn).ToArray()).ToArray();
+            var maxLength = 0;
+
+            foreach (var array in arrays)
+            {
+                var currentLength = array.Length;
+
+                if (currentLength > maxLength)
+                {
+                    maxLength = currentLength;
+                }
+            }
+
+            return maxLength;
         }
     }
 }

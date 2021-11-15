@@ -117,7 +117,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             var columnNameArrays = columnNames.Select(cn => ((string)cn).ToCharArray()).ToArray(); // Is it faster to use Value than cast?
             var rowHeaderLength = GetNumberOfDigits(numberOfRows);
             var totalLength = rowHeaderLength + 1 + columnNameArrays.Length * 2;
-            var maximumColumnNameLength = columnNameArrays.Max(a => a.Length); // Is it faster to enumerate this ourselves?
+            var maximumColumnNameLength = GetMaximumLength(columnNameArrays);
 
             for (var linesIndex = 0; linesIndex < maximumColumnNameLength; linesIndex++)
             {
@@ -138,6 +138,21 @@ namespace Dgt.Minesweeper.ConsoleUI
 
                 yield return new string(lineChars);
             }
+        }
+
+        private static int GetMaximumLength(char[][] arrays)
+        {
+            var maxLength = 0;
+
+            foreach (var array in arrays)
+            {
+                if (array.Length > maxLength)
+                {
+                    maxLength = array.Length;
+                }
+            }
+
+            return maxLength;
         }
     }
 }
