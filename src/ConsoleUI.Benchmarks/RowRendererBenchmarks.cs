@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
@@ -46,12 +47,20 @@ namespace Dgt.Minesweeper.ConsoleUI
         public void GlobalSetup()
         {
             _consumer = new Consumer();
-            _naiveRowRenderer = new NaiveRowRenderer();
-            _stringCreateGameRenderer = new StringCreateGameRenderer();
-            _charArrayGameRenderer = new CharArrayGameRenderer();
             _cellRenderer = new CellRenderer();
+            _naiveRowRenderer = new NaiveRowRenderer();
+            _stringCreateGameRenderer = CreateStringCreateGameRenderer();
+            _charArrayGameRenderer = new CharArrayGameRenderer();
             _cells = CreateCells().ToList();
             _columnNames = _cells.Select(cell => cell.Location.ColumnName).ToList();
+        }
+
+        private IRowRenderer CreateStringCreateGameRenderer()
+        {
+            var minefield = new Minefield(5, Array.Empty<Location>());
+            var game = new Game(minefield);
+
+            return new StringCreateGameRenderer(game, _cellRenderer);
         }
 
         private IEnumerable<Cell> CreateCells()

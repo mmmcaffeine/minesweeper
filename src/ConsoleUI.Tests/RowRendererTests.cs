@@ -15,9 +15,18 @@ namespace Dgt.Minesweeper.ConsoleUI
             get
             {
                 yield return new NaiveRowRenderer();
-                yield return new StringCreateGameRenderer();
+                yield return CreateStringCreateGameRenderer();
                 yield return new CharArrayGameRenderer();
             }
+        }
+
+        private static IRowRenderer CreateStringCreateGameRenderer()
+        {
+            var fakeMinefield = A.Fake<IMinefield>();
+            var game = new Game(fakeMinefield);
+            var fakeCellRenderer = A.Fake<ICellRenderer>();
+
+            return new StringCreateGameRenderer(game, fakeCellRenderer);
         }
 
         private static IEnumerable<int> NotPositiveNumbers

@@ -9,9 +9,38 @@ namespace Dgt.Minesweeper.ConsoleUI
     {
         private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
 
+        private readonly Game _game;
+        private readonly ICellRenderer _cellRenderer;
+
+        public StringCreateGameRenderer(Game game, ICellRenderer cellRenderer)
+        {
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _cellRenderer = cellRenderer ?? throw new ArgumentNullException(nameof(cellRenderer));
+        }
+
         public IEnumerable<string> Render()
         {
-            throw new NotImplementedException();
+            var rowSeparator = RenderRowSeparator(_game.NumberOfRows, _game.NumberOfColumns);
+
+            yield return RenderTopBorder(_game.NumberOfRows, _game.NumberOfColumns);
+
+            for (var i = _game.NumberOfRows; i > 0 ; i--)
+            {
+                yield return RenderRow(_game.NumberOfRows, i, _cellRenderer, _game.GetRow(i));
+
+                if (i > 1)
+                {
+                    yield return rowSeparator;
+                }
+            }
+
+            yield return RenderBottomBorder(_game.NumberOfRows, _game.NumberOfColumns);
+            yield return string.Empty;
+
+            foreach (var line in RenderColumnNames(_game.NumberOfRows, _game.ColumnNames))
+            {
+                yield return line;
+            }
         }
 
         public string RenderTopBorder(int numberOfRows, int numberOfColumns) =>
