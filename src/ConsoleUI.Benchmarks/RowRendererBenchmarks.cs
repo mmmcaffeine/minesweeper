@@ -12,7 +12,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         private static class BenchmarkCategories
         {
             public const string NaiveRowRenderer = "NaiveRowRenderer";
-            public const string EfficientGameRenderer = "EfficientGameRenderer";
+            public const string StringCreateGameRenderer = "StringCreateGameRenderer";
 
             public const string CharArray = "CharArray";
             public const string JoinedEnumerableOfString = "JoinedEnumerable";
@@ -27,7 +27,7 @@ namespace Dgt.Minesweeper.ConsoleUI
 
         private Consumer _consumer = default!;
         private IRowRenderer _naiveRowRenderer = default!;
-        private IRowRenderer _efficientGameRenderer = default!;
+        private IRowRenderer _stringCreateGameRenderer = default!;
         private ICellRenderer _cellRenderer = default!;
         private List<Cell> _cells = default!;
         private List<ColumnName> _columnNames = default!;
@@ -43,7 +43,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             _consumer = new Consumer();
             _naiveRowRenderer = new NaiveRowRenderer();
-            _efficientGameRenderer = new EfficientGameRenderer();
+            _stringCreateGameRenderer = new StringCreateGameRenderer();
             _cellRenderer = new CellRenderer();
             _cells = CreateCells().ToList();
             _columnNames = _cells.Select(cell => cell.Location.ColumnName).ToList();
@@ -65,9 +65,9 @@ namespace Dgt.Minesweeper.ConsoleUI
             _naiveRowRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.EfficientGameRenderer)]
-        public string RenderTopBorder_Using_EfficientGameRenderer() =>
-            _efficientGameRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.StringCreateGameRenderer)]
+        public string RenderTopBorder_Using_StringCreateGameRenderer() =>
+            _stringCreateGameRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.CharArray)]
@@ -113,9 +113,9 @@ namespace Dgt.Minesweeper.ConsoleUI
             _naiveRowRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.EfficientGameRenderer)]
-        public string RenderRow_Using_EfficientGameRenderer() =>
-            _efficientGameRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
+        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.StringCreateGameRenderer)]
+        public string RenderRow_Using_StringCreateGameRenderer() =>
+            _stringCreateGameRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.CharArray)]
@@ -160,9 +160,9 @@ namespace Dgt.Minesweeper.ConsoleUI
             _naiveRowRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.EfficientGameRenderer)]
-        public void RenderColumnNames_Using_EfficientGameRenderer() =>
-            _efficientGameRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
+        [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.StringCreateGameRenderer)]
+        public void RenderColumnNames_Using_StringCreateGameRenderer() =>
+            _stringCreateGameRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]

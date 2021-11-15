@@ -5,7 +5,7 @@ using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
-    public class EfficientGameRenderer : IGameRenderer, IRowRenderer
+    public class StringCreateGameRenderer : IGameRenderer, IRowRenderer
     {
         private const string MustBePositiveNonZero = "Value must be a positive, non-zero integer.";
 
