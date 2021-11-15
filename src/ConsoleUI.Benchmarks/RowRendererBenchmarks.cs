@@ -13,6 +13,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         {
             public const string NaiveRowRenderer = "NaiveRowRenderer";
             public const string StringCreateGameRenderer = "StringCreateGameRenderer";
+            public const string CharArrayGameRenderer = "CharArrayGameRenderer";
 
             public const string CharArray = "CharArray";
             public const string JoinedEnumerableOfString = "JoinedEnumerable";
@@ -28,6 +29,7 @@ namespace Dgt.Minesweeper.ConsoleUI
         private Consumer _consumer = default!;
         private IRowRenderer _naiveRowRenderer = default!;
         private IRowRenderer _stringCreateGameRenderer = default!;
+        private IRowRenderer _charArrayGameRenderer = default!;
         private ICellRenderer _cellRenderer = default!;
         private List<Cell> _cells = default!;
         private List<ColumnName> _columnNames = default!;
@@ -44,6 +46,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             _consumer = new Consumer();
             _naiveRowRenderer = new NaiveRowRenderer();
             _stringCreateGameRenderer = new StringCreateGameRenderer();
+            _charArrayGameRenderer = new CharArrayGameRenderer();
             _cellRenderer = new CellRenderer();
             _cells = CreateCells().ToList();
             _columnNames = _cells.Select(cell => cell.Location.ColumnName).ToList();
@@ -70,31 +73,9 @@ namespace Dgt.Minesweeper.ConsoleUI
             _stringCreateGameRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.CharArray)]
-        public string RenderTopBorder_Using_CharArray()
-        {
-            var prefixLength = NumberOfRowsAndColumns.ToString().Length;
-            var totalLength = prefixLength + 1 + NumberOfRowsAndColumns * 2 + 1;
-            var chars = new char[totalLength];
-
-            for (var i = 0; i <= prefixLength + 1; i++)
-            {
-                chars[i] = ' ';
-            }
-
-            chars[prefixLength + 1] = '╔';
-
-            for (var i = chars.Length - 3; i >= prefixLength + 3; i -= 2)
-            {
-                chars[i] = '╦';
-                chars[i - 1] = '═';
-            }
-
-            chars[^2] = '═';
-            chars[^1] = '╗';
-
-            return new string(chars);
-        }
+        [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.CharArrayGameRenderer)]
+        public string RenderTopBorder_Using_CharArrayGameRenderer() =>
+            _charArrayGameRenderer.RenderTopBorder(NumberOfRowsAndColumns, NumberOfRowsAndColumns);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.RenderTopBorder, BenchmarkCategories.JoinedEnumerableOfString)]
@@ -118,41 +99,9 @@ namespace Dgt.Minesweeper.ConsoleUI
             _stringCreateGameRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark]
-        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.CharArray)]
-        public string RenderRow_Using_CharArray()
-        {
-            const int rowIndex = 1;
-            var rowHeaderLength = NumberOfRowsAndColumns switch
-            {
-                < 10 => 1,
-                < 100 => 2,
-                < 1_000 => 3,
-                _ => NumberOfRowsAndColumns.ToString().Length
-            };
-            var renderedCells = _cells.Select(_cellRenderer.RenderCell).ToArray();
-            var totalLength = rowHeaderLength + 1 + renderedCells.Length * 2 + 1;
-            var chars = new char[totalLength];
-            var rowIndexChars = rowIndex.ToString().ToCharArray();
-
-            for (var i = 0; i < rowHeaderLength; i++)
-            {
-                chars[i] = rowHeaderLength - i <= rowIndexChars.Length
-                    ? rowIndexChars[i - rowHeaderLength + rowIndexChars.Length]
-                    : ' ';
-            }
-
-            chars[rowHeaderLength] = ' ';
-
-            for (var i = 0; i < _cells.Count; i++)
-            {
-                chars[rowHeaderLength + 1 + (i * 2)] = '║';
-                chars[rowHeaderLength + 2 + (i * 2)] = renderedCells[i];
-            }
-
-            chars[^1] = '║';
-
-            return new string(chars);
-        }
+        [BenchmarkCategory(BenchmarkCategories.RenderRow, BenchmarkCategories.CharArrayGameRenderer)]
+        public string RenderRow_Using_CharArrayGameRenderer() =>
+            _charArrayGameRenderer.RenderRow(NumberOfRowsAndColumns, RowIndex, _cellRenderer, _cells);
 
         [Benchmark(Baseline = true)]
         [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.NaiveRowRenderer)]
@@ -163,6 +112,11 @@ namespace Dgt.Minesweeper.ConsoleUI
         [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.StringCreateGameRenderer)]
         public void RenderColumnNames_Using_StringCreateGameRenderer() =>
             _stringCreateGameRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.RenderColumnNames, BenchmarkCategories.StringCreateGameRenderer)]
+        public void RenderColumnNames_Using_CharArrayGameRenderer() =>
+            _charArrayGameRenderer.RenderColumnNames(NumberOfRowsAndColumns, _columnNames).Consume(_consumer);
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetNumberOfDigits)]

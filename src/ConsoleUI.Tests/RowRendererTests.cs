@@ -16,6 +16,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             {
                 yield return new NaiveRowRenderer();
                 yield return new StringCreateGameRenderer();
+                yield return new CharArrayGameRenderer();
             }
         }
 
