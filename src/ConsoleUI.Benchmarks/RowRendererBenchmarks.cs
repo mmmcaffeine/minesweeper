@@ -22,6 +22,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             public const string RenderRow = "RenderRow";
             public const string RenderColumnNames = "RenderColumnNames";
             public const string GetNumberOfDigits = "GetNumberOfDigits";
+            public const string GetCharArrays = "GetCharArrays";
             public const string GetMaxLength = "GetMaxLength";
         }
 
@@ -141,9 +142,18 @@ namespace Dgt.Minesweeper.ConsoleUI
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory(BenchmarkCategories.GetCharArrays)]
+        public char[][] GetCharArrays_Using_Cast() => _columnNames.Select(cn => ((string)cn).ToArray()).ToArray();
+
+        [Benchmark]
+        [BenchmarkCategory(BenchmarkCategories.GetCharArrays)]
+        public char[][] GetCharArrays_Using_Value() => _columnNames.Select(cn => cn.Value.ToArray()).ToArray();
+
+        [Benchmark(Baseline = true)]
         [BenchmarkCategory(BenchmarkCategories.GetMaxLength)]
         public int GetMaxLength_Using_Linq() =>
             _columnNames.Select(cn => ((string)cn).ToArray()).ToArray().Max(array => array.Length);
+
 
         [Benchmark]
         [BenchmarkCategory(BenchmarkCategories.GetMaxLength)]

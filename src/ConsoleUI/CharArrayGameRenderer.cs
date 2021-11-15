@@ -114,7 +114,7 @@ namespace Dgt.Minesweeper.ConsoleUI
             if (numberOfRows <= 0) throw new ArgumentOutOfRangeException(nameof(numberOfRows), numberOfRows, MustBePositiveNonZero);
             if (columnNames is null) throw new ArgumentNullException(nameof(columnNames));
 
-            var columnNameArrays = columnNames.Select(cn => ((string)cn).ToCharArray()).ToArray(); // Is it faster to use Value than cast?
+            var columnNameArrays = columnNames.Select(cn => cn.Value.ToCharArray()).ToArray();
             var rowHeaderLength = GetNumberOfDigits(numberOfRows);
             var totalLength = rowHeaderLength + 1 + columnNameArrays.Length * 2;
             var maximumColumnNameLength = GetMaximumLength(columnNameArrays);
