@@ -3,6 +3,8 @@ using Dgt.Minesweeper.Engine;
 
 namespace Dgt.Minesweeper.ConsoleUI
 {
+    // TODO This interface violates Interface Segregation Principle. This should be broken up into IBoxArtRenderer
+    //      and IColumnNameRenderer
     public interface IRowRenderer
     {
         string RenderTopBorder(int numberOfRows, int numberOfColumns);
